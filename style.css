@@ -2,6 +2,7 @@
 :root {
     /* Paleta de Cores Principal (Atualizada) */
     --color-primary: #2d6a4f; /* Verde mais profundo */
+    --color-primary-dark: #1b4332; /* Adicionado para os pontos de acupuntura */
     --color-secondary: #40916c; /* Verde secundário mais vibrante */
     --color-background: #fbfcfb; /* Fundo quase branco com um toque de verde */
     --color-text: #1b4332; /* Texto verde muito escuro para melhor contraste */
@@ -48,8 +49,8 @@ h1, h2, h3, h4, .font-playfair {
 .nav-group-header:hover { background-color: #f1f3f5; }
 .nav-group-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-in-out; }
 .nav-group-header.open + .nav-group-content { max-height: 500px; }
+.nav-group-header[aria-expanded="true"] .chevron { transform: rotate(180deg); }
 [aria-expanded] .chevron { transition: transform 0.3s ease-in-out; }
-[aria-expanded="true"] .chevron { transform: rotate(180deg); }
 .sidebar-link { transition: all 0.3s ease-in-out; }
 .sidebar-link:hover { background-color: var(--color-subtle-gray); transform: translateX(5px); }
 .sidebar-link.active, a.sidebar-link[aria-current="page"] { background-color: var(--color-primary); color: white; box-shadow: 0 4px 14px 0 rgba(45, 106, 79, 0.38); }
@@ -72,6 +73,7 @@ h1, h2, h3, h4, .font-playfair {
 .card-prose h4 { margin-bottom: 0.5rem; margin-top: 1.25rem; font-size: 1.1rem; color: var(--color-secondary); font-weight: 700; }
 .card-prose > *:first-child { margin-top: 0; }
 .card-prose > *:last-child { margin-bottom: 0; }
+.text-primary-dark { color: var(--color-primary-dark); } /* Classe adicionada */
 
 /* --- Accordion Styling --- */
 .accordion-item { border: 1px solid var(--color-subtle-gray); border-radius: 0.5rem; background-color: #fff; transition: box-shadow 0.2s; }
@@ -80,8 +82,8 @@ h1, h2, h3, h4, .font-playfair {
 .accordion-button { padding: 0.75rem 1.5rem; width: 100%; display: flex; justify-content: space-between; align-items: center; text-align: left; font-weight: 600; color: var(--color-text); }
 .accordion-button[aria-expanded="true"] + .accordion-content { max-height: 2500px; padding: 1rem 1.5rem 1.5rem; border-top: 1px solid var(--color-subtle-gray); opacity: 1; transform: translateY(0); }
 
-/* --- 5 Elementos, Tabs, Timeline, etc. (sem alterações) --- */
-.element-diagram .element { transition: all 0.3s ease-in-out; z-index: 10; }
+/* --- 5 Elementos, Tabs, Timeline, etc. --- */
+.element-diagram .element { transition: all 0.3s ease-in-out; z-index: 10; cursor: pointer; }
 .element-diagram .element[aria-pressed="true"] { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 25px rgba(176, 137, 104, 0.95); border: 3px solid white; }
 .element-lines { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 .cycle-path { stroke-dasharray: 1000; stroke-dashoffset: 1000; transition: stroke 0.4s ease-in-out, stroke-width 0.4s ease-in-out; }
@@ -89,8 +91,8 @@ h1, h2, h3, h4, .font-playfair {
 @keyframes draw-line { to { stroke-dashoffset: 0; } }
 .arrow-marker { transition: fill 0.4s ease-in-out; }
 .tab-button { padding: 0.75rem 0.25rem; margin: 0 0.75rem; font-weight: 600; color: #8c9a93; border-bottom: 3px solid transparent; transition: color 0.3s, border-color 0.3s; }
-.tab-button[aria-selected="true"], .tab-button:hover { color: var(--color-primary); }
-.tab-button[aria-selected="true"] { border-bottom-color: var(--color-primary); }
+.tab-button.active, .tab-button:hover { color: var(--color-primary); }
+.tab-button.active { border-bottom-color: var(--color-primary); }
 .tab-content { display: none; }
 .tab-content.active { display: block; animation: fadeIn 0.5s; }
 .timeline-item { position: relative; padding-left: 2.5rem; padding-bottom: 1.5rem; }
@@ -100,7 +102,7 @@ h1, h2, h3, h4, .font-playfair {
 .timeline-marker { position: absolute; left: 0; top: 0; }
 .sidebar-nav-item { padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; transition: background-color 0.3s, color 0.3s, box-shadow 0.3s; border: 1px solid transparent; }
 .sidebar-nav-item:hover { background-color: var(--color-subtle-gray); }
-.sidebar-nav-item.active { background-color: var(--color-primary); color: white; font-weight: 700; box-shadow: 0 4px 12px rgba(45, 106, 79, 0.2); }
+.sidebar-nav-item.active { background-color: var(--color-primary); color: white !important; font-weight: 700; box-shadow: 0 4px 12px rgba(45, 106, 79, 0.2); }
 .content-area .content-card { display: none; }
 .content-area .content-card.active { display: block; animation: fadeIn 0.5s; }
 .tooltip-term { border-bottom: 2px dotted var(--color-accent); cursor: pointer; position: relative; }
@@ -127,7 +129,7 @@ body.mobile-menu-open #mobile-menu-container { visibility: visible; }
 body.mobile-menu-open #mobile-menu-overlay { opacity: 1; pointer-events: auto; }
 body.mobile-menu-open #sidebar { transform: translateX(0); }
 
-/* --- NOVO: ESTILOS PARA PESQUISA GLOBAL --- */
+/* --- ESTILOS PARA PESQUISA GLOBAL --- */
 #search-modal-container.active { display: block; }
 .search-result-item {
     padding: 0.75rem;
