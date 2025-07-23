@@ -21,10 +21,12 @@ const mobileNavHub = document.getElementById('navigation-hub');
 const desktopNavHub = document.getElementById('desktop-navigation-hub');
 const currentSectionTitle = document.getElementById('current-section-title');
 const contentArea = document.getElementById('main-content-area');
-const contentSections = contentArea.querySelectorAll('.content-section');
+const mainContent = document.getElementById('main-content'); // Alterado para selecionar o container principal
+let contentSections = []; // Será preenchido dinamicamente
+
 const allNavHubs = [mobileNavHub, desktopNavHub];
 
-// Elementos da Pesquisa Global (NOVO)
+// Elementos da Pesquisa Global
 const openSearchMobileBtn = document.getElementById('open-search-btn-mobile');
 const desktopSearchInput = document.getElementById('desktop-search-input');
 const searchModalContainer = document.getElementById('search-modal-container');
@@ -41,23 +43,22 @@ openMenuBtn.addEventListener('click', openMobileMenu);
 closeMenuBtn.addEventListener('click', closeMobileMenu);
 mobileMenuOverlay.addEventListener('click', closeMobileMenu);
 
-// --- LÓGICA DA PESQUISA GLOBAL (NOVO) ---
+// --- LÓGICA DA PESQUISA GLOBAL ---
 function openSearchModal() {
     document.body.classList.add('search-modal-open');
     searchModalContainer.classList.remove('hidden');
-    // Foca o campo de input assim que a janela abre
     setTimeout(() => globalSearchInput.focus(), 50); 
 }
 
 function closeSearchModal() {
     document.body.classList.remove('search-modal-open');
     searchModalContainer.classList.add('hidden');
-    globalSearchInput.value = ''; // Limpa a pesquisa ao fechar
+    globalSearchInput.value = ''; 
     searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Comece a escrever para ver os resultados.</p>';
 }
 
 openSearchMobileBtn.addEventListener('click', openSearchModal);
-desktopSearchInput.addEventListener('focus', openSearchModal); // Abre a janela ao focar no campo do desktop
+desktopSearchInput.addEventListener('focus', openSearchModal);
 closeSearchBtn.addEventListener('click', closeSearchModal);
 searchOverlay.addEventListener('click', closeSearchModal);
 
@@ -95,11 +96,12 @@ allNavHubs.forEach(hub => {
         }
         if (groupHeader) {
             groupHeader.classList.toggle('open');
+            groupHeader.setAttribute('aria-expanded', groupHeader.classList.contains('open'));
         }
     });
 });
 
-// --- CRIAÇÃO DO ÍNDICE DE PESQUISA (NOVO) ---
+// --- CRIAÇÃO DO ÍNDICE DE PESQUISA ---
 function createSearchIndex() {
     // 1. Meridianos e Pontos
     meridianData.forEach(meridian => {
@@ -151,7 +153,7 @@ function createSearchIndex() {
 }
 
 
-// --- LÓGICA DE EXECUÇÃO DA PESQUISA (NOVO) ---
+// --- LÓGICA DE EXECUÇÃO DA PESQUISA ---
 function performSearch(query) {
     if (query.length < 2) {
         searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Escreva pelo menos 2 letras para pesquisar.</p>';
@@ -199,8 +201,7 @@ searchResultsContainer.addEventListener('click', (e) => {
 });
 
 
-// --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO (EXISTENTES) ---
-// (O resto do seu código, a partir de createAccordion, permanece aqui)
+// --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO ---
 function createAccordion(containerId, data) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -451,11 +452,13 @@ function update5ElementsUI() {
     if(!elementDiagram) return;
     elementDiagram.querySelectorAll('.element').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
     document.querySelectorAll('.arrow-marker').forEach(marker => marker.style.fill = defaultColor);
-    pathsContainer.querySelectorAll('.cycle-path').forEach(path => {
-        path.style.stroke = defaultColor;
-        path.style.strokeWidth = '2';
-        path.classList.remove('draw');
-    });
+    if (pathsContainer) {
+        pathsContainer.querySelectorAll('.cycle-path').forEach(path => {
+            path.style.stroke = defaultColor;
+            path.style.strokeWidth = '2';
+            path.classList.remove('draw');
+        });
+    }
     
     if (selectedElementId) {
         const elData = fiveElementsData[selectedElementId];
@@ -540,8 +543,8 @@ function setupGlossary() {
 
 function activateTooltips() {
     document.body.addEventListener('mouseover', e => {
-        if(e.target.matches('.tooltip-term')) {
-            const term = e.target;
+        const term = e.target.closest('.tooltip-term');
+        if(term) {
             const existingTooltip = term.querySelector('.tooltip-box');
             if (!existingTooltip) {
                 const termKey = term.dataset.term.toLowerCase();
@@ -635,11 +638,79 @@ function setupDiagnosisDiagrams() {
     });
 }
 
-// --- PONTO DE ENTRADA DA APLICAÇÃO ---
+// --- NOVO: Função para gerar os links de navegação ---
+function generateNavLinks() {
+    const navStructure = [
+        { id: 'inicio', title: 'Início', icon: 'icon-home' },
+        {
+            title: 'Fundamentos', icon: 'icon-yin-yang',
+            links: [
+                { id: 'substancias-fundamentais', title: 'Substâncias Fundamentais', icon: 'icon-3-treasures' },
+                { id: 'tipos-de-qi', title: 'Tipos de Qi', icon: 'icon-qi' },
+                { id: 'cinco-elementos', title: 'Os 5 Elementos', icon: 'icon-5-elements' },
+                { id: 'ciclos-de-vida', title: 'Ciclos de Vida', icon: 'icon-lifecycle' }
+            ]
+        },
+        { id: 'meridianos', title: 'Meridianos e Pontos', icon: 'icon-meridian' },
+        { id: 'anatomia-energetica', title: 'Anatomia Energética', icon: 'icon-anatomy' },
+        { id: 'padroes-zang-fu', title: 'Padrões Zang-Fu', icon: 'icon-zangfu-patterns' },
+        {
+            title: 'Diagnóstico', icon: 'icon-diagnosis',
+            links: [
+                { id: 'diagnostico-geral', title: 'Geral', icon: 'icon-diagnosis' },
+                { id: 'pulsologia', title: 'Pulsologia', icon: 'icon-diagnosis' }
+            ]
+        },
+        {
+            title: 'Terapêuticas', icon: 'icon-tuina',
+            links: [
+                { id: 'dietetica', title: 'Dietética', icon: 'icon-diet' },
+                { id: 'fitoterapia', title: 'Fitoterapia', icon: 'icon-fitoterapia' },
+                { id: 'moxabustao', title: 'Moxabustão', icon: 'icon-moxibustion' },
+                { id: 'qigong', title: 'Qi Gong & Tai Chi', icon: 'icon-qigong' }
+            ]
+        },
+        { id: 'glossario', title: 'Glossário', icon: 'icon-glossary' },
+    ];
 
+    const generateHtml = (item) => {
+        if (item.links) {
+            return `
+                <div class="nav-group">
+                    <button class="nav-group-header flex items-center justify-between w-full p-2 rounded-lg" aria-expanded="false">
+                        <span class="flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg>
+                            <span class="font-semibold">${item.title}</span>
+                        </span>
+                        <svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg>
+                    </button>
+                    <div class="nav-group-content pl-4 pt-1 space-y-1">
+                        ${item.links.map(link => `
+                            <a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg">
+                                <svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${link.icon}"></use></svg>
+                                <span>${link.title}</span>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>`;
+        } else {
+            return `
+                <a href="#${item.id}" class="sidebar-link flex items-center p-2 rounded-lg">
+                    <svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg>
+                    <span>${item.title}</span>
+                </a>`;
+        }
+    };
+    
+    const navHtml = navStructure.map(generateHtml).join('');
+    allNavHubs.forEach(hub => hub.innerHTML = navHtml);
+}
+
+
+// --- PONTO DE ENTRADA DA APLICAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
     // Geração de conteúdo principal
-    generateNavLinks();
+    generateNavLinks(); // Esta função agora existe
     createAccordion('qi-accordion', qiData);
     createLifeCycleTimeline('female-cycles-timeline', lifeCyclesFemaleData, 'bg-pink-500');
     createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
@@ -656,7 +727,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSidebarLayout('zangfu-navigation', 'zangfu-content-area', zangFuPatternsData, 'zangfu-content-');
     activateTooltips();
     setupDiagnosisDiagrams();
-    switchCycle('geracao');
+    if (document.getElementById('cinco-elementos')) {
+        switchCycle('geracao');
+    }
 
     // Animação da barra lateral
     document.querySelectorAll('aside .sidebar-link, aside .nav-group').forEach((el, index) => {
@@ -665,4 +738,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Construção do índice de pesquisa
     createSearchIndex();
+    
+    // Seleciona as secções de conteúdo DEPOIS de serem criadas
+    contentSections = mainContent.querySelectorAll('.content-section');
+    
+    // Mostra a secção inicial
+    showSection('inicio', 'Início');
+    updateActiveLink('inicio');
 });
