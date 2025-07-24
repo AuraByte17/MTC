@@ -861,6 +861,22 @@ function buildInitialContent() {
         </div>`;
 }
 
+// --- NOVA FUNÇÃO PARA CONSTRUIR O CONTEÚDO DAS TERAPIAS ---
+function setupTherapiesContent(data) {
+    data.forEach(therapy => {
+        const section = document.getElementById(therapy.id);
+        if (section) {
+            section.innerHTML = `
+                <div class="visual-card">
+                    <div class="card-header"><h3>${therapy.title}</h3></div>
+                    <div class="card-content">
+                        ${therapy.content}
+                    </div>
+                </div>
+            `;
+        }
+    });
+}
 
 // --- PONTO DE ENTRADA DA APLICAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
