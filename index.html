@@ -211,13 +211,36 @@
                                     <div class="visual-card p-4">
                                         <h4 class="text-center font-bold text-lg mb-2 text-primary">Diagnóstico da Língua</h4>
                                         <div class="diagram-container relative max-w-xs mx-auto">
-                                            <img src="https://placehold.co/300x400/f8f9fa/ccc?text=Diagrama+da+Língua" alt="Diagrama da língua para diagnóstico na MTC" class="rounded-lg">
+                                            <!-- INICIO: SVG da Língua Adicionado -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 200" class="rounded-lg bg-pink-50">
+                                                <defs>
+                                                    <filter id="inner-shadow" x="-50%" y="-50%" width="200%" height="200%">
+                                                        <feComponentTransfer in="SourceAlpha">
+                                                            <feFuncA type="table" tableValues="1 0" />
+                                                        </feComponentTransfer>
+                                                        <feGaussianBlur stdDeviation="3" />
+                                                        <feOffset dx="0" dy="4" result="offsetblur" />
+                                                        <feFlood flood-color="rgb(0,0,0)" result="color" />
+                                                        <feComposite in2="offsetblur" operator="in" />
+                                                        <feComposite in2="SourceAlpha" operator="in" />
+                                                        <feMerge>
+                                                            <feMergeNode in="SourceGraphic" />
+                                                            <feMergeNode />
+                                                        </feMerge>
+                                                    </filter>
+                                                </defs>
+                                                <path fill="#F4A2B8" d="M75 195C25 145 25 110 75 25c50 85 50 120 0 170z" />
+                                                <path fill="#D68098" d="M75 195c-2.5-12.5-5-25 0-35 5 10 2.5 22.5 0 35z" filter="url(#inner-shadow)" />
+                                                <path fill="#EAAABE" d="M75 182.5c-15-10-25-22.5-25-37.5 0-20 12.5-32.5 25-42.5 12.5 10 25 22.5 25 42.5 0 15-10 27.5-25 37.5z" opacity="0.5" />
+                                            </svg>
+                                            <!-- FIM: SVG da Língua Adicionado -->
+                                            <!-- SVG de sobreposição para interatividade -->
                                             <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 150 200">
-                                                <path class="diagram-area-svg" data-info="Ponta: Coração. Reflete o estado do Shen, ansiedade e insónia." d="M75,185 C 40,150 40,120 75,110 C 110,120 110,150 75,185 Z"></path>
-                                                <path class="diagram-area-svg" data-info="Área atrás da ponta: Pulmão. Mostra condições do sistema respiratório e do Wei Qi." d="M75,110 C 40,120 45,80 75,75 C 105,80 110,120 75,110 Z"></path>
-                                                <path class="diagram-area-svg" data-info="Laterais: Fígado e Vesícula Biliar. Indicam estagnação de Qi, irritabilidade e tensão." d="M45,80 C25,80 25,20 45,20 L45,80 Z M105,80 C125,80 125,20 105,20 L105,80 Z"></path>
-                                                <path class="diagram-area-svg" data-info="Centro: Baço e Estômago. Reflete o estado da digestão e da produção de Qi e Sangue." d="M75,75 C50,80 50,20 75,20 C100,20 100,80 75,75 Z"></path>
-                                                <path class="diagram-area-svg" data-info="Raiz: Rim, Bexiga, Intestinos. Mostra a constituição (Jing) e o estado do Aquecedor Inferior." d="M75,20 C50,20 50,5 75,5 C100,5 100,20 75,20 Z"></path>
+                                                <path class="diagram-area-svg" data-info="Ponta: Coração. Reflete o estado do Shen, ansiedade e insónia." d="M75,195 C50,165 58,150 75,140 C92,150 100,165 75,195 Z"></path>
+                                                <path class="diagram-area-svg" data-info="Área atrás da ponta: Pulmão. Mostra condições do sistema respiratório e do Wei Qi." d="M75,140 C55,130 55,105 75,100 C95,105 95,130 75,140 Z"></path>
+                                                <path class="diagram-area-svg" data-info="Laterais: Fígado e Vesícula Biliar. Indicam estagnação de Qi, irritabilidade e tensão." d="M55,105 C35,105 30,35 55,35 L55,105 Z M95,105 C115,105 120,35 95,35 L95,105 Z"></path>
+                                                <path class="diagram-area-svg" data-info="Centro: Baço e Estômago. Reflete o estado da digestão e da produção de Qi e Sangue." d="M75,100 C55,105 55,35 75,35 C95,35 95,105 75,100 Z"></path>
+                                                <path class="diagram-area-svg" data-info="Raiz: Rim, Bexiga, Intestinos. Mostra a constituição (Jing) e o estado do Aquecedor Inferior." d="M75,35 C55,35 55,25 75,25 C95,25 95,35 75,35 Z"></path>
                                             </svg>
                                         </div>
                                         <div class="p-4 bg-gray-100 rounded-lg mt-4 min-h-[60px] flex items-center justify-center text-center">
