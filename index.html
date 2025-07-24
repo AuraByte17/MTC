@@ -195,12 +195,54 @@
                     </section>
 
                     <section id="diagnostico-geral" class="content-section">
-                         <div class="visual-card">
+                         <div class="visual-card mb-8">
                             <div class="card-header"><h3>As 10+1 Perguntas</h3></div>
                             <div class="card-content">
                                 <div id="perguntas-accordion" class="space-y-3"></div>
                             </div>
                         </div>
+                        <!-- INÍCIO: Nova secção de Diagnóstico Visual -->
+                        <div class="visual-card">
+                            <div class="card-header"><h3>Diagnóstico Visual Interativo</h3></div>
+                            <div class="card-content">
+                                <p class="card-prose mb-6">Passe o rato sobre as diferentes áreas dos diagramas para ver as correspondências de diagnóstico na Medicina Tradicional Chinesa.</p>
+                                <div class="grid md:grid-cols-2 gap-8">
+                                    <!-- Diagrama da Língua -->
+                                    <div class="visual-card p-4">
+                                        <h4 class="text-center font-bold text-lg mb-2 text-primary">Diagnóstico da Língua</h4>
+                                        <div class="diagram-container relative max-w-xs mx-auto">
+                                            <img src="https://placehold.co/300x400/f8f9fa/ccc?text=Diagrama+da+Língua" alt="Diagrama da língua para diagnóstico na MTC" class="rounded-lg">
+                                            <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 150 200">
+                                                <path class="diagram-area-svg" data-info="Ponta: Coração. Reflete o estado do Shen, ansiedade e insónia." d="M75,185 C 40,150 40,120 75,110 C 110,120 110,150 75,185 Z"></path>
+                                                <path class="diagram-area-svg" data-info="Área atrás da ponta: Pulmão. Mostra condições do sistema respiratório e do Wei Qi." d="M75,110 C 40,120 45,80 75,75 C 105,80 110,120 75,110 Z"></path>
+                                                <path class="diagram-area-svg" data-info="Laterais: Fígado e Vesícula Biliar. Indicam estagnação de Qi, irritabilidade e tensão." d="M45,80 C25,80 25,20 45,20 L45,80 Z M105,80 C125,80 125,20 105,20 L105,80 Z"></path>
+                                                <path class="diagram-area-svg" data-info="Centro: Baço e Estômago. Reflete o estado da digestão e da produção de Qi e Sangue." d="M75,75 C50,80 50,20 75,20 C100,20 100,80 75,75 Z"></path>
+                                                <path class="diagram-area-svg" data-info="Raiz: Rim, Bexiga, Intestinos. Mostra a constituição (Jing) e o estado do Aquecedor Inferior." d="M75,20 C50,20 50,5 75,5 C100,5 100,20 75,20 Z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="p-4 bg-gray-100 rounded-lg mt-4 min-h-[60px] flex items-center justify-center text-center">
+                                            <p class="text-gray-500 text-sm">Passe o rato sobre uma área.</p>
+                                        </div>
+                                    </div>
+                                    <!-- Diagrama do Pulso -->
+                                    <div class="visual-card p-4">
+                                        <h4 class="text-center font-bold text-lg mb-2 text-primary">Diagnóstico do Pulso</h4>
+                                        <div class="diagram-container relative max-w-xs mx-auto">
+                                            <img src="https://placehold.co/300x400/f8f9fa/ccc?text=Diagrama+do+Pulso" alt="Diagrama do pulso para diagnóstico na MTC" class="rounded-lg">
+                                            <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 150 200">
+                                                <rect class="diagram-area-svg" data-info="Posição CUN (Distal): Pulmão (D) e Coração (E). Nível superficial." x="40" y="50" width="70" height="30" rx="5"></rect>
+                                                <rect class="diagram-area-svg" data-info="Posição GUAN (Média): Baço/Estômago (D) e Fígado/VB (E). Nível médio." x="40" y="90" width="70" height="30" rx="5"></rect>
+                                                <rect class="diagram-area-svg" data-info="Posição CHI (Proximal): Rim Yang (D) e Rim Yin (E). Nível profundo." x="40" y="130" width="70" height="30" rx="5"></rect>
+                                            </svg>
+                                        </div>
+                                        <div class="p-4 bg-gray-100 rounded-lg mt-4 min-h-[60px] flex items-center justify-center text-center">
+                                            <p class="text-gray-500 text-sm">Passe o rato sobre uma posição.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FIM: Nova secção de Diagnóstico Visual -->
                     </section>
 
                     <section id="pulsologia" class="content-section">
@@ -231,9 +273,47 @@
                         <div class="visual-card"><div class="card-header"><h3>Moxabustão</h3></div><div class="card-content"><p>Conteúdo sobre Moxabustão em breve.</p></div></div>
                     </section>
                     
+                    <!-- INÍCIO: Secção de Qi Gong com Tabs -->
                     <section id="qigong" class="content-section">
-                        <div class="visual-card"><div class="card-header"><h3>Qi Gong & Tai Chi</h3></div><div class="card-content"><p>Conteúdo sobre Qi Gong & Tai Chi em breve.</p></div></div>
+                        <div class="visual-card">
+                            <div class="card-header"><h3>Qi Gong & Tai Chi</h3></div>
+                            <div class="card-content">
+                                <!-- Botões das Abas -->
+                                <div id="qigong-tabs" class="border-b border-gray-200 mb-4">
+                                    <nav class="flex -mb-px" aria-label="Tabs">
+                                        <button role="tab" aria-controls="qigong-panel" aria-selected="true" class="tab-button active">
+                                            Qi Gong (氣功)
+                                        </button>
+                                        <button role="tab" aria-controls="taichi-panel" aria-selected="false" class="tab-button">
+                                            Tai Chi (太極拳)
+                                        </button>
+                                    </nav>
+                                </div>
+                                <!-- Conteúdo das Abas -->
+                                <div id="qigong-tab-content">
+                                    <div id="qigong-panel" role="tabpanel" class="tab-content active card-prose">
+                                        <p>Qi Gong, que se traduz como "trabalho com a energia vital", é uma prática milenar chinesa que combina movimentos lentos e graciosos, técnicas de respiração profunda e foco mental. O objetivo é cultivar e equilibrar o Qi (energia vital) para promover a saúde, a vitalidade e a tranquilidade.</p>
+                                        <h4 class="font-bold mt-4">Princípios Fundamentais:</h4>
+                                        <ul class="list-disc list-inside">
+                                            <li><strong>Movimento Lento e Fluido:</strong> Os movimentos são deliberados e suaves, ajudando a relaxar os músculos e a abrir os canais de energia (meridianos).</li>
+                                            <li><strong>Respiração Coordenada:</strong> A respiração é profunda, abdominal e sincronizada com os movimentos, o que ajuda a acalmar o sistema nervoso e a oxigenar o corpo.</li>
+                                            <li><strong>Mente Focada:</strong> A atenção é direcionada para as sensações do corpo, a respiração e o fluxo de energia, promovendo um estado de meditação em movimento.</li>
+                                        </ul>
+                                    </div>
+                                    <div id="taichi-panel" role="tabpanel" class="tab-content card-prose">
+                                        <p>O Tai Chi Chuan, muitas vezes abreviado para Tai Chi, é uma arte marcial interna chinesa praticada para defesa pessoal e para os seus benefícios para a saúde. É caracterizado por sequências de movimentos lentos, contínuos e circulares, conhecidas como "formas".</p>
+                                        <p>Embora tenha raízes marciais, hoje em dia é praticado principalmente como uma forma de exercício de baixo impacto que melhora o equilíbrio, a flexibilidade e a força, ao mesmo tempo que reduz o stress.</p>
+                                        <h4 class="font-bold mt-4">Diferenças e Semelhanças com o Qi Gong:</h4>
+                                        <ul class="list-disc list-inside">
+                                            <li><strong>Semelhança:</strong> Ambos trabalham com o Qi, a respiração e o foco mental.</li>
+                                            <li><strong>Diferença:</strong> O Qi Gong consiste frequentemente em movimentos repetidos ou posturas estáticas focadas num objetivo de saúde específico. O Tai Chi envolve aprender uma sequência coreografada de movimentos (forma) que tem aplicações marciais.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </section>
+                    <!-- FIM: Secção de Qi Gong com Tabs -->
 
                     <section id="glossario" class="content-section">
                         <div id="glossary-container"></div>
