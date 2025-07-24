@@ -825,3 +825,249 @@ export const pulseData = [
     { title: 'Tenso (Jin)', content: 'Mais forte e vibrante que o pulso em corda, como uma corda esticada. Indica Frio, dor ou retenção de alimentos.' },
 ];
 
+// NOVO: Exporta os dados sobre Terapias (Versão Aprofundada e Expandida)
+export const therapiesData = [
+    {
+        id: 'fitoterapia',
+        title: 'Fitoterapia Chinesa (中药)',
+        content: `<div class="card-prose">
+            <p class="mb-4">A <strong>Fitoterapia Chinesa</strong> (Zhong Yao) é um dos pilares mais sofisticados e importantes da Medicina Chinesa. Utiliza uma vasta matéria médica de plantas, minerais e, ocasionalmente, substâncias animais para criar fórmulas personalizadas que tratam padrões de desarmonia específicos. Ao contrário da fitoterapia ocidental, as ervas raramente são usadas isoladamente; o seu poder reside na sinergia complexa das fórmulas.</p>
+            
+            <h4 class="font-bold text-lg mt-6 mb-2">As 4 Naturezas e os 5 Sabores</h4>
+            <p class="text-sm mb-3">Cada erva é classificada por suas propriedades energéticas para garantir um tratamento preciso:</p>
+            <ul class="list-disc list-inside text-sm space-y-1">
+                <li><strong>As Quatro Naturezas (四气 Si Qi):</strong> Descrevem o efeito da erva na temperatura do corpo. São elas: Quente (热), Morna (温), Fresca (凉) e Fria (寒). Uma erva fria como a Hortelã (Bo He) é usada para limpar calor, enquanto uma erva quente como o Gengibre Seco (Gan Jiang) é usada para expelir o frio.</li>
+                <li><strong>Os Cinco Sabores (五味 Wu Wei):</strong> Indicam a ação da erva no corpo. São eles: <strong>Doce</strong> (tonifica), <strong>Picante</strong> (move e dispersa), <strong>Amargo</strong> (drena e seca), <strong>Azedo</strong> (adstringe) e <strong>Salgado</strong> (amolece e purga).</li>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Princípios da Formulação: A Hierarquia Imperial</h4>
+            <p class="text-sm mb-3">Uma fórmula clássica é estruturada como uma equipa bem organizada para maximizar a eficácia e minimizar os efeitos secundários:</p>
+            <ul class="list-disc list-inside text-sm space-y-1">
+                <li><strong>Imperador (Jun 君):</strong> A erva principal, que visa a queixa principal do padrão.</li>
+                <li><strong>Ministro (Chen 臣):</strong> Assiste o Imperador, tratando queixas secundárias ou reforçando o efeito principal.</li>
+                <li><strong>Assistente (Zuo 佐):</strong> Modera a toxicidade do Imperador/Ministro, trata aspetos menos importantes ou tem um efeito oposto para equilibrar a fórmula.</li>
+                <li><strong>Mensageiro (Shi 使):</strong> Guia as outras ervas para um meridiano ou área específica do corpo e harmoniza a fórmula.</li>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Fórmulas Clássicas Essenciais</h4>
+            <div class="space-y-5">
+                <div>
+                    <h5 class="font-semibold">1. Si Jun Zi Tang (四君子汤) - Sopa dos Quatro Cavalheiros</h5>
+                    <p class="text-sm italic mb-2">A fórmula base para tonificar o Qi do Baço e do Estômago.</p>
+                    <ul class="list-disc list-inside text-sm">
+                        <li><strong>Ações:</strong> Tonifica o Qi, fortalece o Baço.</li>
+                        <li><strong>Indicações:</strong> Falta de apetite, fezes moles, cansaço, voz fraca, tez pálida.</li>
+                        <li><strong>Composição:</strong> Ren Shen (Imperador), Bai Zhu (Ministro), Fu Ling (Assistente), Zhi Gan Cao (Mensageiro).</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold">2. Si Wu Tang (四物汤) - Sopa das Quatro Substâncias</h5>
+                    <p class="text-sm italic mb-2">A fórmula base para tonificar o Sangue, especialmente do Fígado.</p>
+                    <ul class="list-disc list-inside text-sm">
+                        <li><strong>Ações:</strong> Tonifica e regula o Sangue.</li>
+                        <li><strong>Indicações:</strong> Tonturas, visão turva, tez pálida, palpitações, irregularidades menstruais com sangue escasso.</li>
+                        <li><strong>Composição:</strong> Shu Di Huang (Imperador), Dang Gui (Ministro), Bai Shao (Assistente), Chuan Xiong (Mensageiro).</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold">3. Ba Zhen Tang (八珍汤) - Sopa dos Oito Tesouros</h5>
+                    <p class="text-sm italic mb-2">Combina as duas fórmulas anteriores para tratar a deficiência simultânea de Qi e Sangue.</p>
+                    <ul class="list-disc list-inside text-sm">
+                        <li><strong>Ações:</strong> Tonifica potentemente tanto o Qi como o Sangue.</li>
+                        <li><strong>Indicações:</strong> Cansaço extremo, palpitações com ansiedade, tonturas, falta de apetite, tez pálida ou amarelada, falta de ar.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold">4. Xiao Yao San (逍遙散) - Pó do Passeio Despreocupado</h5>
+                    <p class="text-sm italic mb-2">A fórmula mais famosa para a Estagnação de Qi do Fígado com Deficiência de Sangue subjacente.</p>
+                    <ul class="list-disc list-inside text-sm">
+                        <li><strong>Ações:</strong> Suaviza o Fígado, move o Qi, fortalece o Baço e nutre o Sangue.</li>
+                        <li><strong>Indicações:</strong> Irritabilidade, suspiros, distensão no peito e hipocôndrios, TPM, dores de cabeça tensionais, cansaço.</li>
+                        <li><strong>Modificação Comum:</strong> Se houver sinais de calor (boca amarga, olhos vermelhos), adiciona-se Mu Dan Pi e Zhi Zi, tornando-se <strong>Jia Wei Xiao Yao San</strong>.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold">5. Liu Wei Di Huang Wan (六味地黄丸) - Pílulas de Rehmannia das Seis Ervas</h5>
+                    <p class="text-sm italic mb-2">A fórmula base para nutrir o Yin do Rim e do Fígado.</p>
+                    <ul class="list-disc list-inside text-sm">
+                        <li><strong>Ações:</strong> Nutre o Yin do Rim e do Fígado de forma equilibrada.</li>
+                        <li><strong>Indicações:</strong> Dor lombar, tonturas, zumbido, suores noturnos, calor nos 5 palmos, boca seca, sede.</li>
+                        <li><strong>Composição (3 tónicas, 3 drenantes):</strong> Shu Di Huang (Imperador), Shan Zhu Yu, Shan Yao (Ministros), Ze Xie, Mu Dan Pi, Fu Ling (Assistentes).</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold">6. Gui Pi Tang (归脾汤) - Sopa para Restaurar o Baço</h5>
+                    <p class="text-sm italic mb-2">Fórmula magistral para deficiência de Qi e Sangue do Coração e Baço.</p>
+                    <ul class="list-disc list-inside text-sm">
+                        <li><strong>Ações:</strong> Tonifica o Qi e o Sangue, fortalece o Baço e nutre o Coração.</li>
+                        <li><strong>Indicações:</strong> Palpitações com ansiedade, insónia (dificuldade em adormecer), pensamentos obsessivos, memória fraca, cansaço, falta de apetite, tez pálida. Muito usada para "excesso de estudo/trabalho mental".</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold">7. Xue Fu Zhu Yu Tang (血府逐瘀汤) - Decocção para Expelir Estase da Mansão do Sangue</h5>
+                    <p class="text-sm italic mb-2">Uma fórmula poderosa para mover a estagnação de Sangue no peito (Aquecedor Superior).</p>
+                    <ul class="list-disc list-inside text-sm">
+                        <li><strong>Ações:</strong> Move o Sangue, promove a circulação de Qi, alivia a dor.</li>
+                        <li><strong>Indicações:</strong> Dor fixa e em facada no peito ou hipocôndrios, dores de cabeça crónicas, soluços persistentes, palpitações, insónia, alterações de humor extremas.</li>
+                    </ul>
+                </div>
+            </div>
+            <h4 class="font-bold text-lg mt-6 mb-2">Segurança e Prática</h4>
+            <p class="text-sm">A fitoterapia chinesa é segura e eficaz quando prescrita por um profissional qualificado. A automedicação é desaconselhada, pois um diagnóstico incorreto pode levar a resultados indesejados. O terapeuta ajustará a fórmula à medida que a sua condição evolui.</p>
+        </div>`
+    },
+    {
+        id: 'acupuntura',
+        title: 'Acupuntura (针灸)',
+        content: `<div class="card-prose">
+            <p class="mb-4">A <strong>Acupuntura</strong> (Zhen Jiu, que significa "agulha e moxa") é a prática de inserir agulhas muito finas em pontos específicos do corpo (os "acupontos") para estimular e reequilibrar o fluxo de Qi nos meridianos. É a terapia da Medicina Chinesa mais conhecida no Ocidente.</p>
+            
+            <h4 class="font-bold text-lg mt-6 mb-2">O Conceito de Deqi (得气)</h4>
+            <p class="text-sm mb-3"><em>Deqi</em>, ou a "Chegada do Qi", é a sensação que o paciente e/ou o terapeuta sentem quando a agulha estimula corretamente o ponto. É um sinal de que a terapia está a ser eficaz. As sensações podem incluir peso, dormência, dor ligeira, calor ou uma sensação de corrente elétrica ao longo do meridiano.</p>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Categorias de Pontos de Acupuntura</h4>
+            <p class="text-sm mb-3">Existem centenas de pontos, mas eles podem ser agrupados em categorias funcionais:</p>
+            <ul class="list-disc list-inside text-sm space-y-2">
+                <li><strong>Pontos Ashi (阿是穴):</strong> Literalmente "Ah, sim!". São pontos dolorosos à palpação que não estão necessariamente nos meridianos clássicos. São usados principalmente para tratar a dor local.</li>
+                <li><strong>Pontos dos Cinco Shu (五输穴):</strong> Localizados abaixo dos cotovelos e joelhos, são 5 pontos em cada um dos 12 meridianos principais. Comparam o fluxo de Qi a um rio, desde a "nascente" (ponto Jing-Poço) até ao "mar" (ponto He-Mar). São extremamente dinâmicos e usados para tratar uma vasta gama de condições.</li>
+                <li><strong>Pontos Fonte-Yuan (原穴):</strong> Onde o Qi Original (Yuan Qi) se acumula. São primordiais para tonificar os órgãos Zang-Fu e diagnosticar a sua condição.</li>
+                <li><strong>Pontos de Conexão-Luo (络穴):</strong> Ligam os meridianos acoplados (Yin/Yang, ex: Pulmão e Intestino Grosso) e são usados para tratar desequilíbrios entre eles.</li>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Pontos Famosos e as Suas Funções</h4>
+            <ul class="list-disc list-inside text-sm space-y-2">
+                <li><strong>IG4 (Hegu - Vale da Junção):</strong> O "ponto do analgésico". Mestre para a face e boca, trata dores de cabeça, dores de dentes, sinusite. Move potentemente o Qi e o Sangue. Contraindicado na gravidez.</li>
+                <li><strong>F3 (Taichong - Grande Impulso):</strong> O "ponto do relaxamento". Abre os "Quatro Portões" (com IG4) para mover o Qi por todo o corpo. Acalma a mente, suaviza o Fígado, trata stress, irritabilidade, TPM e dores de cabeça.</li>
+                <li><strong>E36 (Zusanli - Três Li da Perna):</strong> O "ponto da longevidade". Fortalece o corpo inteiro, tonifica o Qi e o Sangue, harmoniza o Estômago e o Baço e reforça a imunidade.</li>
+                <li><strong>PC6 (Neiguan - Barreira Interna):</strong> O "ponto anti-náusea". Acalma o Coração e o Shen. Trata náuseas, vómitos, ansiedade, palpitações e insónia.</li>
+            </ul>
+        </div>`
+    },
+    {
+        id: 'moxabustao',
+        title: 'Moxabustão (灸)',
+        content: `<div class="card-prose">
+            <p class="mb-4">A <strong>Moxabustão</strong> (Jiǔ) é uma terapia de calor que utiliza a erva seca <strong>Artemisia Vulgaris (艾叶 Ai Ye)</strong>. O calor gerado pela sua combustão lenta penetra profundamente nos meridianos para aquecer, mover e tonificar o Qi e o Sangue, sendo especialmente eficaz para condições de Frio e Deficiência.</p>
+            
+            <h4 class="font-bold text-lg mt-6 mb-2">Porquê Artemísia (Ai Ye)?</h4>
+            <p class="text-sm mb-3">A Artemísia é escolhida pelas suas propriedades únicas: produz um calor infravermelho que penetra profundamente, queima de forma uniforme e lenta, e a sua natureza energética é Morna e Picante, o que a torna ideal para mover o Qi e dispersar o Frio.</p>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Métodos de Aplicação</h4>
+            <ul class="list-disc list-inside text-sm space-y-2">
+                <li><strong>Moxa Indireta com Bastão:</strong> O método mais comum. Um bastão de moxa é aceso e mantido a alguns centímetros da pele, sobre o ponto de acupuntura, até a área ficar quente e avermelhada.</li>
+                <li><strong>Moxa sobre Agulha:</strong> Um pequeno cone de moxa é colocado na ponta de uma agulha de acupuntura já inserida. O calor é conduzido pela agulha para o interior do ponto, combinando os efeitos das duas terapias.</li>
+                <li><strong>Moxa sobre Gengibre/Alho:</strong> Uma fatia de gengibre ou alho é colocada na pele e um cone de moxa queima sobre ela. O gengibre é usado para problemas digestivos e vómitos. O alho é usado para infeções cutâneas.</li>
+                <li><strong>Caixa de Moxa:</strong> Uma caixa de madeira com uma rede metálica no fundo é colocada sobre uma área do corpo (como o abdómen ou as costas). A moxa queima dentro da caixa, aquecendo uma grande área de forma segura e confortável.</li>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Pontos-Chave e Aplicações Terapêuticas</h4>
+            <ul class="list-disc list-inside text-sm space-y-2">
+                <li><strong>E36 (Zusanli):</strong> Para fortalecer a imunidade e a digestão.</li>
+                <li><strong>VC4 (Guanyuan):</strong> Para fortalecer a energia vital (Yuan Qi) e tratar problemas ginecológicos e urológicos de natureza Fria.</li>
+                <li><strong>VC8 (Shenque - sobre sal):</strong> Para "resgatar o Yang" em casos de colapso, como diarreia crónica por frio.</li>
+                <li><strong>VG4 (Mingmen):</strong> Para aquecer o "Fogo do Rim", tratando dor lombar por frio e impotência.</li>
+                <li><strong>B67 (Zhiyin):</strong> Famoso pela sua eficácia em virar fetos em apresentação pélvica.</li>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Precauções e Contraindicações</h4>
+            <p class="text-sm mb-3">A segurança é primordial. A moxa é uma terapia de calor e, como tal, é contraindicada em:</p>
+            <ul class="list-disc list-inside text-sm space-y-1">
+                <li><strong>Síndromes de Excesso de Calor ou Deficiência de Yin.</strong></li>
+                <li><strong>Pontos perto de órgãos dos sentidos e grandes vasos sanguíneos.</strong></li>
+                <li><strong>Abdómen e região lombo-sagrada em mulheres grávidas</strong> (exceto para indicações específicas).</li>
+                <li><strong>Pele irritada ou feridas abertas.</strong></li>
+            </ul>
+        </div>`
+    },
+    {
+        id: 'ventosaterapia',
+        title: 'Ventosaterapia (拔罐)',
+        content: `<div class="card-prose">
+            <p class="mb-4">A <strong>Ventosaterapia</strong> (Bá Guàn) é um método terapêutico antigo no qual se cria um vácuo parcial em copos, que são depois aplicados na pele. A sucção resultante puxa a pele e as camadas superficiais dos músculos, promovendo um fluxo vigoroso de Qi e Sangue na área, aliviando a dor e expelindo fatores patogénicos.</p>
+            
+            <h4 class="font-bold text-lg mt-6 mb-2">Mecanismo de Ação</h4>
+            <p class="text-sm mb-3">Ao criar uma congestão local, a ventosaterapia força o corpo a iniciar um processo de cura. O vácuo:</p>
+            <ul class="list-disc list-inside text-sm space-y-1">
+                <li><strong>Move a Estagnação:</strong> Liberta bloqueios de Qi, Sangue e Fluidos que causam dor.</li>
+                <li><strong>Puxa Patógenos para a Superfície:</strong> Ajuda a expelir fatores patogénicos externos, como o Vento-Frio, sendo útil nas fases iniciais de constipações e gripes.</li>
+                <li><strong>Estimula o Sistema Nervoso:</strong> A sucção tem um efeito relaxante no sistema nervoso, aliviando a tensão muscular.</li>
+                <li><strong>Aumenta a Circulação Sanguínea:</strong> Melhora a oxigenação e nutrição dos tecidos locais.</li>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Tipos de Ventosaterapia</h4>
+            <ul class="list-disc list-inside text-sm space-y-2">
+                <li><strong>Ventosaterapia Fixa (Seca):</strong> Os copos são aplicados e deixados no mesmo local por 5-15 minutos. Ideal para pontos específicos ou áreas de dor localizada.</li>
+                <li><strong>Ventosaterapia Deslizante:</strong> Aplica-se um óleo na pele e os copos são deslizados sobre uma área maior (como as costas), atuando como uma massagem profunda para libertar a fáscia e os músculos.</li>
+                <li><strong>Ventosaterapia Rápida (Flash Cupping):</strong> O copo é aplicado e removido rapidamente várias vezes na mesma área. É uma técnica mais estimulante, usada para tonificar áreas com deficiência ou para tratar paralisia facial.</li>
+                <li><strong>Ventosaterapia com Sangria (Húmida):</strong> Faz-se uma pequena picada na pele com uma lanceta antes de aplicar o copo para extrair uma pequena quantidade de sangue estagnado. É muito eficaz para condições de calor tóxico e estase severa.</li>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Interpretação das Marcas (Sha)</h4>
+            <p class="text-sm mb-3">As marcas (equimoses) deixadas pelas ventosas são um indicador diagnóstico valioso. A cor e intensidade revelam o tipo e a severidade da estagnação na área:</p>
+            <ul class="list-disc list-inside text-sm space-y-1">
+                <li><strong>Vermelho Claro/Rosa:</strong> Estagnação leve ou deficiência de base.</li>
+                <li><strong>Vermelho Vivo:</strong> Presença de Calor.</li>
+                <li><strong>Roxo Escuro/Preto:</strong> Estagnação de Sangue severa e Frio.</li>
+                <li><strong>Manchas Roxas:</strong> Estagnação de Sangue.</li>
+                <li><strong>Marcas com Bolhas de Água:</strong> Presença de Humidade patogénica.</li>
+                <p class="text-xs italic mt-2">As marcas não são hematomas (não há dano no vaso sanguíneo) e geralmente desaparecem em 3 a 7 dias sem dor.</p>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Cuidados Pós-Tratamento</h4>
+            <p class="text-sm">Após uma sessão, é crucial proteger a área tratada. Os poros da pele estão abertos, tornando a área vulnerável à invasão de Vento e Frio. Recomenda-se manter a área coberta e quente, evitar correntes de ar e banhos frios por pelo menos 24 horas, e manter-se bem hidratado.</p>
+        </div>`
+    },
+    {
+        id: 'qigong',
+        title: 'Qigong & Tai Chi (气功 & 太极)',
+        content: `<div class="card-prose">
+            <p class="mb-4"><strong>Qigong</strong> (Trabalho da Energia) e <strong>Tai Chi Chuan</strong> (Punho do Supremo Último) são práticas corporais e mentais que cultivam e equilibram a energia vital (Qi). Embora distintos, partilham os mesmos princípios fundamentais de movimento consciente, respiração profunda e foco mental para promover a saúde e a harmonia interna.</p>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Qigong: A Arte de Cultivar a Energia</h4>
+            <p class="text-sm mb-3">O Qigong foca-se na repetição de movimentos específicos ou posturas estáticas para atingir um objetivo terapêutico claro. Pode ser classificado em diferentes categorias:</p>
+            <ul class="list-disc list-inside text-sm space-y-1">
+                <li><strong>Qigong Médico:</strong> O mais relevante clinicamente, focado na prevenção e tratamento de doenças específicas.</li>
+                <li><strong>Qigong Marcial:</strong> Usado para desenvolver força interna (Jin), resistência e poder para as artes marciais.</li>
+                <li><strong>Qigong Espiritual:</strong> Praticado em escolas Taoistas e Budistas para fins de meditação e iluminação.</li>
+            </ul>
+
+            <h5 class="font-semibold mt-4 mb-2">Práticas Fundamentais de Qigong</h5>
+            <div class="space-y-4">
+                <div>
+                    <h6 class="font-semibold">1. Zhan Zhuang (站桩 - Postura da Árvore)</h6>
+                    <p class="text-sm italic my-2">É a prática de ficar de pé numa postura específica por longos períodos. Parece simples, mas é um método extremamente poderoso para construir energia interna, fortalecer o corpo, acalmar a mente e desenvolver o enraizamento.</p>
+                </div>
+                <div>
+                    <h6 class="font-semibold">2. Ba Duan Jin (八段锦 - As Oito Peças de Brocado)</h6>
+                    <p class="text-sm italic my-2">Uma das séries de Qigong mais populares, composta por oito movimentos fluidos que alongam os tendões, regulam os órgãos e promovem o fluxo suave de Qi.</p>
+                </div>
+                <div>
+                    <h6 class="font-semibold">3. Liu Zi Jue (六字訣 - Os Seis Sons Curativos)</h6>
+                    <p class="text-sm italic my-2">Uma prática que combina posturas simples com a vibração de seis sons específicos para limpar, regular e tonificar os principais órgãos Zang-Fu. Cada som vibra numa frequência que ressoa com um órgão.</p>
+                </div>
+            </div>
+            
+            <hr class="my-6">
+
+            <h4 class="font-bold text-lg mt-4 mb-2">Tai Chi Chuan: A Meditação em Movimento</h4>
+            <p class="text-sm mb-3">O Tai Chi é uma sequência fluida de movimentos (a "forma") que integra princípios marciais, de saúde e filosóficos. É mais complexo que o Qigong, mas oferece benefícios profundos de coordenação, equilíbrio e enraizamento.</p>
+            
+            <h4 class="font-bold text-lg mt-6 mb-2">As Oito Forças (八劲 - Bā Jìn)</h4>
+            <p class="text-sm mb-3">As Oito Forças são as qualidades energéticas fundamentais que se manifestam em todas as técnicas. As 4 primeiras são as cardeais e as 4 seguintes as de canto.</p>
+            <ul class="list-disc list-inside text-sm space-y-2">
+                <li><strong>Péng (掤) - Aparar/Força Expansiva:</strong> A força primária, sempre presente. Uma energia radial, como uma bola a ser insuflada, que absorve e redireciona a força do oponente.</li>
+                <li><strong>Lǚ (捋) - Rolar para Trás/Desviar:</strong> A força de ceder. Em vez de opor, "cola-se" à força do adversário e desvia-a para o lado, causando desequilíbrio.</li>
+                <li><strong>Jǐ (擠) - Pressionar/Comprimir:</strong> Uma força de projeção curta e direta, usando o enraizamento e a rotação da cintura para comprimir e projetar o oponente.</li>
+                <li><strong>Àn (按) - Empurrar para Baixo:</strong> Uma força pesada e descendente que visa quebrar a estrutura e o enraizamento do adversário.</li>
+                <li><strong>Cǎi (採) - Puxar para Baixo/Colher:</strong> Uma força súbita e curta de puxar para baixo, como "colher uma fruta", para quebrar a postura do oponente.</li>
+                <li><strong>Liè (裂) - Separar/Dividir:</strong> Uma força de torção em direções opostas, que "divide" a estrutura do adversário.</li>
+                <li><strong>Zhǒu (肘) - Cotovelada:</strong> Força curta e penetrante com o cotovelo, para combate a curta distância.</li>
+                <li><strong>Kào (靠) - Ombrada/Apoiar-se:</strong> O uso do ombro, anca ou costas para golpear ou projetar o oponente a curta distância.</li>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">O "Segredo" do Tai Chi: O Verdadeiro Significado de Sōng (松)</h4>
+            <p class="text-sm mb-3">Muitos traduzem <strong>Sōng</strong> como "relaxar", mas esta é uma tradução perigosamente incompleta. Sōng não é ficar mole ou flácido. É um <strong>processo ativo de libertação profunda e consciente da tensão *dentro* das articulações</strong>. É a prática de "afundar" o peso através do esqueleto, permitindo que a gravidade conecte o corpo ao chão. Este estado de "relaxamento estruturado" é o que permite sentir a força do oponente (Ting Jin) e gerar a verdadeira Força Interna (Jin), que nasce da terra, é governada pela cintura e expressa-se nas mãos. O aprofundamento do Sōng é o que distingue o praticante avançado do iniciante.</p>
+
+        </div>`
+    }
+];
