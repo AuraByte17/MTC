@@ -21,7 +21,7 @@ const mobileNavHub = document.getElementById('navigation-hub');
 const desktopNavHub = document.getElementById('desktop-navigation-hub');
 const currentSectionTitle = document.getElementById('current-section-title');
 const contentArea = document.getElementById('main-content-area');
-const mainContent = document.getElementById('main-content'); // Alterado para selecionar o container principal
+const mainContent = document.getElementById('main-content');
 let contentSections = []; // Será preenchido dinamicamente
 
 const allNavHubs = [mobileNavHub, desktopNavHub];
@@ -646,7 +646,7 @@ function setupDiagnosisDiagrams() {
     });
 }
 
-// --- NOVO: Função para gerar os links de navegação ---
+// --- Função para gerar os links de navegação ---
 function generateNavLinks() {
     const navStructure = [
         { id: 'inicio', title: 'Início', icon: 'icon-home' },
@@ -729,7 +729,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Configuração de componentes interativos
     setupTabs('qigong-tabs', 'qigong-tab-content');
-    // REMOVIDO: setupTabs('diagnosis-tabs', 'diagnosis-tab-content');
     setupSidebarLayout('meridian-navigation', 'meridian-content-area', meridianData, 'meridian-content-');
     setupSidebarLayout('anatomy-navigation', 'anatomy-content-area', anatomyData, 'anatomy-content-');
     setupSidebarLayout('zangfu-navigation', 'zangfu-content-area', zangFuPatternsData, 'zangfu-content-');
