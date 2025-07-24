@@ -628,8 +628,16 @@ function setupDiagnosisDiagrams() {
         if (!infoBox) return;
         
         const defaultText = infoBox.firstElementChild.textContent;
-        const updateInfo = () => infoBox.innerHTML = `<p class="font-semibold">${area.dataset.info}</p>`;
-        const resetInfo = () => infoBox.innerHTML = `<p class="text-center text-gray-500">${defaultText}</p>`;
+        const updateInfo = () => {
+            if (infoBox) {
+                infoBox.innerHTML = `<p class="font-semibold">${area.dataset.info}</p>`;
+            }
+        };
+        const resetInfo = () => {
+            if (infoBox) {
+                infoBox.innerHTML = `<p class="text-center text-gray-500">${defaultText}</p>`;
+            }
+        };
         
         area.addEventListener('mouseover', updateInfo);
         area.addEventListener('focus', updateInfo);
@@ -657,7 +665,7 @@ function generateNavLinks() {
         {
             title: 'Diagnóstico', icon: 'icon-diagnosis',
             links: [
-                { id: 'diagnostico-geral', title: 'Geral', icon: 'icon-diagnosis' },
+                { id: 'diagnostico-geral', title: 'Geral e Visual', icon: 'icon-diagnosis' },
                 { id: 'pulsologia', title: 'Pulsologia', icon: 'icon-diagnosis' }
             ]
         },
@@ -710,7 +718,7 @@ function generateNavLinks() {
 // --- PONTO DE ENTRADA DA APLICAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
     // Geração de conteúdo principal
-    generateNavLinks(); // Esta função agora existe
+    generateNavLinks(); 
     createAccordion('qi-accordion', qiData);
     createLifeCycleTimeline('female-cycles-timeline', lifeCyclesFemaleData, 'bg-pink-500');
     createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
@@ -721,7 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Configuração de componentes interativos
     setupTabs('qigong-tabs', 'qigong-tab-content');
-    setupTabs('diagnosis-tabs', 'diagnosis-tab-content');
+    // REMOVIDO: setupTabs('diagnosis-tabs', 'diagnosis-tab-content');
     setupSidebarLayout('meridian-navigation', 'meridian-content-area', meridianData, 'meridian-content-');
     setupSidebarLayout('anatomy-navigation', 'anatomy-content-area', anatomyData, 'anatomy-content-');
     setupSidebarLayout('zangfu-navigation', 'zangfu-content-area', zangFuPatternsData, 'zangfu-content-');
