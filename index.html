@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vida em Harmonia: MTC</title>
     
+    <!-- Scripts e Fontes Externas -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
+    <!-- Ligação ao seu ficheiro CSS externo -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="text-gray-800">
 
+    <!-- Definições de Ícones SVG -->
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></symbol>
         <symbol id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></symbol>
@@ -40,11 +43,10 @@
         <symbol id="icon-moxibustion" viewBox="0 0 24 24"><path fill="currentColor" d="M15.5,13.5c0,2-1.5,3.5-3.5,3.5s-3.5-1.5-3.5-3.5c0-1.3,0.8-2.5,2-3.1V5.5h3v4.9C14.7,11,15.5,12.2,15.5,13.5z M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10s10-4.5,10-10S17.5,2,12,2z M12,20c-4.4,0-8-3.6-8-8s3.6-8,8-8s8,3.6,8,8S16.4,20,12,20z M18,5h-2v1.5h2V5z M8,5H6v1.5h2V5z M19.5,8h-1.5v2h1.5V8z M6,8H4.5v2H6V8z"/></symbol>
         <symbol id="icon-fitoterapia" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10s10-4.5,10-10S17.5,2,12,2z M16,17.6c-1.2,0.8-2.6,1.3-4,1.3s-2.8-0.5-4-1.3C6.9,16.8,6,15.2,6,13.5C6,10.5,8.7,8,12,8s6,2.5,6,5.5C18,15.2,17.1,16.8,16,17.6z M12,4c-2.2,0-4,1.8-4,4c0,1.1,0.4,2.1,1.2,2.8C10.1,11.6,11,12,12,12s1.9-0.4,2.8-1.2C15.6,9.1,16,8.1,16,7C16,5.8,14.2,4,12,4z"/></symbol>
         <symbol id="icon-zangfu-patterns" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7v-2h4V7h2v4h4v2h-4v4h-2z"/></symbol>
-        <symbol id="icon-cupping" viewBox="0 0 24 24"><path fill="currentColor" d="M11 2a9 9 0 0 0-9 9a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1a9 9 0 0 0-9-9zm0 16H4.6a7 7 0 0 1 12.8 0H11zm8.9-10H3.1a1 1 0 0 0-1 .9a8.8 8.8 0 0 0 17.8 0a1 1 0 0 0-1-.9z"/></symbol>
-        <symbol id="icon-acupuncture" viewBox="0 0 24 24"><path fill="currentColor" d="M20.7 6.3c-1.4-1.4-3.6-1.4-5 0l-8.8 8.8c-.4.4-.6 1-.6 1.6V20h3.2c.6 0 1.1-.2 1.6-.6l8.8-8.8c1.4-1.4 1.4-3.6 0-5zM12 18H9.8l6.2-6.2L18 13.8L12 18zm6-6l-1.4 1.4L15 11.8l1.4-1.4c.6-.6 1.5-.6 2.1 0c.6.6.6 1.5 0 2.1zM3 21h18v2H3v-2z"/></symbol>
     </svg>
 
     <div class="flex h-screen bg-gray-100">
+        <!-- Container para o menu móvel -->
         <div id="mobile-menu-container" class="fixed inset-0 z-40 md:hidden">
             <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50"></div>
             <aside id="sidebar" class="w-64 bg-white shadow-lg p-6 flex-shrink-0 flex flex-col h-full transition-transform duration-300 -translate-x-full">
@@ -59,6 +61,7 @@
             </aside>
         </div>
 
+        <!-- Sidebar para Desktop -->
         <aside class="w-64 bg-white shadow-lg p-6 flex-shrink-0 hidden md:flex flex-col">
             <h1 class="text-2xl font-playfair font-bold text-gray-800 mb-4 text-center">Vida em Harmonia</h1>
             <div class="relative mb-4">
@@ -68,6 +71,7 @@
             <nav id="desktop-navigation-hub" class="space-y-1 overflow-y-auto"></nav>
         </aside>
 
+        <!-- Área de Conteúdo Principal -->
         <div class="flex-1 flex flex-col h-screen">
             <header class="md:hidden bg-white shadow-md p-4 flex items-center justify-between sticky top-0 z-30">
                 <h2 id="current-section-title" class="text-lg font-playfair font-bold text-primary">Início</h2>
@@ -85,6 +89,8 @@
 
             <div id="main-content-area" class="flex-grow p-4 md:p-12 overflow-y-auto">
                 <main id="main-content">
+                    <!-- INÍCIO: Conteúdo das secções -->
+                    
                     <section id="inicio" class="content-section">
                         <div class="visual-card">
                             <div class="card-header"><h3>Bem-vindo ao Guia de Medicina Tradicional Chinesa</h3></div>
@@ -195,25 +201,40 @@
                                 <div id="perguntas-accordion" class="space-y-3"></div>
                             </div>
                         </div>
+                        <!-- INÍCIO: Nova secção de Diagnóstico Visual -->
                         <div class="visual-card">
                             <div class="card-header"><h3>Diagnóstico Visual Interativo</h3></div>
                             <div class="card-content">
                                 <p class="card-prose mb-6">Passe o rato sobre as diferentes áreas dos diagramas para ver as correspondências de diagnóstico na Medicina Tradicional Chinesa.</p>
                                 <div class="grid md:grid-cols-2 gap-8">
+                                    <!-- Diagrama da Língua -->
                                     <div class="visual-card p-4">
                                         <h4 class="text-center font-bold text-lg mb-2 text-primary">Diagnóstico da Língua</h4>
                                         <div class="diagram-container relative max-w-xs mx-auto">
+                                            <!-- INICIO: SVG da Língua Adicionado -->
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 200" class="rounded-lg bg-pink-50">
                                                 <defs>
                                                     <filter id="inner-shadow" x="-50%" y="-50%" width="200%" height="200%">
-                                                        <feComponentTransfer in="SourceAlpha"><feFuncA type="table" tableValues="1 0" /></feComponentTransfer>
-                                                        <feGaussianBlur stdDeviation="3" /><feOffset dx="0" dy="4" result="offsetblur" /><feFlood flood-color="rgb(0,0,0)" result="color" /><feComposite in2="offsetblur" operator="in" /><feComposite in2="SourceAlpha" operator="in" /><feMerge><feMergeNode in="SourceGraphic" /><feMergeNode /></feMerge>
+                                                        <feComponentTransfer in="SourceAlpha">
+                                                            <feFuncA type="table" tableValues="1 0" />
+                                                        </feComponentTransfer>
+                                                        <feGaussianBlur stdDeviation="3" />
+                                                        <feOffset dx="0" dy="4" result="offsetblur" />
+                                                        <feFlood flood-color="rgb(0,0,0)" result="color" />
+                                                        <feComposite in2="offsetblur" operator="in" />
+                                                        <feComposite in2="SourceAlpha" operator="in" />
+                                                        <feMerge>
+                                                            <feMergeNode in="SourceGraphic" />
+                                                            <feMergeNode />
+                                                        </feMerge>
                                                     </filter>
                                                 </defs>
                                                 <path fill="#F4A2B8" d="M75 195C25 145 25 110 75 25c50 85 50 120 0 170z" />
                                                 <path fill="#D68098" d="M75 195c-2.5-12.5-5-25 0-35 5 10 2.5 22.5 0 35z" filter="url(#inner-shadow)" />
                                                 <path fill="#EAAABE" d="M75 182.5c-15-10-25-22.5-25-37.5 0-20 12.5-32.5 25-42.5 12.5 10 25 22.5 25 42.5 0 15-10 27.5-25 37.5z" opacity="0.5" />
                                             </svg>
+                                            <!-- FIM: SVG da Língua Adicionado -->
+                                            <!-- SVG de sobreposição para interatividade -->
                                             <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 150 200">
                                                 <path class="diagram-area-svg" data-info="Ponta: Coração. Reflete o estado do Shen, ansiedade e insónia." d="M75,195 C50,165 58,150 75,140 C92,150 100,165 75,195 Z"></path>
                                                 <path class="diagram-area-svg" data-info="Área atrás da ponta: Pulmão. Mostra condições do sistema respiratório e do Wei Qi." d="M75,140 C55,130 55,105 75,100 C95,105 95,130 75,140 Z"></path>
@@ -226,6 +247,7 @@
                                             <p class="text-gray-500 text-sm">Passe o rato sobre uma área.</p>
                                         </div>
                                     </div>
+                                    <!-- Diagrama do Pulso -->
                                     <div class="visual-card p-4">
                                         <h4 class="text-center font-bold text-lg mb-2 text-primary">Diagnóstico do Pulso</h4>
                                         <div class="diagram-container relative max-w-xs mx-auto">
@@ -243,6 +265,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- FIM: Nova secção de Diagnóstico Visual -->
                     </section>
 
                     <section id="pulsologia" class="content-section">
@@ -265,21 +288,31 @@
                         </div>
                     </section>
                     
-                    <section id="fitoterapia" class="content-section"></section>
-                    <section id="acupuntura" class="content-section"></section>
-                    <section id="moxabustao" class="content-section"></section>
-                    <section id="ventosaterapia" class="content-section"></section>
+                    <section id="fitoterapia" class="content-section">
+                        <div class="visual-card"><div class="card-header"><h3>Fitoterapia</h3></div><div class="card-content"><p>Conteúdo sobre Fitoterapia em breve.</p></div></div>
+                    </section>
+
+                    <section id="moxabustao" class="content-section">
+                        <div class="visual-card"><div class="card-header"><h3>Moxabustão</h3></div><div class="card-content"><p>Conteúdo sobre Moxabustão em breve.</p></div></div>
+                    </section>
                     
+                    <!-- INÍCIO: Secção de Qi Gong com Tabs -->
                     <section id="qigong" class="content-section">
                         <div class="visual-card">
                             <div class="card-header"><h3>Qi Gong & Tai Chi</h3></div>
                             <div class="card-content">
+                                <!-- Botões das Abas -->
                                 <div id="qigong-tabs" class="border-b border-gray-200 mb-4">
                                     <nav class="flex -mb-px" aria-label="Tabs">
-                                        <button role="tab" aria-controls="qigong-panel" aria-selected="true" class="tab-button active">Qi Gong (氣功)</button>
-                                        <button role="tab" aria-controls="taichi-panel" aria-selected="false" class="tab-button">Tai Chi (太極拳)</button>
+                                        <button role="tab" aria-controls="qigong-panel" aria-selected="true" class="tab-button active">
+                                            Qi Gong (氣功)
+                                        </button>
+                                        <button role="tab" aria-controls="taichi-panel" aria-selected="false" class="tab-button">
+                                            Tai Chi (太極拳)
+                                        </button>
                                     </nav>
                                 </div>
+                                <!-- Conteúdo das Abas -->
                                 <div id="qigong-tab-content">
                                     <div id="qigong-panel" role="tabpanel" class="tab-content active card-prose">
                                         <p>Qi Gong, que se traduz como "trabalho com a energia vital", é uma prática milenar chinesa que combina movimentos lentos e graciosos, técnicas de respiração profunda e foco mental. O objetivo é cultivar e equilibrar o Qi (energia vital) para promover a saúde, a vitalidade e a tranquilidade.</p>
@@ -303,16 +336,19 @@
                             </div>
                         </div>
                     </section>
+                    <!-- FIM: Secção de Qi Gong com Tabs -->
 
                     <section id="glossario" class="content-section">
                         <div id="glossary-container"></div>
                     </section>
 
-                    </main>
+                    <!-- FIM: Conteúdo das secções -->
+                </main>
             </div>
         </div>
     </div>
 
+    <!-- Modal de Pesquisa Global -->
     <div id="search-modal-container" class="fixed inset-0 z-50 p-4 hidden">
         <div id="search-overlay" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
         <div class="relative bg-white w-full max-w-2xl mx-auto mt-[10vh] rounded-xl shadow-2xl flex flex-col max-h-[80vh]">
