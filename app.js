@@ -10,8 +10,7 @@ import {
     foodData, 
     zangFuPatternsData, 
     dezPerguntasData, 
-    pulseData,
-    therapiesData
+    pulseData 
 } from './data.js';
 
 // --- Seleção de Elementos DOM ---
@@ -104,7 +103,6 @@ allNavHubs.forEach(hub => {
 
 // --- CRIAÇÃO DO ÍNDICE DE PESQUISA ---
 function createSearchIndex() {
-    searchIndex = []; // Limpa o índice antes de reconstruir
     // 1. Meridianos e Pontos
     meridianData.forEach(meridian => {
         meridian.points.forEach(point => {
@@ -204,52 +202,6 @@ searchResultsContainer.addEventListener('click', (e) => {
 
 
 // --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO ---
-function setupTherapiesContent(data) {
-    // A secção de Qi Gong tem uma estrutura especial com abas no HTML, por isso não a sobreescrevemos.
-    const therapiesToBuild = data.filter(t => t.id !== 'qigong');
-    
-    therapiesToBuild.forEach(therapy => {
-        const section = document.getElementById(therapy.id);
-        if (section) {
-            section.innerHTML = `
-                <div class="visual-card">
-                    <div class="card-header">
-                        <h3>${therapy.title}</h3>
-                    </div>
-                    <div class="card-content">
-                        ${therapy.content}
-                    </div>
-                </div>
-            `;
-        }
-    });
-    
-    const qigongTabs = document.getElementById('qigong-tabs');
-    if (qigongTabs) {
-        const tabButtons = qigongTabs.querySelectorAll('button');
-        const tabContents = document.querySelectorAll('#qigong-tab-content .tab-content');
-
-        qigongTabs.addEventListener('click', (e) => {
-            const button = e.target.closest('button');
-            if (!button) return;
-
-            tabButtons.forEach(btn => {
-                btn.classList.remove('active');
-                btn.setAttribute('aria-selected', 'false');
-            });
-            button.classList.add('active');
-            button.setAttribute('aria-selected', 'true');
-
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-            });
-
-            const targetPanel = document.getElementById(button.getAttribute('aria-controls'));
-            if(targetPanel) targetPanel.classList.add('active');
-        });
-    }
-}
-
 function createAccordion(containerId, data) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -293,6 +245,33 @@ function createLifeCycleTimeline(containerId, data, colorClass) {
                 <p class="text-sm text-gray-600">${item.content}</p>
             </div>
         </div>`).join('');
+}
+
+function setupTabs(tabsContainerId, tabContentContainerId) {
+    const tabsContainer = document.getElementById(tabsContainerId);
+    const tabContentContainer = document.getElementById(tabContentContainerId);
+    if (!tabsContainer || !tabContentContainer) return;
+
+    const tabs = tabsContainer.querySelectorAll('[role="tab"]');
+    const tabPanels = tabContentContainer.querySelectorAll('[role="tabpanel"]');
+
+    tabsContainer.addEventListener('click', (e) => {
+        const clickedTab = e.target.closest('[role="tab"]');
+        if (!clickedTab) return;
+
+        tabs.forEach(tab => {
+            tab.setAttribute('aria-selected', 'false');
+            tab.classList.remove('active');
+        });
+        clickedTab.setAttribute('aria-selected', 'true');
+        clickedTab.classList.add('active');
+
+        tabPanels.forEach(panel => panel.classList.remove('active'));
+        const targetPanel = document.getElementById(clickedTab.getAttribute('aria-controls'));
+        if (targetPanel) {
+            targetPanel.classList.add('active');
+        }
+    });
 }
 
 function setupSidebarLayout(navId, contentId, data, idPrefix = 'content-') {
@@ -436,103 +415,100 @@ function setupZangFuLayout(data) {
     `).join('');
 }
 
+const elementDiagram = document.querySelector('.element-diagram');
+const elementDetailsContainer = document.getElementById('element-details-container');
+const pathsContainer = document.getElementById('cycle-paths-container');
+const btnGeracao = document.getElementById('btn-geracao');
+const btnControlo = document.getElementById('btn-controlo');
+const cycleInfoBox = document.getElementById('cycle-info-box');
+const defaultColor = '#e5e7eb';
+let currentCycle = 'geracao';
+let selectedElementId = null;
 
-// --- Lógica dos 5 Elementos ---
-function setup5Elements() {
-    const elementDiagram = document.querySelector('.element-diagram');
-    const elementDetailsContainer = document.getElementById('element-details-container');
-    const pathsContainer = document.getElementById('cycle-paths-container');
-    const btnGeracao = document.getElementById('btn-geracao');
-    const btnControlo = document.getElementById('btn-controlo');
-    const cycleInfoBox = document.getElementById('cycle-info-box');
-    if (!elementDiagram) return; // Sai se não encontrar o diagrama
+const cycleInfo = {
+    geracao: { title: 'Ciclo de Geração (Sheng)', description: 'Este ciclo representa a nutrição e o apoio. Cada elemento é a "mãe" do seguinte, nutrindo-o e promovendo o seu crescimento.', color: 'bg-green-100', textColor: 'text-green-800' },
+    controlo: { title: 'Ciclo de Controlo (Ke)', description: 'Este ciclo representa o controlo e a restrição, garantindo que nenhum elemento se torna excessivo e mantendo o equilíbrio do sistema.', color: 'bg-red-100', textColor: 'text-red-800' }
+};
+
+const cyclePaths = {
+    geracao: [
+        { id: 'madeira-fogo', d: "M 150,55 A 80 80 0 0 1 238,105" }, { id: 'fogo-terra', d: "M 245,112 A 80 80 0 0 1 205,230" },
+        { id: 'terra-metal', d: "M 195,245 A 80 80 0 0 1 105,245" }, { id: 'metal-agua', d: "M 95,230 A 80 80 0 0 1 55,112" },
+        { id: 'agua-madeira', d: "M 62,105 A 80 80 0 0 1 150,55" }
+    ],
+    controlo: [
+        { id: 'madeira-terra', d: "M 150 78 L 195 215" }, { id: 'fogo-metal', d: "M 220 105 L 125 225" },
+        { id: 'terra-agua', d: "M 195 225 L 80 125" }, { id: 'metal-madeira', d: "M 105 225 L 145 80" },
+        { id: 'agua-fogo', d: "M 80 105 L 215 105" }
+    ]
+};
+
+function renderCyclePaths() {
+    if(!pathsContainer) return;
+    pathsContainer.innerHTML = cyclePaths[currentCycle].map(p => `<path id="${p.id}" class="cycle-path" d="${p.d}" stroke="${defaultColor}" stroke-width="2" fill="none" marker-end="url(#arrow)"/>`).join('');
+}
+
+function update5ElementsUI() {
+    if(!elementDiagram) return;
+    elementDiagram.querySelectorAll('.element').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
+    document.querySelectorAll('.arrow-marker').forEach(marker => marker.style.fill = defaultColor);
+    if (pathsContainer) {
+        pathsContainer.querySelectorAll('.cycle-path').forEach(path => {
+            path.style.stroke = defaultColor;
+            path.style.strokeWidth = '2';
+            path.classList.remove('draw');
+        });
+    }
     
-    const defaultColor = '#e5e7eb';
-    let currentCycle = 'geracao';
-    let selectedElementId = null;
+    if (selectedElementId) {
+        const elData = fiveElementsData[selectedElementId];
+        const selectedButton = document.getElementById(selectedElementId);
+        if (selectedButton) selectedButton.setAttribute('aria-pressed', 'true');
 
-    const cycleInfo = {
-        geracao: { title: 'Ciclo de Geração (Sheng)', description: 'Este ciclo representa a nutrição e o apoio. Cada elemento é a "mãe" do seguinte, nutrindo-o e promovendo o seu crescimento.', color: 'bg-green-100', textColor: 'text-green-800' },
-        controlo: { title: 'Ciclo de Controlo (Ke)', description: 'Este ciclo representa o controlo e a restrição, garantindo que nenhum elemento se torna excessivo e mantendo o equilíbrio do sistema.', color: 'bg-red-100', textColor: 'text-red-800' }
-    };
-
-    const cyclePaths = {
-        geracao: [
-            { id: 'madeira-fogo', d: "M 150,55 A 80 80 0 0 1 238,105" }, { id: 'fogo-terra', d: "M 245,112 A 80 80 0 0 1 205,230" },
-            { id: 'terra-metal', d: "M 195,245 A 80 80 0 0 1 105,245" }, { id: 'metal-agua', d: "M 95,230 A 80 80 0 0 1 55,112" },
-            { id: 'agua-madeira', d: "M 62,105 A 80 80 0 0 1 150,55" }
-        ],
-        controlo: [
-            { id: 'madeira-terra', d: "M 150 78 L 195 215" }, { id: 'fogo-metal', d: "M 220 105 L 125 225" },
-            { id: 'terra-agua', d: "M 195 225 L 80 125" }, { id: 'metal-madeira', d: "M 105 225 L 145 80" },
-            { id: 'agua-fogo', d: "M 80 105 L 215 105" }
-        ]
-    };
-
-    function renderCyclePaths() {
-        if(!pathsContainer) return;
-        pathsContainer.innerHTML = cyclePaths[currentCycle].map(p => `<path id="${p.id}" class="cycle-path" d="${p.d}" stroke="${defaultColor}" stroke-width="2" fill="none" marker-end="url(#arrow)"/>`).join('');
-    }
-
-    function update5ElementsUI() {
-        elementDiagram.querySelectorAll('.element').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
-        document.querySelectorAll('.arrow-marker').forEach(marker => marker.style.fill = defaultColor);
-        if (pathsContainer) {
-            pathsContainer.querySelectorAll('.cycle-path').forEach(path => {
-                path.style.stroke = defaultColor;
-                path.style.strokeWidth = '2';
-                path.classList.remove('draw');
-            });
+        const targetElementId = elData.target[currentCycle];
+        const activePathId = `${selectedElementId}-${targetElementId}`;
+        const activePath = document.getElementById(activePathId);
+        if (activePath) {
+            const color = `var(--el-${elData.color})`;
+            activePath.style.stroke = color;
+            activePath.style.color = color;
+            activePath.style.strokeWidth = '4';
+            activePath.classList.add('draw');
+            const marker = document.querySelector(`#arrow path`);
+            if (marker) marker.style.fill = color;
         }
-        
-        if (selectedElementId) {
-            const elData = fiveElementsData[selectedElementId];
-            const selectedButton = document.getElementById(selectedElementId);
-            if (selectedButton) selectedButton.setAttribute('aria-pressed', 'true');
 
-            const targetElementId = elData.target[currentCycle];
-            const activePathId = `${selectedElementId}-${targetElementId}`;
-            const activePath = document.getElementById(activePathId);
-            if (activePath) {
-                const color = `var(--el-${elData.color})`;
-                activePath.style.stroke = color;
-                activePath.style.color = color;
-                activePath.style.strokeWidth = '4';
-                activePath.classList.add('draw');
-                const marker = document.querySelector(`#arrow path`);
-                if (marker) marker.style.fill = color;
-            }
-
-            elementDetailsContainer.innerHTML = `
-                <div class="text-left p-6 rounded-lg border-2" style="border-color: var(--el-${elData.color}); background-color: #fafcff;">
-                    <h3 class="text-2xl font-playfair font-bold mb-4" style="color: var(--el-${elData.color});">${elData.name}</h3>
-                    <div class="card-prose">
-                        <p class="font-semibold text-gray-600 mb-2">Relações no Ciclo de ${currentCycle.charAt(0).toUpperCase() + currentCycle.slice(1)}:</p>
-                        <p class="text-sm">${elData.relations[currentCycle]}</p>
-                        <table class="w-full text-sm mt-4"><tbody>${elData.table}</tbody></table>
-                    </div>
-                </div>`;
-        } else {
-            elementDetailsContainer.innerHTML = '<div class="flex items-center justify-center h-full text-center text-gray-500 p-4 bg-gray-50 rounded-lg"><p>Clique num elemento do diagrama para ver as suas correspondências detalhadas e a sua relação no ciclo atual.</p></div>';
-        }
+        elementDetailsContainer.innerHTML = `
+            <div class="text-left p-6 rounded-lg border-2" style="border-color: var(--el-${elData.color}); background-color: #fafcff;">
+                <h3 class="text-2xl font-playfair font-bold mb-4" style="color: var(--el-${elData.color});">${elData.name}</h3>
+                <div class="card-prose">
+                    <p class="font-semibold text-gray-600 mb-2">Relações no Ciclo de ${currentCycle.charAt(0).toUpperCase() + currentCycle.slice(1)}:</p>
+                    <p class="text-sm">${elData.relations[currentCycle]}</p>
+                    <table class="w-full text-sm mt-4"><tbody>${elData.table}</tbody></table>
+                </div>
+            </div>`;
+    } else {
+        elementDetailsContainer.innerHTML = '<div class="flex items-center justify-center h-full text-center text-gray-500 p-4 bg-gray-50 rounded-lg"><p>Clique num elemento do diagrama para ver as suas correspondências detalhadas e a sua relação no ciclo atual.</p></div>';
     }
+}
 
-    function switchCycle(cycle) {
-        currentCycle = cycle;
-        const info = cycleInfo[cycle];
-        if(cycleInfoBox) {
-            cycleInfoBox.className = `mb-6 p-4 rounded-lg text-center transition-colors duration-500 ${info.color} ${info.textColor}`;
-            cycleInfoBox.innerHTML = `<h4 class="font-bold">${info.title}</h4><p class="text-sm">${info.description}</p>`;
-        }
-        if(btnGeracao) btnGeracao.classList.toggle('active', cycle === 'geracao');
-        if(btnControlo) btnControlo.classList.toggle('active', cycle === 'controlo');
-        renderCyclePaths();
-        update5ElementsUI();
+function switchCycle(cycle) {
+    currentCycle = cycle;
+    const info = cycleInfo[cycle];
+    if(cycleInfoBox) {
+        cycleInfoBox.className = `mb-6 p-4 rounded-lg text-center transition-colors duration-500 ${info.color} ${info.textColor}`;
+        cycleInfoBox.innerHTML = `<h4 class="font-bold">${info.title}</h4><p class="text-sm">${info.description}</p>`;
     }
+    if(btnGeracao) btnGeracao.classList.toggle('active', cycle === 'geracao');
+    if(btnControlo) btnControlo.classList.toggle('active', cycle === 'controlo');
+    renderCyclePaths();
+    update5ElementsUI();
+}
 
-    if(btnGeracao) btnGeracao.addEventListener('click', () => switchCycle('geracao'));
-    if(btnControlo) btnControlo.addEventListener('click', () => switchCycle('controlo'));
+if(btnGeracao) btnGeracao.addEventListener('click', () => switchCycle('geracao'));
+if(btnControlo) btnControlo.addEventListener('click', () => switchCycle('controlo'));
 
+if (elementDiagram) {
     elementDiagram.addEventListener('click', (e) => {
         const button = e.target.closest('.element');
         if (button) {
@@ -540,9 +516,6 @@ function setup5Elements() {
             update5ElementsUI();
         }
     });
-
-    // Inicia o ciclo
-    switchCycle('geracao');
 }
 
 function setupGlossary() {
@@ -566,6 +539,24 @@ function setupGlossary() {
                     </div>`).join('')}
             </div>
         </div>`).join('');
+}
+
+function activateTooltips() {
+    document.body.addEventListener('mouseover', e => {
+        const term = e.target.closest('.tooltip-term');
+        if(term) {
+            const existingTooltip = term.querySelector('.tooltip-box');
+            if (!existingTooltip) {
+                const termKey = term.dataset.term.toLowerCase();
+                if (glossaryData[termKey]) {
+                    const tooltipBox = document.createElement('div');
+                    tooltipBox.className = 'tooltip-box';
+                    tooltipBox.textContent = glossaryData[termKey].definition;
+                    term.appendChild(tooltipBox);
+                }
+            }
+        }
+    });
 }
 
 function setupDietetics() {
@@ -655,7 +646,7 @@ function setupDiagnosisDiagrams() {
     });
 }
 
-// --- FUNÇÃO PARA GERAR OS LINKS DE NAVEGAÇÃO ---
+// --- Função para gerar os links de navegação ---
 function generateNavLinks() {
     const navStructure = [
         { id: 'inicio', title: 'Início', icon: 'icon-home' },
@@ -683,9 +674,7 @@ function generateNavLinks() {
             links: [
                 { id: 'dietetica', title: 'Dietética', icon: 'icon-diet' },
                 { id: 'fitoterapia', title: 'Fitoterapia', icon: 'icon-fitoterapia' },
-                { id: 'acupuntura', title: 'Acupuntura', icon: 'icon-acupuncture' },
                 { id: 'moxabustao', title: 'Moxabustão', icon: 'icon-moxibustion' },
-                { id: 'ventosaterapia', title: 'Ventosaterapia', icon: 'icon-cupping' },
                 { id: 'qigong', title: 'Qi Gong & Tai Chi', icon: 'icon-qigong' }
             ]
         },
@@ -725,27 +714,29 @@ function generateNavLinks() {
     allNavHubs.forEach(hub => hub.innerHTML = navHtml);
 }
 
+
 // --- PONTO DE ENTRADA DA APLICAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Geração de conteúdo principal
     generateNavLinks(); 
-    
-    // Configuração de componentes interativos e conteúdo dinâmico
     createAccordion('qi-accordion', qiData);
     createLifeCycleTimeline('female-cycles-timeline', lifeCyclesFemaleData, 'bg-pink-500');
     createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
     createAccordion('perguntas-accordion', dezPerguntasData);
     createAccordion('pulse-list-container', pulseData);
-    
-    setupTherapiesContent(therapiesData);
-    setup5Elements();
-    setupDiagnosisDiagrams();
     setupGlossary();
     setupDietetics();
-
-    // Configuração de layouts complexos
+    
+    // Configuração de componentes interativos
+    setupTabs('qigong-tabs', 'qigong-tab-content');
     setupSidebarLayout('meridian-navigation', 'meridian-content-area', meridianData, 'meridian-content-');
     setupSidebarLayout('anatomy-navigation', 'anatomy-content-area', anatomyData, 'anatomy-content-');
     setupSidebarLayout('zangfu-navigation', 'zangfu-content-area', zangFuPatternsData, 'zangfu-content-');
+    activateTooltips();
+    setupDiagnosisDiagrams();
+    if (document.getElementById('cinco-elementos')) {
+        switchCycle('geracao');
+    }
 
     // Animação da barra lateral
     document.querySelectorAll('aside .sidebar-link, aside .nav-group').forEach((el, index) => {
@@ -755,6 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Construção do índice de pesquisa
     createSearchIndex();
     
+    // Seleciona as secções de conteúdo DEPOIS de serem criadas
     contentSections = mainContent.querySelectorAll('.content-section');
     
     // Mostra a secção inicial
