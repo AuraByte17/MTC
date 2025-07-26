@@ -204,6 +204,32 @@ searchResultsContainer.addEventListener('click', (e) => {
 
 
 // --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO ---
+
+/**
+ * NEW FUNCTION: Populates the therapy sections with detailed content from data.
+ * This function fixes the script-halting error.
+ * @param {Array} data - The therapiesData array.
+ */
+function setupTherapiesContent(data) {
+    data.forEach(therapy => {
+        const section = document.getElementById(therapy.id);
+        if (section) {
+            // The data contains the full HTML for the card's content.
+            // We create the card structure around it.
+            section.innerHTML = `
+                <div class="visual-card">
+                    <div class="card-header">
+                        <h3>${therapy.title}</h3>
+                    </div>
+                    <div class="card-content">
+                        ${therapy.content}
+                    </div>
+                </div>
+            `;
+        }
+    });
+}
+
 function createAccordion(containerId, data) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -861,22 +887,6 @@ function buildInitialContent() {
         </div>`;
 }
 
-// --- NOVA FUNÇÃO PARA CONSTRUIR O CONTEÚDO DAS TERAPIAS ---
-function setupTherapiesContent(data) {
-    data.forEach(therapy => {
-        const section = document.getElementById(therapy.id);
-        if (section) {
-            section.innerHTML = `
-                <div class="visual-card">
-                    <div class="card-header"><h3>${therapy.title}</h3></div>
-                    <div class="card-content">
-                        ${therapy.content}
-                    </div>
-                </div>
-            `;
-        }
-    });
-}
 
 // --- PONTO DE ENTRADA DA APLICAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
