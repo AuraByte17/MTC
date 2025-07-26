@@ -206,16 +206,13 @@ searchResultsContainer.addEventListener('click', (e) => {
 // --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO ---
 
 /**
- * NEW FUNCTION: Populates the therapy sections with detailed content from data.
- * This function fixes the script-halting error.
+ * Populates the therapy sections with detailed content from data.
  * @param {Array} data - The therapiesData array.
  */
 function setupTherapiesContent(data) {
     data.forEach(therapy => {
         const section = document.getElementById(therapy.id);
         if (section) {
-            // The data contains the full HTML for the card's content.
-            // We create the card structure around it.
             section.innerHTML = `
                 <div class="visual-card">
                     <div class="card-header">
@@ -228,6 +225,31 @@ function setupTherapiesContent(data) {
             `;
         }
     });
+    
+    const qigongTabs = document.getElementById('qigong-tabs');
+    if (qigongTabs) {
+        const tabButtons = qigongTabs.querySelectorAll('button');
+        const tabContents = document.querySelectorAll('#qigong-tab-content .tab-content');
+
+        qigongTabs.addEventListener('click', (e) => {
+            const button = e.target.closest('button');
+            if (!button) return;
+
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            });
+            button.classList.add('active');
+            button.setAttribute('aria-selected', 'true');
+
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const targetPanel = document.getElementById(button.getAttribute('aria-controls'));
+            if(targetPanel) targetPanel.classList.add('active');
+        });
+    }
 }
 
 function createAccordion(containerId, data) {
@@ -705,196 +727,20 @@ function generateNavLinks() {
     allNavHubs.forEach(hub => hub.innerHTML = navHtml);
 }
 
-// --- FUNÇÕES DE CONSTRUÇÃO DE CONTEÚDO INICIAL ---
-function buildInitialContent() {
-    document.getElementById('inicio').innerHTML = `
-        <div class="visual-card">
-            <div class="card-header"><h3>Bem-vindo ao Guia de Medicina Tradicional Chinesa</h3></div>
-            <div class="card-content card-prose">
-                <p>Este guia interativo foi concebido para ser uma referência rápida e completa sobre os conceitos fundamentais da Medicina Tradicional Chinesa (MTC). Utilize o menu lateral para navegar pelas diferentes secções.</p>
-                <h4>Como Utilizar:</h4>
-                <ul class="list-disc list-inside">
-                    <li><strong>Navegação:</strong> Clique nos itens do menu para explorar os fundamentos, meridianos, diagnóstico e muito mais.</li>
-                    <li><strong>Pesquisa Global:</strong> Utilize a barra de pesquisa para encontrar rapidamente informações sobre pontos de acupuntura, alimentos, padrões de desarmonia ou termos do glossário.</li>
-                    <li><strong>Interatividade:</strong> Muitas secções contêm elementos interativos, como diagramas e abas, para facilitar a aprendizagem.</li>
-                </ul>
-                <p>Explore, aprenda e encontre o caminho para uma vida em harmonia.</p>
-            </div>
-        </div>`;
-
-    document.getElementById('substancias-fundamentais').innerHTML = `
-        <div class="visual-card">
-            <div class="card-header"><h3>As 5 Substâncias Fundamentais</h3></div>
-            <div class="card-content card-prose">
-                <p>As cinco substâncias vitais são os alicerces da vida do ponto de vista da MTC. São as matérias-primas essenciais que formam o corpo, a mente e o espírito. O seu equilíbrio e livre circulação são cruciais para a saúde.</p>
-                <div class="space-y-4">
-                    <div><h4>Qi (氣) - Energia Vital</h4><p>A força da vida que anima todas as funções do corpo. É o aspeto mais Yang e dinâmico.</p></div>
-                    <div><h4>Xue (血) - Sangue</h4><p>Mais denso e material que o Qi, o Sangue nutre, humedece e serve como veículo para o Shen (Mente).</p></div>
-                    <div><h4>Jing (精) - Essência</h4><p>A nossa reserva de energia mais profunda, herdada e adquirida, que governa o crescimento, desenvolvimento e reprodução.</p></div>
-                    <div><h4>Shen (神) - Espírito/Mente</h4><p>Abrangendo a consciência, o pensamento e a estabilidade emocional, o Shen reside no Coração e é nutrido pelo Sangue.</p></div>
-                    <div><h4>Jin Ye (津液) - Fluidos Corporais</h4><p>Todos os fluidos do corpo, desde o suor às lágrimas, que humedecem e lubrificam os tecidos e órgãos.</p></div>
-                </div>
-            </div>
-        </div>`;
-
-    document.getElementById('tipos-de-qi').innerHTML = `
-        <div class="visual-card">
-            <div class="card-header"><h3>Os Diferentes Tipos de Qi</h3></div>
-            <div class="card-content">
-                <div id="qi-accordion" class="space-y-3"></div>
-            </div>
-        </div>`;
-    createAccordion('qi-accordion', qiData);
-
-    document.getElementById('cinco-elementos').innerHTML = `
-        <div class="visual-card mb-6">
-            <div class="card-header"><h3>A Teoria dos Cinco Elementos</h3></div>
-            <div class="card-content">
-                <div id="cycle-info-box"></div>
-                <div class="flex justify-center gap-4 mb-6">
-                    <button id="btn-geracao" class="tab-button">Geração (Sheng)</button>
-                    <button id="btn-controlo" class="tab-button">Controlo (Ke)</button>
-                </div>
-                <div class="grid md:grid-cols-2 gap-8 items-center">
-                    <div class="relative w-full max-w-xs mx-auto aspect-square">
-                        <div class="element-lines">
-                            <svg id="cycle-paths-container" class="w-full h-full" viewBox="0 0 300 300"></svg>
-                        </div>
-                        <div class="element-diagram">
-                            <button id="madeira" class="element wood" style="top: 20%; left: 50%;">Madeira</button>
-                            <button id="fogo" class="element fire" style="top: 35%; left: 80%;">Fogo</button>
-                            <button id="terra" class="element earth" style="top: 75%; left: 65%;">Terra</button>
-                            <button id="metal" class="element metal" style="top: 75%; left: 35%;">Metal</button>
-                            <button id="agua" class="element water" style="top: 35%; left: 20%;">Água</button>
-                        </div>
-                    </div>
-                    <div id="element-details-container"></div>
-                </div>
-            </div>
-        </div>`;
-
-    document.getElementById('ciclos-de-vida').innerHTML = `
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="visual-card">
-                <div class="card-header"><h3>Ciclos Femininos (7 Anos)</h3></div>
-                <div id="female-cycles-timeline" class="card-content timeline-container"></div>
-            </div>
-            <div class="visual-card">
-                <div class="card-header"><h3>Ciclos Masculinos (8 Anos)</h3></div>
-                <div id="male-cycles-timeline" class="card-content timeline-container"></div>
-            </div>
-        </div>`;
-    createLifeCycleTimeline('female-cycles-timeline', lifeCyclesFemaleData, 'bg-pink-500');
-    createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
-
-    document.getElementById('meridianos').innerHTML = `
-        <div class="flex flex-col lg:flex-row gap-6">
-            <nav id="meridian-navigation" class="w-full lg:w-1/4 space-y-2"></nav>
-            <div id="meridian-content-area" class="flex-1 content-area"></div>
-        </div>`;
-
-    document.getElementById('anatomia-energetica').innerHTML = `
-        <div class="flex flex-col lg:flex-row gap-6">
-            <nav id="anatomy-navigation" class="w-full lg:w-1/4 space-y-2"></nav>
-            <div id="anatomy-content-area" class="flex-1 content-area"></div>
-        </div>`;
-
-    document.getElementById('padroes-zang-fu').innerHTML = `
-        <div class="flex flex-col lg:flex-row gap-6">
-            <nav id="zangfu-navigation" class="w-full lg:w-1/4 space-y-2"></nav>
-            <div id="zangfu-content-area" class="flex-1 content-area"></div>
-        </div>`;
-
-    document.getElementById('diagnostico-geral').innerHTML = `
-        <div class="visual-card mb-8">
-            <div class="card-header"><h3>As 10+1 Perguntas</h3></div>
-            <div class="card-content">
-                <div id="perguntas-accordion" class="space-y-3"></div>
-            </div>
-        </div>
-        <div class="visual-card">
-            <div class="card-header"><h3>Diagnóstico Visual Interativo</h3></div>
-            <div class="card-content">
-                <p class="card-prose mb-6">Passe o rato sobre as diferentes áreas dos diagramas para ver as correspondências de diagnóstico na Medicina Tradicional Chinesa.</p>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="visual-card p-4">
-                        <h4 class="text-center font-bold text-lg mb-2 text-primary">Diagnóstico da Língua</h4>
-                        <div class="diagram-container relative max-w-xs mx-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 200" class="rounded-lg bg-pink-50">
-                                <defs>
-                                    <filter id="inner-shadow" x="-50%" y="-50%" width="200%" height="200%">
-                                        <feComponentTransfer in="SourceAlpha"><feFuncA type="table" tableValues="1 0" /></feComponentTransfer>
-                                        <feGaussianBlur stdDeviation="3" />
-                                        <feOffset dx="0" dy="4" result="offsetblur" />
-                                        <feFlood flood-color="rgb(0,0,0)" result="color" />
-                                        <feComposite in2="offsetblur" operator="in" />
-                                        <feComposite in2="SourceAlpha" operator="in" />
-                                        <feMerge><feMergeNode in="SourceGraphic" /><feMergeNode /></feMerge>
-                                    </filter>
-                                </defs>
-                                <path fill="#F4A2B8" d="M75 195C25 145 25 110 75 25c50 85 50 120 0 170z" />
-                                <path fill="#D68098" d="M75 195c-2.5-12.5-5-25 0-35 5 10 2.5 22.5 0 35z" filter="url(#inner-shadow)" />
-                                <path fill="#EAAABE" d="M75 182.5c-15-10-25-22.5-25-37.5 0-20 12.5-32.5 25-42.5 12.5 10 25 22.5 25 42.5 0 15-10 27.5-25 37.5z" opacity="0.5" />
-                            </svg>
-                            <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 150 200">
-                                <path class="diagram-area-svg" data-info="Ponta: Coração. Reflete o estado do Shen, ansiedade e insónia." d="M75,195 C50,165 58,150 75,140 C92,150 100,165 75,195 Z"></path>
-                                <path class="diagram-area-svg" data-info="Área atrás da ponta: Pulmão. Mostra condições do sistema respiratório e do Wei Qi." d="M75,140 C55,130 55,105 75,100 C95,105 95,130 75,140 Z"></path>
-                                <path class="diagram-area-svg" data-info="Laterais: Fígado e Vesícula Biliar. Indicam estagnação de Qi, irritabilidade e tensão." d="M55,105 C35,105 30,35 55,35 L55,105 Z M95,105 C115,105 120,35 95,35 L95,105 Z"></path>
-                                <path class="diagram-area-svg" data-info="Centro: Baço e Estômago. Reflete o estado da digestão e da produção de Qi e Sangue." d="M75,100 C55,105 55,35 75,35 C95,35 95,105 75,100 Z"></path>
-                                <path class="diagram-area-svg" data-info="Raiz: Rim, Bexiga, Intestinos. Mostra a constituição (Jing) e o estado do Aquecedor Inferior." d="M75,35 C55,35 55,25 75,25 C95,25 95,35 75,35 Z"></path>
-                                </svg>
-                        </div>
-                        <div class="p-4 bg-gray-100 rounded-lg mt-4 min-h-[60px] flex items-center justify-center text-center">
-                            <p class="text-gray-500 text-sm">Passe o rato sobre uma área.</p>
-                        </div>
-                    </div>
-                    <div class="visual-card p-4">
-                        <h4 class="text-center font-bold text-lg mb-2 text-primary">Diagnóstico do Pulso</h4>
-                        <div class="diagram-container relative max-w-xs mx-auto">
-                            <img src="https://placehold.co/300x400/f8f9fa/ccc?text=Diagrama+do+Pulso" alt="Diagrama do pulso para diagnóstico na MTC" class="rounded-lg">
-                            <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 150 200">
-                                <rect class="diagram-area-svg" data-info="Posição CUN (Distal): Pulmão (D) e Coração (E). Nível superficial." x="40" y="50" width="70" height="30" rx="5"></rect>
-                                <rect class="diagram-area-svg" data-info="Posição GUAN (Média): Baço/Estômago (D) e Fígado/VB (E). Nível médio." x="40" y="90" width="70" height="30" rx="5"></rect>
-                                <rect class="diagram-area-svg" data-info="Posição CHI (Proximal): Rim Yang (D) e Rim Yin (E). Nível profundo." x="40" y="130" width="70" height="30" rx="5"></rect>
-                            </svg>
-                        </div>
-                        <div class="p-4 bg-gray-100 rounded-lg mt-4 min-h-[60px] flex items-center justify-center text-center">
-                            <p class="text-gray-500 text-sm">Passe o rato sobre uma posição.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-    createAccordion('perguntas-accordion', dezPerguntasData);
-
-    document.getElementById('pulsologia').innerHTML = `
-        <div class="visual-card">
-            <div class="card-header"><h3>Tipos de Pulso Comuns</h3></div>
-            <div class="card-content">
-                <div id="pulse-list-container" class="space-y-3"></div>
-            </div>
-        </div>`;
-    createAccordion('pulse-list-container', pulseData);
-
-    document.getElementById('dietetica').innerHTML = `
-        <div class="visual-card">
-            <div class="card-header"><h3>Dietética Energética</h3></div>
-            <div class="card-content">
-                <input type="search" id="food-search-input" placeholder="Pesquisar alimento..." class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
-                <div id="food-alpha-nav"></div>
-                <div id="food-results-container"></div>
-            </div>
-        </div>`;
-}
-
 
 // --- PONTO DE ENTRADA DA APLICAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
     // Geração de conteúdo principal
     generateNavLinks(); 
-    buildInitialContent(); // Constrói o HTML inicial para as secções
     
     // Configuração de componentes interativos e conteúdo dinâmico
+    // As funções abaixo irão popular o conteúdo baseado no HTML inicial
+    createAccordion('qi-accordion', qiData);
+    createLifeCycleTimeline('female-cycles-timeline', lifeCyclesFemaleData, 'bg-pink-500');
+    createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
+    createAccordion('perguntas-accordion', dezPerguntasData);
+    createAccordion('pulse-list-container', pulseData);
+    
     setupTherapiesContent(therapiesData);
     setup5Elements();
     setupDiagnosisDiagrams();
