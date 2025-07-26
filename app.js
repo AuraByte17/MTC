@@ -11,7 +11,7 @@ import {
     zangFuPatternsData, 
     dezPerguntasData, 
     pulseData,
-    therapiesData // Importa os novos dados de terapias
+    therapiesData
 } from './data.js';
 
 // --- Seleção de Elementos DOM ---
@@ -204,13 +204,11 @@ searchResultsContainer.addEventListener('click', (e) => {
 
 
 // --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO ---
-
-/**
- * Populates the therapy sections with detailed content from data.
- * @param {Array} data - The therapiesData array.
- */
 function setupTherapiesContent(data) {
-    data.forEach(therapy => {
+    // A secção de Qi Gong tem uma estrutura especial com abas no HTML, por isso não a sobreescrevemos.
+    const therapiesToBuild = data.filter(t => t.id !== 'qigong');
+    
+    therapiesToBuild.forEach(therapy => {
         const section = document.getElementById(therapy.id);
         if (section) {
             section.innerHTML = `
@@ -727,14 +725,11 @@ function generateNavLinks() {
     allNavHubs.forEach(hub => hub.innerHTML = navHtml);
 }
 
-
 // --- PONTO DE ENTRADA DA APLICAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Geração de conteúdo principal
     generateNavLinks(); 
     
     // Configuração de componentes interativos e conteúdo dinâmico
-    // As funções abaixo irão popular o conteúdo baseado no HTML inicial
     createAccordion('qi-accordion', qiData);
     createLifeCycleTimeline('female-cycles-timeline', lifeCyclesFemaleData, 'bg-pink-500');
     createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
@@ -760,7 +755,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Construção do índice de pesquisa
     createSearchIndex();
     
-    // Seleciona as secções de conteúdo DEPOIS de serem criadas
     contentSections = mainContent.querySelectorAll('.content-section');
     
     // Mostra a secção inicial
