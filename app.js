@@ -196,8 +196,15 @@ function initializeAccordion(container) {
         const button = e.target.closest('.accordion-button');
         if (!button) return;
 
+        // *** FIX: Stop the event from bubbling up to parent accordions. ***
+        // This prevents a click on a nested accordion from triggering the listener
+        // on its parent, which could cause a loop or unexpected closing.
+        e.stopPropagation();
+
         const item = button.closest('.accordion-item');
-        // Ensure the clicked item is a direct child of this accordion container
+        
+        // This check is now slightly redundant due to stopPropagation, 
+        // but it's kept as a safeguard.
         if (!item || item.parentElement !== container) return; 
         
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
