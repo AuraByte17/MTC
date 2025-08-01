@@ -674,6 +674,7 @@ function setupMobileRadialNav() {
         navItem.style.transitionDelay = `${index * 0.05}s`;
 
         navItem.addEventListener('click', () => {
+            // Se a categoria tem sub-links, abre o menu lateral
             if (category.links && category.links.length > 1) {
                 const allGroupHeaders = mobileNavHub.querySelectorAll('.nav-group-header');
                 let targetHeader = null;
@@ -691,11 +692,15 @@ function setupMobileRadialNav() {
                 }
                 openMobileMenu();
             } else {
+                // CORREÇÃO: Lógica para clicar no link foi substituída por chamadas de função diretas
                 const targetId = category.id || (category.links && category.links[0].id);
                 if (targetId) {
                     const link = mobileNavHub.querySelector(`a[href="#${targetId}"]`);
                     if (link) {
-                        link.click();
+                        const linkText = link.querySelector('span').textContent;
+                        // Chamadas diretas para evitar o loop
+                        showSection(targetId, linkText);
+                        updateActiveLink(targetId);
                         showMainContentView();
                     }
                 }
