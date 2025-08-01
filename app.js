@@ -140,7 +140,7 @@ function createSearchIndex() {
     Object.values(glossaryData).forEach(i => searchIndex.push({ title: i.term, content: i.definition, type: 'Glossário', color: 'primary', sectionId: 'glossario' }));
     foodData.forEach(f => searchIndex.push({ title: f.name, content: `Ações: ${f.actions}`, type: 'Alimento', color: 'earth', sectionId: 'dietetica' }));
     zangFuPatternsData.forEach(o => o.patterns.forEach(p => searchIndex.push({ title: p.name, content: p.symptoms, type: 'Padrão Zang-Fu', color: o.color, sectionId: 'padroes-zang-fu' })));
-    therapiesData.forEach(t => searchIndex.push({ title: t.title, content: t.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Terapia', color: 'secondary', sectionId: 'terapias' }));
+    therapiesData.forEach(t => searchIndex.push({ title: t.title, content: t.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Terapia', color: 'secondary', sectionId: 'terapias' })));
     greatMastersData.forEach(m => searchIndex.push({ title: m.name, content: m.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Mestre', color: 'water', sectionId: 'grandes-mestres' }));
 }
 function performSearch(query) {
@@ -644,21 +644,21 @@ function showMainContentView() {
 
 function showMobileHomeScreen() {
     document.body.classList.remove('mobile-content-visible');
-    // Fecha o menu lateral caso esteja aberto
     closeMobileMenu();
 }
 
 function setupMobileRadialNav() {
-    // Copia o SVG do loader para o botão central
+    if (!mobileRadialNavContainer) return;
+
     const loaderSVGContent = document.getElementById('yin-yang-loader-svg').innerHTML;
     yinYangCentralSVG.innerHTML = loaderSVGContent;
 
     const categories = navStructure.filter(item => item.isCategory);
     const numItems = categories.length;
-    const radius = 100; // Raio do círculo em pixels
+    const radius = 100; 
 
     categories.forEach((category, index) => {
-        const angle = (index / numItems) * 2 * Math.PI - (Math.PI / 2); // Começa no topo
+        const angle = (index / numItems) * 2 * Math.PI - (Math.PI / 2);
         const x = radius * Math.cos(angle);
         const y = radius * Math.sin(angle);
 
@@ -669,15 +669,12 @@ function setupMobileRadialNav() {
             <span>${category.title}</span>
         `;
         
-        // CORREÇÃO: Define as variáveis CSS para a posição
         navItem.style.setProperty('--x-pos', `${x}px`);
         navItem.style.setProperty('--y-pos', `${y}px`);
         navItem.style.transitionDelay = `${index * 0.05}s`;
 
         navItem.addEventListener('click', () => {
-            // Se a categoria tem sub-links, abre o menu lateral
             if (category.links && category.links.length > 1) {
-                // CORREÇÃO: Procura o elemento de forma segura
                 const allGroupHeaders = mobileNavHub.querySelectorAll('.nav-group-header');
                 let targetHeader = null;
                 allGroupHeaders.forEach(header => {
@@ -694,7 +691,6 @@ function setupMobileRadialNav() {
                 }
                 openMobileMenu();
             } else {
-                // Se for um item único (como Glossário) ou uma categoria com um só link (Diagnóstico)
                 const targetId = category.id || (category.links && category.links[0].id);
                 if (targetId) {
                     const link = mobileNavHub.querySelector(`a[href="#${targetId}"]`);

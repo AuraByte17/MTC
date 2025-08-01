@@ -29,7 +29,6 @@
                 <circle fill="url(#yin-grad-loader)" cx="100" cy="149" r="18"/><circle fill="url(#yang-grad-loader)" cx="100" cy="51" r="18"/>
             </g>
         </svg>
-        <!-- ALTERAÇÃO: Texto da saudação atualizado -->
         <p id="loading-text" class="mt-4 text-lg text-primary-dark font-semibold">Bem-vindo(a) ao Guia de MTC</p>
     </div>
 
@@ -91,8 +90,8 @@
         <!-- Wrapper Principal para Móvel -->
         <div class="flex-1 flex flex-col h-screen md:overflow-hidden">
             
-            <!-- NOVO: Ecrã Inicial para Móvel com Menu Radial -->
-            <div id="mobile-home-screen" class="flex-grow flex-col items-center justify-center p-4 text-center md:hidden">
+            <!-- CORREÇÃO: Ecrã Inicial para Móvel. Adicionada a classe `md:hidden` para o esconder em ecrãs de computador. -->
+            <div id="mobile-home-screen" class="flex flex-grow flex-col items-center justify-center p-4 text-center md:hidden">
                 <div class="relative w-64 h-64 flex items-center justify-center">
                     <button id="mobile-central-button" class="w-32 h-32 rounded-full shadow-lg transition-transform duration-300">
                         <svg id="yin-yang-central-svg" class="w-full h-full" viewBox="0 0 200 200">
@@ -107,7 +106,7 @@
                 <p class="text-gray-500 mt-2">Toque no símbolo para explorar as categorias.</p>
             </div>
 
-            <!-- Área de Conteúdo Principal (agora dentro do wrapper) -->
+            <!-- CORREÇÃO: Área de Conteúdo Principal. Alterado para `hidden md:flex` para que fique escondido por defeito em telemóvel e visível em computador. -->
             <div id="main-view-wrapper" class="flex-1 flex-col h-screen hidden md:flex">
                 <header class="md:hidden bg-white shadow-md p-4 flex items-center justify-between sticky top-0 z-30">
                     <h2 id="current-section-title" class="text-lg font-playfair font-bold text-primary cursor-pointer">Início</h2>
