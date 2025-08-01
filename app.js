@@ -126,6 +126,10 @@ allNavHubs.forEach(hub => {
             showSection(targetId, linkText);
             updateActiveLink(targetId);
             closeMobileMenu();
+            // On mobile, after clicking a link, show the content view
+            if (window.innerWidth < 768) {
+                showMainContentView();
+            }
         }
         if (groupHeader) {
             groupHeader.classList.toggle('open');
@@ -141,7 +145,7 @@ function createSearchIndex() {
     foodData.forEach(f => searchIndex.push({ title: f.name, content: `Ações: ${f.actions}`, type: 'Alimento', color: 'earth', sectionId: 'dietetica' }));
     zangFuPatternsData.forEach(o => o.patterns.forEach(p => searchIndex.push({ title: p.name, content: p.symptoms, type: 'Padrão Zang-Fu', color: o.color, sectionId: 'padroes-zang-fu' })));
     therapiesData.forEach(t => searchIndex.push({ title: t.title, content: t.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Terapia', color: 'secondary', sectionId: 'terapias' })));
-    greatMastersData.forEach(m => searchIndex.push({ title: m.name, content: m.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Mestre', color: 'water', sectionId: 'grandes-mestres' }));
+    greatMastersData.forEach(m => searchIndex.push({ title: m.name, content: m.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Mestre', color: 'water', sectionId: 'grandes-mestres' })));
 }
 function performSearch(query) {
     if (query.length < 2) {
@@ -161,7 +165,7 @@ function renderSearchResults(results) {
         return;
     }
     searchResultsContainer.innerHTML = results.map(item => `
-        <div class="search-result-item" data-section-id="${item.sectionId}">
+        <div class="search-result-item" data-section-id="${item.sectionId}" data-item-title="${item.title}">
             <h4>${item.title}</h4>
             <p>${item.content}</p>
             <span class="result-type-badge" style="background-color: var(--el-${item.color}, var(--color-primary))">${item.type}</span>
@@ -179,6 +183,7 @@ searchResultsContainer.addEventListener('click', (e) => {
             showSection(sectionId, linkText);
             updateActiveLink(sectionId);
             closeSearchModal();
+            showMainContentView(); // Ensure content is visible on mobile after search
         }
     }
 });
@@ -192,19 +197,23 @@ function initializeAccordion(container) {
         if (!button) return;
 
         const item = button.closest('.accordion-item');
-        if (!item || item.parentElement !== container) return;
+        // Ensure the clicked item is a direct child of this accordion container
+        if (!item || item.parentElement !== container) return; 
         
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
 
+        // This logic creates a "one-at-a-time" accordion behavior
         const siblingItems = Array.from(container.children).filter(child => child.classList.contains('accordion-item'));
         siblingItems.forEach(otherItem => {
             if (otherItem !== item) {
                 const otherButton = otherItem.querySelector('.accordion-button');
-                if (otherButton) otherButton.setAttribute('aria-expanded', 'false');
+                if (otherButton) {
+                    otherButton.setAttribute('aria-expanded', 'false');
+                }
             }
         });
         
-        button.setAttribute('aria-expanded', !isExpanded);
+        button.setAttribute('aria-expanded', String(!isExpanded));
     });
 }
 
@@ -621,15 +630,19 @@ const navStructure = [
     { title: 'Diagnóstico', icon: 'icon-stethoscope', isCategory: true, links: [ { id: 'diagnostico', title: 'Métodos de Diagnóstico', icon: 'icon-stethoscope' } ] },
     { title: 'Terapêuticas', icon: 'icon-lotus', isCategory: true, links: [ { id: 'terapias', title: 'Visão Geral', icon: 'icon-lotus' }, { id: 'dietetica', title: 'Dietética', icon: 'icon-soup' } ] },
     { title: 'Sabedoria', icon: 'icon-users', isCategory: true, links: [ { id: 'grandes-mestres', title: 'Grandes Mestres', icon: 'icon-scroll' } ] },
-    { id: 'glossario', title: 'Glossário', icon: 'icon-book-open', isCategory: true }, // Glossário é uma categoria de um item só
+    { id: 'glossario', title: 'Glossário', icon: 'icon-book-open', isCategory: true, links: [{ id: 'glossario', title: 'Glossário', icon: 'icon-book-open' }] },
 ];
 
 function generateNavLinks() {
     const generateHtml = (item) => {
-        if (item.links) {
+        if (item.links && item.links.length > 1) { // Render as a group if more than one link
             return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${link.icon}"></use></svg><span>${link.title}</span></a>`).join('')}</div></div>`;
         } else {
-            return `<a href="#${item.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span>${item.title}</span></a>`;
+            // Render as a single link if it's a category with one link or a standalone item
+            const targetId = item.id || (item.links && item.links[0].id);
+            const targetTitle = item.title;
+            const targetIcon = item.icon;
+            return `<a href="#${targetId}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${targetIcon}"></use></svg><span>${targetTitle}</span></a>`;
         }
     };
     const navHtml = navStructure.map(generateHtml).join('');
@@ -674,27 +687,26 @@ function setupMobileRadialNav() {
         navItem.style.transitionDelay = `${index * 0.05}s`;
 
         navItem.addEventListener('click', () => {
-            // Se a categoria tem sub-links, abre o menu lateral
+            // If the category has multiple sub-links, open the sidebar and the corresponding group
             if (category.links && category.links.length > 1) {
-                const allGroupHeaders = mobileNavHub.querySelectorAll('.nav-group-header');
-                allGroupHeaders.forEach(header => {
-                    const span = header.querySelector('span > span');
-                    if (span && span.textContent.trim() === category.title) {
-                        if (!header.classList.contains('open')) {
-                            // CORREÇÃO: Simula o clique no cabeçalho do grupo para abrir/fechar
-                            header.click();
-                        }
-                    }
-                });
+                const groupHeader = Array.from(mobileNavHub.querySelectorAll('.nav-group-header'))
+                                         .find(h => h.querySelector('span > span')?.textContent.trim() === category.title);
+                
+                if (groupHeader && !groupHeader.classList.contains('open')) {
+                    // *** FIX: Directly manipulate the class and attribute instead of simulating a click ***
+                    // This prevents potential event loops and makes the code more robust.
+                    groupHeader.classList.add('open');
+                    groupHeader.setAttribute('aria-expanded', 'true');
+                }
                 openMobileMenu();
             } else {
-                // Para itens de link único
+                // For categories with a single link (like "Glossário") or standalone items
                 const targetId = category.id || (category.links && category.links[0].id);
                 if (targetId) {
                     const link = mobileNavHub.querySelector(`a[href="#${targetId}"]`);
                     if (link) {
                         const linkText = link.querySelector('span').textContent;
-                        // Chamadas diretas para evitar o loop
+                        // Directly call the functions to show the content
                         showSection(targetId, linkText);
                         updateActiveLink(targetId);
                         showMainContentView();
@@ -711,7 +723,11 @@ function setupMobileRadialNav() {
         mobileCentralButton.classList.toggle('open');
     });
 
-    currentSectionTitle.addEventListener('click', showMobileHomeScreen);
+    // Allow clicking the title in the header to go back to the mobile home screen
+    const headerTitle = document.querySelector('#main-view-wrapper header h2');
+    if(headerTitle) {
+        headerTitle.addEventListener('click', showMobileHomeScreen);
+    }
 }
 
 // ############### FIM DA LÓGICA DO MENU RADIAL MÓVEL ###############
@@ -755,6 +771,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     createSearchIndex();
     contentSections = mainContent.querySelectorAll('.content-section');
+    
+    // Initial view setup
     showSection('inicio', 'Início');
     updateActiveLink('inicio');
     
