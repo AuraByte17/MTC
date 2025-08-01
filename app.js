@@ -32,7 +32,7 @@ const closeMenuBtn = document.getElementById('close-menu-btn');
 const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
 const mobileNavHub = document.getElementById('navigation-hub');
 
-// NOVO: Elementos do Ecrã Inicial Móvel
+// Elementos do Ecrã Inicial Móvel
 const mobileHomeScreen = document.getElementById('mobile-home-screen');
 const mainViewWrapper = document.getElementById('main-view-wrapper');
 const mobileCentralButton = document.getElementById('mobile-central-button');
@@ -669,18 +669,27 @@ function setupMobileRadialNav() {
             <span>${category.title}</span>
         `;
         
-        // Aplica a posição e o delay da animação
-        navItem.style.transform = `translate(${x}px, ${y}px) scale(0.5)`;
+        // CORREÇÃO: Define as variáveis CSS para a posição
+        navItem.style.setProperty('--x-pos', `${x}px`);
+        navItem.style.setProperty('--y-pos', `${y}px`);
         navItem.style.transitionDelay = `${index * 0.05}s`;
 
         navItem.addEventListener('click', () => {
             // Se a categoria tem sub-links, abre o menu lateral
             if (category.links && category.links.length > 1) {
-                const groupHeader = mobileNavHub.querySelector(`.nav-group-header span:contains('${category.title}')`)?.closest('.nav-group-header');
-                if (groupHeader) {
-                    // Abre o grupo se estiver fechado
-                    if (!groupHeader.classList.contains('open')) {
-                        groupHeader.click();
+                // CORREÇÃO: Procura o elemento de forma segura
+                const allGroupHeaders = mobileNavHub.querySelectorAll('.nav-group-header');
+                let targetHeader = null;
+                allGroupHeaders.forEach(header => {
+                    const span = header.querySelector('span > span');
+                    if (span && span.textContent.trim() === category.title) {
+                        targetHeader = header;
+                    }
+                });
+
+                if (targetHeader) {
+                    if (!targetHeader.classList.contains('open')) {
+                        targetHeader.click();
                     }
                 }
                 openMobileMenu();
@@ -690,12 +699,11 @@ function setupMobileRadialNav() {
                 if (targetId) {
                     const link = mobileNavHub.querySelector(`a[href="#${targetId}"]`);
                     if (link) {
-                        link.click(); // Simula o clique no link do menu lateral
+                        link.click();
                         showMainContentView();
                     }
                 }
             }
-            // Fecha o menu radial após a ação
             mobileCentralButton.classList.remove('open');
         });
 
@@ -706,7 +714,6 @@ function setupMobileRadialNav() {
         mobileCentralButton.classList.toggle('open');
     });
 
-    // Permite voltar ao menu inicial clicando no título
     currentSectionTitle.addEventListener('click', showMobileHomeScreen);
 }
 

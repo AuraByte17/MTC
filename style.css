@@ -554,6 +554,11 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
 .search-result-item .result-type-badge { display: inline-block; padding: 0.1rem 0.5rem; font-size: 0.7rem; font-weight: 700; border-radius: 9999px; color: white; margin-top: 0.5rem; }
 
 /* ############### INÍCIO DOS ESTILOS PARA MENU RADIAL MÓVEL ############### */
+#mobile-home-screen {
+    /* CORREÇÃO: Garante que o ecrã inicial ocupa todo o espaço e centra o conteúdo */
+    display: flex;
+    flex-grow: 1;
+}
 
 /* Estilos para o menu radial e seus itens */
 .radial-nav-item {
@@ -572,6 +577,7 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     opacity: 0;
+    /* CORREÇÃO: A transformação inicial é apenas de escala, a posição é adicionada pelo JS */
     transform: scale(0.5);
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     border: 1px solid var(--color-subtle-gray);
@@ -598,7 +604,8 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
 
 #mobile-central-button.open + #mobile-radial-nav-container .radial-nav-item {
     opacity: 1;
-    transform: scale(1);
+    /* CORREÇÃO: A transformação no estado aberto usa as variáveis CSS definidas no JS */
+    transform: translate(var(--x-pos), var(--y-pos)) scale(1);
 }
 
 /* ############### FIM DOS ESTILOS PARA MENU RADIAL MÓVEL ############### */
