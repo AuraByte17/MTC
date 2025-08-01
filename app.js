@@ -676,14 +676,13 @@ function setupMobileRadialNav() {
         navItem.addEventListener('click', () => {
             // Se a categoria tem sub-links, abre o menu lateral
             if (category.links && category.links.length > 1) {
-                // CORREÇÃO: Lógica direta para abrir o grupo, sem .click()
                 const allGroupHeaders = mobileNavHub.querySelectorAll('.nav-group-header');
                 allGroupHeaders.forEach(header => {
                     const span = header.querySelector('span > span');
                     if (span && span.textContent.trim() === category.title) {
                         if (!header.classList.contains('open')) {
-                            header.classList.add('open');
-                            header.setAttribute('aria-expanded', 'true');
+                            // CORREÇÃO: Simula o clique no cabeçalho do grupo para abrir/fechar
+                            header.click();
                         }
                     }
                 });
