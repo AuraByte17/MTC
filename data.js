@@ -1579,5 +1579,33 @@ export const therapiesData = [
             </div>
         </div>
     </div>`
+},
+{
+    id: 'dietetica-energetica',
+    title: 'Dietética Energética (食疗 - Shíliáo)',
+    icon: 'icon-soup',
+    content: `<div class="card-prose">
+        <p class="mb-4">A <strong>Dietética Energética</strong> é um dos pilares fundamentais da MTC, baseada no princípio de que "a comida é o primeiro remédio". Em vez de focar em calorias ou vitaminas, esta abordagem classifica os alimentos com base nas suas propriedades energéticas (natureza, sabor) e no seu efeito sobre o fluxo de Qi e os órgãos internos.</p>
+        
+        <h4 class="font-bold text-lg mt-6 mb-2">Princípios Fundamentais</h4>
+        <ul class="list-disc list-inside text-sm space-y-2">
+            <li>
+                <strong>Natureza (Xing):</strong> Refere-se ao efeito de temperatura de um alimento no corpo após a digestão. Alimentos <strong>frios/frescos</strong> (ex: melancia, pepino) são usados para limpar o Calor, enquanto alimentos <strong>mornos/quentes</strong> (ex: gengibre, canela) são usados para expelir o Frio e aquecer o corpo.
+            </li>
+            <li>
+                <strong>Sabor (Wei):</strong> Os cinco sabores têm ações terapêuticas específicas e afinidade com determinados órgãos:
+                <ul class="list-disc list-inside ml-4 mt-1">
+                    <li><strong>Azedo (Madeira/Fígado):</strong> Adstringente, ajuda a suster fluidos.</li>
+                    <li><strong>Amargo (Fogo/Coração):</strong> Drena o Calor e a Humidade, faz descer o Qi.</li>
+                    <li><strong>Doce (Terra/Baço):</strong> Tonifica o Qi, harmoniza e humedece.</li>
+                    <li><strong>Picante (Metal/Pulmão):</strong> Dispersa e move o Qi e o Sangue.</li>
+                    <li><strong>Salgado (Água/Rim):</strong> Amolece durezas e drena para baixo.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4 class="font-bold text-lg mt-6 mb-2">Aplicação Terapêutica</h4>
+        <p class="text-sm">O objetivo não é comer apenas um tipo de alimento, mas sim criar um equilíbrio. Por exemplo, numa condição de "Frio no Estômago", recomendam-se alimentos mornos e de sabor doce para aquecer e tonificar o centro. Numa condição de "Calor no Fígado", alimentos frescos e de sabor amargo ou azedo seriam mais apropriados para limpar o calor e acalmar o Fígado.</p>
+    </div>`
 }
 ];

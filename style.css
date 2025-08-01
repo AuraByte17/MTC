@@ -1,23 +1,30 @@
 /* --- Root Variables and Modern Body Styles --- */
 :root {
-    /* Paleta Revitalizada */
-    --color-primary: #2d5a67; /* Um verde-azulado mais profundo e sóbrio */
-    --color-primary-dark: #1e3c45; 
-    --color-secondary: #3aa394; /* Um verde-água vibrante */
-    --color-background-start: #f4f9f8;
-    --color-background-end: #e8f3f1;
-    --color-text: #2a3331; 
-    --color-text-muted: #5a6e6a;
-    --color-accent: #e88c38; /* Um laranja quente como destaque */
-    --color-accent-light: #fdf0e6;
-    --color-subtle-gray: #dce3e1;
+    /* NOVA PALETA INSPIRADA NOS 5 ELEMENTOS */
+    --color-wood: #34d399;      /* Verde (Madeira) */
+    --color-fire: #fb7185;      /* Rosa/Vermelho (Fogo) */
+    --color-earth: #f59e0b;     /* Amarelo/Laranja (Terra) */
+    --color-metal: #a8a29e;     /* Cinza/Branco (Metal) */
+    --color-water: #60a5fa;     /* Azul (Água) */
 
-    /* Cores dos Elementos (Fixas) */
-    --el-wood: #4ade80;
-    --el-fire: #f43f5e;
-    --el-earth: #f97316;
-    --el-metal: #a8a29e;
-    --el-water: #0ea5e9;
+    /* Cores Base da UI */
+    --color-primary: #374151;      /* Cinza Escuro (Neutro, para texto e headers) */
+    --color-primary-dark: #1f2937;
+    --color-secondary: #60a5fa;     /* Azul Água como cor secundária */
+    --color-background-start: #f9fafb; /* Fundo quase branco */
+    --color-background-end: #f3f4f6;
+    --color-text: #374151;
+    --color-text-muted: #6b7280;
+    --color-accent: #f59e0b;        /* Laranja Terra como destaque */
+    --color-accent-light: #fffbeb;
+    --color-subtle-gray: #e5e7eb;
+
+    /* Cores dos Elementos (Fixas para diagramas) */
+    --el-wood: var(--color-wood);
+    --el-fire: var(--color-fire);
+    --el-earth: var(--color-earth);
+    --el-metal: var(--color-metal);
+    --el-water: var(--color-water);
 }
 
 body {
