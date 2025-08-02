@@ -32,13 +32,6 @@ const closeMenuBtn = document.getElementById('close-menu-btn');
 const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
 const mobileNavHub = document.getElementById('navigation-hub');
 
-// Elementos do Ecrã Inicial Móvel
-const mobileHomeScreen = document.getElementById('mobile-home-screen');
-const mainViewWrapper = document.getElementById('main-view-wrapper');
-const mobileCentralButton = document.getElementById('mobile-central-button');
-const mobileRadialNavContainer = document.getElementById('mobile-radial-nav-container');
-const yinYangCentralSVG = document.getElementById('yin-yang-central-svg');
-
 // Elementos Comuns
 const currentSectionTitle = document.getElementById('current-section-title');
 const contentArea = document.getElementById('main-content-area');
@@ -126,10 +119,6 @@ allNavHubs.forEach(hub => {
             showSection(targetId, linkText);
             updateActiveLink(targetId);
             closeMobileMenu();
-            // On mobile, after clicking a link, show the content view
-            if (window.innerWidth < 768) {
-                showMainContentView();
-            }
         }
         if (groupHeader) {
             groupHeader.classList.toggle('open');
@@ -183,7 +172,6 @@ searchResultsContainer.addEventListener('click', (e) => {
             showSection(sectionId, linkText);
             updateActiveLink(sectionId);
             closeSearchModal();
-            showMainContentView(); // Ensure content is visible on mobile after search
         }
     }
 });
@@ -196,20 +184,14 @@ function initializeAccordion(container) {
         const button = e.target.closest('.accordion-button');
         if (!button) return;
 
-        // *** FIX: Stop the event from bubbling up to parent accordions. ***
-        // This prevents a click on a nested accordion from triggering the listener
-        // on its parent, which could cause a loop or unexpected closing.
         e.stopPropagation();
 
         const item = button.closest('.accordion-item');
         
-        // This check is now slightly redundant due to stopPropagation, 
-        // but it's kept as a safeguard.
         if (!item || item.parentElement !== container) return; 
         
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
 
-        // This logic creates a "one-at-a-time" accordion behavior
         const siblingItems = Array.from(container.children).filter(child => child.classList.contains('accordion-item'));
         siblingItems.forEach(otherItem => {
             if (otherItem !== item) {
@@ -656,93 +638,9 @@ function generateNavLinks() {
     allNavHubs.forEach(hub => hub.innerHTML = navHtml);
 }
 
-// ############### INÍCIO DA LÓGICA DO MENU RADIAL MÓVEL ###############
-
-function showMainContentView() {
-    document.body.classList.add('mobile-content-visible');
-}
-
-function showMobileHomeScreen() {
-    document.body.classList.remove('mobile-content-visible');
-    closeMobileMenu();
-}
-
-function setupMobileRadialNav() {
-    if (!mobileRadialNavContainer) return;
-
-    const loaderSVGContent = document.getElementById('yin-yang-loader-svg').innerHTML;
-    yinYangCentralSVG.innerHTML = loaderSVGContent;
-
-    const categories = navStructure.filter(item => item.isCategory);
-    const numItems = categories.length;
-    const radius = 100; 
-
-    categories.forEach((category, index) => {
-        const angle = (index / numItems) * 2 * Math.PI - (Math.PI / 2);
-        const x = radius * Math.cos(angle);
-        const y = radius * Math.sin(angle);
-
-        const navItem = document.createElement('button');
-        navItem.className = 'radial-nav-item';
-        navItem.innerHTML = `
-            <svg><use href="#${category.icon}"></use></svg>
-            <span>${category.title}</span>
-        `;
-        
-        navItem.style.setProperty('--x-pos', `${x}px`);
-        navItem.style.setProperty('--y-pos', `${y}px`);
-        navItem.style.transitionDelay = `${index * 0.05}s`;
-
-        navItem.addEventListener('click', () => {
-            // If the category has multiple sub-links, open the sidebar and the corresponding group
-            if (category.links && category.links.length > 1) {
-                const groupHeader = Array.from(mobileNavHub.querySelectorAll('.nav-group-header'))
-                                         .find(h => h.querySelector('span > span')?.textContent.trim() === category.title);
-                
-                if (groupHeader && !groupHeader.classList.contains('open')) {
-                    // *** FIX: Directly manipulate the class and attribute instead of simulating a click ***
-                    // This prevents potential event loops and makes the code more robust.
-                    groupHeader.classList.add('open');
-                    groupHeader.setAttribute('aria-expanded', 'true');
-                }
-                openMobileMenu();
-            } else {
-                // For categories with a single link (like "Glossário") or standalone items
-                const targetId = category.id || (category.links && category.links[0].id);
-                if (targetId) {
-                    const link = mobileNavHub.querySelector(`a[href="#${targetId}"]`);
-                    if (link) {
-                        const linkText = link.querySelector('span').textContent;
-                        // Directly call the functions to show the content
-                        showSection(targetId, linkText);
-                        updateActiveLink(targetId);
-                        showMainContentView();
-                    }
-                }
-            }
-            mobileCentralButton.classList.remove('open');
-        });
-
-        mobileRadialNavContainer.appendChild(navItem);
-    });
-
-    mobileCentralButton.addEventListener('click', () => {
-        mobileCentralButton.classList.toggle('open');
-    });
-
-    // Allow clicking the title in the header to go back to the mobile home screen
-    const headerTitle = document.querySelector('#main-view-wrapper header h2');
-    if(headerTitle) {
-        headerTitle.addEventListener('click', showMobileHomeScreen);
-    }
-}
-
-// ############### FIM DA LÓGICA DO MENU RADIAL MÓVEL ###############
-
 // --- PONTO DE ENTRADA DA APLICAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
     generateNavLinks(); 
-    setupMobileRadialNav();
     
     // Setup das secções
     setupYinYangSection();

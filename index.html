@@ -74,7 +74,7 @@
     </svg>
 
     <div class="flex h-screen bg-gray-100">
-        <!-- Sidebar para Desktop (mantém-se igual) -->
+        <!-- Sidebar para Desktop -->
         <aside class="w-64 bg-white shadow-lg p-4 flex-shrink-0 hidden md:flex flex-col">
             <div class="sidebar-header">
                 <svg class="w-8 h-8 sidebar-logo"><use href="#icon-app-logo"></use></svg>
@@ -87,29 +87,15 @@
             <nav id="desktop-navigation-hub" class="space-y-1 overflow-y-auto flex-grow"></nav>
         </aside>
 
-        <!-- Wrapper Principal para Móvel -->
-        <div class="flex-1 flex flex-col h-screen md:overflow-hidden">
+        <!-- Wrapper Principal -->
+        <div class="flex-1 flex flex-col h-screen">
             
-            <!-- CORREÇÃO: Ecrã Inicial para Móvel. Adicionada a classe `md:hidden` para o esconder em ecrãs de computador. -->
-            <div id="mobile-home-screen" class="flex flex-grow flex-col items-center justify-center p-4 text-center md:hidden">
-                <div class="relative w-64 h-64 flex items-center justify-center">
-                    <button id="mobile-central-button" class="w-32 h-32 rounded-full shadow-lg transition-transform duration-300">
-                        <svg id="yin-yang-central-svg" class="w-full h-full" viewBox="0 0 200 200">
-                            <!-- O conteúdo do SVG do loader será copiado aqui pelo JS -->
-                        </svg>
-                    </button>
-                    <div id="mobile-radial-nav-container" class="absolute inset-0">
-                        <!-- As esferas de navegação serão inseridas aqui pelo JS -->
-                    </div>
-                </div>
-                <h2 class="font-playfair text-2xl font-bold text-primary mt-8">Guia de MTC</h2>
-                <p class="text-gray-500 mt-2">Toque no símbolo para explorar as categorias.</p>
-            </div>
+            <!-- REMOVED: Ecrã Inicial para Móvel com o menu radial foi removido. -->
 
-            <!-- CORREÇÃO: Área de Conteúdo Principal. Alterado para `hidden md:flex` para que fique escondido por defeito em telemóvel e visível em computador. -->
-            <div id="main-view-wrapper" class="flex-1 flex-col h-screen hidden md:flex">
+            <!-- Área de Conteúdo Principal (Agora visível por defeito) -->
+            <div id="main-view-wrapper" class="flex-1 flex flex-col h-screen flex">
                 <header class="md:hidden bg-white shadow-md p-4 flex items-center justify-between sticky top-0 z-30">
-                    <h2 id="current-section-title" class="text-lg font-playfair font-bold text-primary cursor-pointer">Início</h2>
+                    <h2 id="current-section-title" class="text-lg font-playfair font-bold text-primary">Início</h2>
                     <div>
                         <button id="open-search-btn-mobile" class="p-1 mr-2"><svg class="w-6 h-6 text-gray-600"><use href="#icon-search"></use></svg><span class="sr-only">Abrir Pesquisa</span></button>
                         <button id="open-menu-btn" class="p-1"><svg class="w-6 h-6 text-gray-600"><use href="#icon-menu"></use></svg><span class="sr-only">Abrir Menu</span></button>
@@ -233,7 +219,7 @@
         </div>
     </div>
 
-    <!-- Sidebar Móvel (agora separado) -->
+    <!-- Sidebar Móvel -->
     <div id="mobile-menu-container" class="fixed inset-0 z-40 md:hidden">
         <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50"></div>
         <aside id="sidebar" class="w-64 bg-white shadow-lg p-4 flex-shrink-0 flex flex-col h-full transition-transform duration-300 -translate-x-full">
@@ -246,7 +232,7 @@
         </aside>
     </div>
 
-    <!-- Modal de Pesquisa Global (sem alterações) -->
+    <!-- Modal de Pesquisa Global -->
     <div id="search-modal-container" class="fixed inset-0 z-50 p-4 hidden">
         <div id="search-overlay" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
         <div class="relative bg-white w-full max-w-2xl mx-auto mt-[10vh] rounded-xl shadow-2xl flex flex-col max-h-[80vh]">
@@ -261,7 +247,7 @@
         </div>
     </div>
 
-    <!-- Modal de Conteúdo (Zoom) (sem alterações) -->
+    <!-- Modal de Conteúdo (Zoom) -->
     <div id="content-modal">
         <div id="content-modal-overlay"></div>
         <div id="content-modal-container">
