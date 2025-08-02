@@ -178,31 +178,39 @@ searchResultsContainer.addEventListener('click', (e) => {
 
 // --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO ---
 
+// *** FIX: Rewritten accordion logic to be more robust and prevent event loops. ***
 function initializeAccordion(container) {
     if (!container) return;
-    container.addEventListener('click', (e) => {
-        const button = e.target.closest('.accordion-button');
-        if (!button) return;
+    
+    // Use :scope to select only direct children, preventing nested accordions from interfering.
+    const items = container.querySelectorAll(':scope > .accordion-item');
 
-        e.stopPropagation();
+    items.forEach(item => {
+        const button = item.querySelector('.accordion-button');
+        if (button) {
+            // Remove any old listeners to be safe, though this shouldn't be necessary with the new structure.
+            // This is a defensive programming measure.
+            button.replaceWith(button.cloneNode(true));
+            const newButton = item.querySelector('.accordion-button');
 
-        const item = button.closest('.accordion-item');
-        
-        if (!item || item.parentElement !== container) return; 
-        
-        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            // Add a direct event listener to each button. This avoids event delegation issues.
+            newButton.addEventListener('click', () => {
+                const isExpanded = newButton.getAttribute('aria-expanded') === 'true';
 
-        const siblingItems = Array.from(container.children).filter(child => child.classList.contains('accordion-item'));
-        siblingItems.forEach(otherItem => {
-            if (otherItem !== item) {
-                const otherButton = otherItem.querySelector('.accordion-button');
-                if (otherButton) {
-                    otherButton.setAttribute('aria-expanded', 'false');
-                }
-            }
-        });
-        
-        button.setAttribute('aria-expanded', String(!isExpanded));
+                // First, close all other items within this specific accordion container.
+                items.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        const otherButton = otherItem.querySelector('.accordion-button');
+                        if (otherButton) {
+                            otherButton.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+
+                // Then, toggle the state of the button that was actually clicked.
+                newButton.setAttribute('aria-expanded', String(!isExpanded));
+            });
+        }
     });
 }
 
