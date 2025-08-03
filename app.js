@@ -46,6 +46,9 @@ const closeSearchBtn = document.getElementById('close-search-btn');
 const globalSearchInput = document.getElementById('global-search-input');
 const searchResultsContainer = document.getElementById('search-results-container');
 let searchIndex = [];
+// Variável para guardar o item a ser destacado após a navegação
+let pendingHighlight = null;
+
 
 // Elementos do Modal de Conteúdo
 const contentModal = document.getElementById('content-modal');
@@ -77,12 +80,16 @@ closeSearchBtn.addEventListener('click', closeSearchModal);
 searchOverlay.addEventListener('click', closeSearchModal);
 
 // --- LÓGICA DO MODAL DE CONTEÚDO ---
-function openContentModal(htmlContent) {
+function openContentModal(htmlContent, callback = null) {
     contentModalContent.innerHTML = htmlContent;
     document.body.classList.add('content-modal-open');
     
     const modalAccordions = contentModalContent.querySelectorAll('.accordion-container');
     modalAccordions.forEach(accordion => initializeAccordion(accordion));
+
+    if (callback) {
+        setTimeout(callback, 50);
+    }
 }
 function closeContentModal() {
     document.body.classList.remove('content-modal-open');
@@ -97,9 +104,16 @@ function showSection(targetId, linkText) {
     });
     if (contentArea) contentArea.scrollTop = 0;
     if (currentSectionTitle && linkText) currentSectionTitle.textContent = linkText;
+
+    if (pendingHighlight && pendingHighlight.sectionId === targetId) {
+        handleSearchResultNavigation(pendingHighlight);
+        pendingHighlight = null; // Limpa o pedido de destaque
+    }
 }
+
 function updateActiveLink(targetId) {
     allNavHubs.forEach(hub => {
+        if (!hub) return;
         hub.querySelectorAll('.sidebar-link').forEach(link => {
             const href = link.getAttribute('href');
             const isActive = href === `#${targetId}`;
@@ -109,6 +123,7 @@ function updateActiveLink(targetId) {
     });
 }
 allNavHubs.forEach(hub => {
+    if (!hub) return;
     hub.addEventListener('click', (e) => {
         const link = e.target.closest('a.sidebar-link');
         const groupHeader = e.target.closest('.nav-group-header');
@@ -129,13 +144,14 @@ allNavHubs.forEach(hub => {
 
 // --- LÓGICA DE PESQUISA ---
 function createSearchIndex() {
-    meridianData.forEach(m => m.points.forEach(p => searchIndex.push({ title: `${p.id} - ${p.name}`, content: p.functions, type: 'Ponto', color: m.element, sectionId: 'meridianos' })));
+    meridianData.forEach(m => m.points.forEach(p => searchIndex.push({ title: `${p.id} - ${p.name}`, content: p.functions, type: 'Ponto', color: m.element, sectionId: 'meridianos', meridianId: m.id })));
     Object.values(glossaryData).forEach(i => searchIndex.push({ title: i.term, content: i.definition, type: 'Glossário', color: 'primary', sectionId: 'glossario' }));
     foodData.forEach(f => searchIndex.push({ title: f.name, content: `Ações: ${f.actions}`, type: 'Alimento', color: 'earth', sectionId: 'dietetica' }));
-    zangFuPatternsData.forEach(o => o.patterns.forEach(p => searchIndex.push({ title: p.name, content: p.symptoms, type: 'Padrão Zang-Fu', color: o.color, sectionId: 'padroes-zang-fu' })));
-    therapiesData.forEach(t => searchIndex.push({ title: t.title, content: t.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Terapia', color: 'secondary', sectionId: 'terapias' })));
-    greatMastersData.forEach(m => searchIndex.push({ title: m.name, content: m.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Mestre', color: 'water', sectionId: 'grandes-mestres' })));
+    zangFuPatternsData.forEach(o => o.patterns.forEach(p => searchIndex.push({ title: p.name, content: p.symptoms, type: 'Padrão Zang-Fu', color: o.color, sectionId: 'padroes-zang-fu', organId: o.id })));
+    therapiesData.forEach(t => searchIndex.push({ title: t.title, content: t.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Terapia', color: 'secondary', sectionId: 'terapias', therapyId: t.id })));
+    greatMastersData.forEach(m => searchIndex.push({ title: m.name, content: m.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Mestre', color: 'water', sectionId: 'grandes-mestres', masterId: m.id })));
 }
+
 function performSearch(query) {
     if (query.length < 2) {
         searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Escreva pelo menos 2 letras para pesquisar.</p>';
@@ -148,78 +164,156 @@ function performSearch(query) {
     );
     renderSearchResults(results);
 }
+
 function renderSearchResults(results) {
     if (results.length === 0) {
         searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Nenhum resultado encontrado.</p>';
         return;
     }
     searchResultsContainer.innerHTML = results.map(item => `
-        <div class="search-result-item" data-section-id="${item.sectionId}" data-item-title="${item.title}">
+        <div class="search-result-item" 
+             data-section-id="${item.sectionId}" 
+             data-item-title="${item.title}"
+             data-item-type="${item.type}"
+             data-meridian-id="${item.meridianId || ''}"
+             data-organ-id="${item.organId || ''}"
+             data-therapy-id="${item.therapyId || ''}"
+             data-master-id="${item.masterId || ''}">
             <h4>${item.title}</h4>
             <p>${item.content}</p>
             <span class="result-type-badge" style="background-color: var(--el-${item.color}, var(--color-primary))">${item.type}</span>
         </div>
     `).join('');
 }
+
 globalSearchInput.addEventListener('input', (e) => performSearch(e.target.value));
+
 searchResultsContainer.addEventListener('click', (e) => {
     const resultItem = e.target.closest('.search-result-item');
     if (resultItem) {
-        const sectionId = resultItem.dataset.sectionId;
-        const link = document.querySelector(`#desktop-navigation-hub a[href="#${sectionId}"]`);
+        pendingHighlight = {
+            sectionId: resultItem.dataset.sectionId,
+            title: resultItem.dataset.itemTitle,
+            type: resultItem.dataset.itemType,
+            meridianId: resultItem.dataset.meridianId,
+            organId: resultItem.dataset.organId,
+            therapyId: resultItem.dataset.therapyId,
+            masterId: resultItem.dataset.masterId,
+        };
+
+        const link = document.querySelector(`#desktop-navigation-hub a[href="#${pendingHighlight.sectionId}"]`);
         if (link) {
             const linkText = link.querySelector('span').textContent;
-            showSection(sectionId, linkText);
-            updateActiveLink(sectionId);
+            showSection(pendingHighlight.sectionId, linkText);
+            updateActiveLink(pendingHighlight.sectionId);
             closeSearchModal();
         }
     }
 });
 
-// --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO ---
+// --- Função para destacar o resultado da pesquisa ---
+function highlightElement(element) {
+    if (!element) return;
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    element.classList.add('highlight');
+    setTimeout(() => {
+        element.classList.remove('highlight');
+    }, 2500);
+}
 
-// *** FIX: Rewritten accordion logic to be more robust and prevent event loops. ***
-function initializeAccordion(container) {
-    if (!container) return;
-    
-    // Use :scope to select only direct children, preventing nested accordions from interfering.
-    const items = container.querySelectorAll(':scope > .accordion-item');
+// --- Função para gerir a navegação e o destaque (CORRIGIDA) ---
+function handleSearchResultNavigation(item) {
+    const { sectionId, title, type, meridianId, organId, therapyId, masterId } = item;
 
-    items.forEach(item => {
-        const button = item.querySelector('.accordion-button');
-        if (button) {
-            // Remove any old listeners to be safe, though this shouldn't be necessary with the new structure.
-            // This is a defensive programming measure.
-            button.replaceWith(button.cloneNode(true));
-            const newButton = item.querySelector('.accordion-button');
-
-            // Add a direct event listener to each button. This avoids event delegation issues.
-            newButton.addEventListener('click', () => {
-                const isExpanded = newButton.getAttribute('aria-expanded') === 'true';
-
-                // First, close all other items within this specific accordion container.
-                items.forEach(otherItem => {
-                    if (otherItem !== item) {
-                        const otherButton = otherItem.querySelector('.accordion-button');
-                        if (otherButton) {
-                            otherButton.setAttribute('aria-expanded', 'false');
-                        }
+    switch (type) {
+        case 'Ponto': {
+            const meridianInfo = meridianData.find(m => m.id === meridianId);
+            if (meridianInfo) {
+                const pointId = title.split(' ')[0];
+                openContentModal(renderMeridianModalContent(meridianInfo), () => {
+                    const pointElement = contentModalContent.querySelector(`[data-point-id="${pointId}"]`);
+                    highlightElement(pointElement);
+                });
+            }
+            break;
+        }
+        case 'Alimento': {
+            const foodItems = document.querySelectorAll('#food-results-container .food-item h4');
+            const targetItem = Array.from(foodItems).find(h4 => h4.textContent.trim() === title.trim());
+            if (targetItem) {
+                highlightElement(targetItem.closest('.food-item'));
+            }
+            break;
+        }
+        case 'Padrão Zang-Fu': {
+            const organInfo = zangFuPatternsData.find(o => o.id === organId);
+            if (organInfo) {
+                openContentModal(renderZangFuModalContent(organInfo), () => {
+                    const accordionButtons = contentModalContent.querySelectorAll('.accordion-button span.text-left');
+                    const targetButton = Array.from(accordionButtons).find(span => span.textContent.trim() === title.trim());
+                    if (targetButton) {
+                        const accordionItem = targetButton.closest('.accordion-item');
+                        const button = accordionItem.querySelector('.accordion-button');
+                        button.setAttribute('aria-expanded', 'true');
+                        highlightElement(accordionItem);
                     }
                 });
+            }
+            break;
+        }
+        case 'Terapia': {
+            const therapyInfo = therapiesData.find(t => t.id === therapyId);
+            if (therapyInfo) {
+                openContentModal(renderTherapyModalContent(therapyInfo));
+            }
+            break;
+        }
+        case 'Mestre': {
+            const masterInfo = greatMastersData.find(m => m.id === masterId);
+            if (masterInfo) {
+                openContentModal(renderMasterModalContent(masterInfo));
+            }
+            break;
+        }
+        case 'Glossário': {
+             const termHeaders = document.querySelectorAll('#glossario h4');
+             const targetHeader = Array.from(termHeaders).find(h4 => h4.textContent.trim() === title.trim());
+             if(targetHeader) {
+                 highlightElement(targetHeader.parentElement);
+             }
+             break;
+        }
+    }
+}
 
-                // Then, toggle the state of the button that was actually clicked.
-                newButton.setAttribute('aria-expanded', String(!isExpanded));
+
+// --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO ---
+
+function initializeAccordion(container) {
+    if (!container) return;
+    const items = container.querySelectorAll(':scope > .accordion-item');
+    items.forEach(item => {
+        const button = item.querySelector('.accordion-button');
+        if (button && !button.dataset.initialized) {
+            button.dataset.initialized = 'true';
+            button.addEventListener('click', () => {
+                const isExpanded = button.getAttribute('aria-expanded') === 'true';
+                items.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.querySelector('.accordion-button').setAttribute('aria-expanded', 'false');
+                    }
+                });
+                button.setAttribute('aria-expanded', String(!isExpanded));
             });
         }
     });
 }
 
-
 function createAccordionHTML(data, containerIdPrefix = '') {
     return data.map((item, index) => {
         const uniqueId = `${containerIdPrefix}-item-${index}`;
         return `
-        <div class="accordion-item" data-id="${item.id || ''}">
+        <div class="accordion-item" data-id="${item.id || ''}" data-pattern-name="${item.title || ''}">
             <button class="accordion-button" aria-expanded="false" aria-controls="${uniqueId}-content" id="${uniqueId}-button">
                 <span class="accordion-title-content">
                     ${item.color ? `<span class="w-3 h-3 rounded-full mr-3 shrink-0" style="background-color: var(--el-${item.color});"></span>` : ''}
@@ -237,12 +331,12 @@ function createAccordionHTML(data, containerIdPrefix = '') {
 function setupYinYangSection() {
     const container = document.getElementById('yin-yang-container');
     if (!container) return;
-    const svg = document.getElementById('yin-yang-loader-svg').innerHTML;
+    const svgContent = yinYangData.svg.replace('<svg ', '<svg class="yin-yang-svg" ');
     container.innerHTML = `
         <div class="card-header"><h3>${yinYangData.title}</h3></div>
         <div class="card-content">
             <div class="grid lg:grid-cols-2 gap-8 items-center">
-                <div class="p-4"><svg viewBox="0 0 200 200" class="w-full max-w-xs mx-auto yin-yang-svg">${svg}</svg></div>
+                <div class="p-4">${svgContent}</div>
                 <div class="card-prose">${yinYangData.content}</div>
             </div>
             <div class="mt-8 grid md:grid-cols-2 gap-6">
@@ -260,6 +354,12 @@ function createLifeCycleTimeline(containerId, data, colorClass) {
             <div class="timeline-marker"><div class="w-8 h-8 rounded-full ${colorClass} text-white flex items-center justify-center font-bold text-sm shadow-md">${item.age}</div></div>
             <div class="pt-1"><p class="font-semibold text-gray-800">Idade ${item.age}</p><p class="text-sm text-gray-600">${item.content}</p></div>
         </div>`).join('');
+    
+    container.querySelectorAll('.timeline-item').forEach(item => {
+        item.addEventListener('click', () => {
+            highlightElement(item);
+        });
+    });
 }
 
 // --- SISTEMA DE GRELHAS GENÉRICO ---
@@ -338,27 +438,14 @@ const renderMeridianModalContent = (item) => `
         <h4 class="font-bold !text-base !mb-2">Pontos Shu Antigos</h4>
         <div class="overflow-x-auto"><table class="w-full text-left !text-xs"><thead class="bg-gray-100"><tr><th class="p-2 font-semibold">Tipo</th><th class="p-2 font-semibold">Elemento</th><th class="p-2 font-semibold">Ponto</th><th class="p-2 font-semibold">Funções</th></tr></thead><tbody>${item.five_shu.map(p => `<tr class="border-b"><td class="p-2">${p.type}</td><td class="p-2">${p.element}</td><td class="p-2 font-bold">${p.point}</td><td class="p-2">${p.functions}</td></tr>`).join('')}</tbody></table></div>
         <h4 class="font-bold !text-base !mb-2">Lista Completa de Pontos</h4>
-        <div class="space-y-3 max-h-80 overflow-y-auto pr-2">${item.points.map(p => `<div class="p-2 border-l-2 border-gray-200 hover:bg-gray-50"><strong class="text-primary-dark">${p.id} - ${p.name} (${p.character}) - ${p.pt_name}</strong><p class="text-gray-600 !mb-0">${p.functions}</p></div>`).join('')}</div>
+        <div class="space-y-3 max-h-80 overflow-y-auto pr-2">${item.points.map(p => `<div data-point-id="${p.id}" class="p-2 border-l-2 border-gray-200 hover:bg-gray-50"><strong class="text-primary-dark">${p.id} - ${p.name} (${p.character}) - ${p.pt_name}</strong><p class="text-gray-600 !mb-0">${p.functions}</p></div>`).join('')}</div>
     </div>`;
 
-const renderTherapyCard = (item) => {
-    const regex = /(.+?)\s\((.+?)(?:\s-\s(.+?))?\)/;
-    const match = item.title.match(regex);
-    let titleHTML, pinyinHTML = '';
-    if (match) {
-        const [, pt, ch, pinyin] = match;
-        titleHTML = `<div class="text-2xl font-chinese">${ch}</div><div class="text-xl font-playfair my-1">${pt}</div>`;
-        if (pinyin) pinyinHTML = `<div class="text-sm text-gray-500 font-mono">(${pinyin})</div>`;
-        else if (ch === '气功' || ch === '太极拳') pinyinHTML = `<div class="text-sm text-gray-500 font-mono">(${ch === '气功' ? 'Qìgōng' : 'Tàijí quán'})</div>`;
-    } else {
-        titleHTML = `<div class="text-xl font-playfair my-1">${item.title}</div>`;
-    }
-    return `
+const renderTherapyCard = (item) => `
     <div class="meridian-card text-center p-4 flex flex-col justify-center items-center h-full" data-id="${item.id}">
-        ${titleHTML}
-        ${pinyinHTML}
+        <h4 class="font-playfair font-bold text-lg text-primary">${item.title.split('(')[0]}</h4>
+        <p class="text-sm text-gray-500">${item.title.match(/\((.*?)\)/)?.[1] || ''}</p>
     </div>`;
-};
 
 const renderTherapyModalContent = (item) => `
     <div class="card-header"><h3>${item.title}</h3></div>
@@ -417,7 +504,7 @@ const renderQiFlipCard = (item) => `
     </div>`;
 
 const renderMasterFlipCard = (item) => `
-    <div class="flip-card">
+    <div class="flip-card" data-id="${item.id}">
         <div class="flip-card-inner">
             <div class="flip-card-front" style="background-image: url('${item.image_placeholder}')">
                 <div class="master-card-overlay">
@@ -525,7 +612,7 @@ function setupDiagnosisAccordion() {
     }
 }
 
-// --- LÓGICA DOS 5 ELEMENTOS (REFINADA) ---
+// --- LÓGICA DOS 5 ELEMENTOS ---
 const elementDiagramSVG = document.getElementById('element-diagram-svg');
 const elementDetailsContainer = document.getElementById('element-details-container');
 const pathsContainer = document.getElementById('cycle-paths-container');
@@ -545,14 +632,8 @@ function getArrowPoints(el1, el2, radius) {
     const p2 = elementCoords[el2];
     const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
     return {
-        start: {
-            x: p1.x + radius * Math.cos(angle),
-            y: p1.y + radius * Math.sin(angle)
-        },
-        end: {
-            x: p2.x - radius * Math.cos(angle),
-            y: p2.y - radius * Math.sin(angle)
-        }
+        start: { x: p1.x + radius * Math.cos(angle), y: p1.y + radius * Math.sin(angle) },
+        end: { x: p2.x - radius * Math.cos(angle), y: p2.y - radius * Math.sin(angle) }
     };
 }
 
@@ -627,15 +708,14 @@ const navStructure = [
     { title: 'Diagnóstico', icon: 'icon-stethoscope', isCategory: true, links: [ { id: 'diagnostico', title: 'Métodos de Diagnóstico', icon: 'icon-stethoscope' } ] },
     { title: 'Terapêuticas', icon: 'icon-lotus', isCategory: true, links: [ { id: 'terapias', title: 'Visão Geral', icon: 'icon-lotus' }, { id: 'dietetica', title: 'Dietética', icon: 'icon-soup' } ] },
     { title: 'Sabedoria', icon: 'icon-users', isCategory: true, links: [ { id: 'grandes-mestres', title: 'Grandes Mestres', icon: 'icon-scroll' } ] },
-    { id: 'glossario', title: 'Glossário', icon: 'icon-book-open', isCategory: true, links: [{ id: 'glossario', title: 'Glossário', icon: 'icon-book-open' }] },
+    { id: 'glossario', title: 'Glossário', icon: 'icon-book-open', isCategory: false },
 ];
 
 function generateNavLinks() {
     const generateHtml = (item) => {
-        if (item.links && item.links.length > 1) { // Render as a group if more than one link
+        if (item.isCategory && item.links && item.links.length > 1) {
             return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${link.icon}"></use></svg><span>${link.title}</span></a>`).join('')}</div></div>`;
         } else {
-            // Render as a single link if it's a category with one link or a standalone item
             const targetId = item.id || (item.links && item.links[0].id);
             const targetTitle = item.title;
             const targetIcon = item.icon;
@@ -647,51 +727,52 @@ function generateNavLinks() {
 }
 
 // --- PONTO DE ENTRADA DA APLICAÇÃO ---
-document.addEventListener('DOMContentLoaded', () => {
-    generateNavLinks(); 
-    
-    // Setup das secções
-    setupYinYangSection();
-    setupFlipGrid('qi-cards-container', qiData, renderQiFlipCard);
-    createLifeCycleTimeline('female-cycles-timeline', lifeCyclesFemaleData, 'bg-pink-500');
-    createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
-    setupGlossary();
-    setupDietetics();
-    
-    // Setup das grelhas com zoom
-    setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent);
-    setupZoomGrid('therapies-grid-container', therapiesData, renderTherapyCard, renderTherapyModalContent);
-    setupZoomGrid('zangfu-grid-container', zangFuPatternsData, renderZangFuCard, renderZangFuModalContent);
-    setupZoomGrid('anatomy-grid-container', anatomyData, renderAnatomyCard, renderAnatomyModalContent);
+// REMOVIDO: document.addEventListener('DOMContentLoaded', () => {
 
-    // Setup da grelha com flip para os Mestres
-    setupFlipGrid('masters-grid-container', greatMastersData, renderMasterFlipCard);
-    
-    // Setup do diagnóstico
-    setupDiagnosisAccordion();
-    setupDiagnosisDiagrams();
-    
-    // Setup dos 5 Elementos
-    if (document.getElementById('cinco-elementos')) {
-        setup5ElementsDiagram();
-        switchCycle('geracao');
-    }
+generateNavLinks(); 
 
-    // Animações e inicialização
-    document.querySelectorAll('aside .sidebar-link, aside .nav-group').forEach((el, index) => {
-        el.style.animationDelay = `${index * 0.07}s`;
-    });
+// Setup das secções
+setupYinYangSection();
+setupFlipGrid('qi-cards-container', qiData, renderQiFlipCard);
+createLifeCycleTimeline('female-cycles-timeline', lifeCyclesFemaleData, 'bg-pink-500');
+createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
+setupGlossary();
+setupDietetics();
 
-    createSearchIndex();
-    contentSections = mainContent.querySelectorAll('.content-section');
-    
-    // Initial view setup
-    showSection('inicio', 'Início');
-    updateActiveLink('inicio');
-    
-    if(loadingScreen) {
-        setTimeout(() => {
-            loadingScreen.classList.add('hidden');
-        }, 1500);
-    }
+// Setup das grelhas com zoom
+setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent);
+setupZoomGrid('therapies-grid-container', therapiesData, renderTherapyCard, renderTherapyModalContent);
+setupZoomGrid('zangfu-grid-container', zangFuPatternsData, renderZangFuCard, renderZangFuModalContent);
+setupZoomGrid('anatomy-grid-container', anatomyData, renderAnatomyCard, renderAnatomyModalContent);
+
+// Setup da grelha com flip para os Mestres
+setupFlipGrid('masters-grid-container', greatMastersData, renderMasterFlipCard);
+
+// Setup do diagnóstico
+setupDiagnosisAccordion();
+setupDiagnosisDiagrams();
+
+// Setup dos 5 Elementos
+if (document.getElementById('cinco-elementos')) {
+    setup5ElementsDiagram();
+    switchCycle('geracao');
+}
+
+// Animações e inicialização
+document.querySelectorAll('aside .sidebar-link, aside .nav-group').forEach((el, index) => {
+    el.style.animationDelay = `${index * 0.07}s`;
 });
+
+createSearchIndex();
+contentSections = mainContent.querySelectorAll('.content-section');
+
+// Initial view setup
+showSection('inicio', 'Início');
+updateActiveLink('inicio');
+
+if(loadingScreen) {
+    setTimeout(() => {
+        loadingScreen.classList.add('hidden');
+    }, 1500);
+}
+// REMOVIDO: });

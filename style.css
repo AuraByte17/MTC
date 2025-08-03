@@ -291,6 +291,11 @@ aside {
 @keyframes draw-line { to { stroke-dashoffset: 0; } }
 .arrow-marker { transition: fill 0.4s ease-in-out; }
 
+/* NOVA TRANSIÇÃO PARA A CAIXA DE INFORMAÇÃO DOS CICLOS */
+#cycle-info-box {
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
 .tab-button {
     padding: 0.5rem 1.25rem;
     border-radius: 9999px;
@@ -312,11 +317,44 @@ aside {
 }
 
 /* --- Timeline --- */
-.timeline-item { position: relative; padding-left: 2.5rem; padding-bottom: 1.5rem; }
-.timeline-item::before { content: ''; position: absolute; left: 14px; top: 14px; bottom: 0; width: 2px; background-color: var(--color-subtle-gray); }
-.timeline-container > .timeline-item:last-child { padding-bottom: 0; }
+/* NOVAS TRANSIÇÕES E ESTILOS PARA INTERATIVIDADE NA TIMELINE */
+.timeline-item { 
+    position: relative; 
+    padding: 0.75rem 1rem 1.5rem 2.5rem;
+    margin-left: -1rem; /* Compensa o padding para alinhar */
+    border-radius: 0.75rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+.timeline-item:hover {
+    background-color: var(--color-accent-light);
+    transform: translateX(5px);
+}
+.timeline-item::before { 
+    content: ''; 
+    position: absolute; 
+    left: 14px; 
+    top: 14px; 
+    bottom: 0; 
+    width: 2px; 
+    background-color: var(--color-subtle-gray); 
+    transition: background-color 0.3s ease;
+}
+.timeline-item:hover::before {
+    background-color: var(--color-accent);
+}
+.timeline-container > .timeline-item:last-child { padding-bottom: 0.75rem; }
 .timeline-container > .timeline-item:last-child::before { display: none; }
-.timeline-marker { position: absolute; left: 0; top: 0; }
+.timeline-marker { 
+    position: absolute; 
+    left: 0; 
+    top: 0.75rem; /* Ajuste para alinhar com o padding */
+    transition: transform 0.3s ease;
+}
+.timeline-item:hover .timeline-marker {
+    transform: scale(1.1);
+}
+
 
 /* --- DIAGRAMAS DE DIAGNÓSTICO (ESTILO PROFISSIONAL) --- */
 .diagram-area-svg { 
@@ -552,6 +590,16 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
 .search-result-item h4 { font-weight: 600; color: var(--color-primary); margin-bottom: 0.25rem; }
 .search-result-item p { font-size: 0.8rem; color: var(--color-text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .search-result-item .result-type-badge { display: inline-block; padding: 0.1rem 0.5rem; font-size: 0.7rem; font-weight: 700; border-radius: 9999px; color: white; margin-top: 0.5rem; }
+
+/* --- NOVO: Animação de Destaque para Pesquisa --- */
+@keyframes highlight-fade {
+    0% { background-color: var(--color-accent-light); }
+    100% { background-color: transparent; }
+}
+.highlight {
+    animation: highlight-fade 2.5s ease-out forwards;
+    border-radius: 0.5rem;
+}
 
 /* --- MELHORIAS PARA ECRÃS PEQUENOS --- */
 @media (max-width: 767px) {
