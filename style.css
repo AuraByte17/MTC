@@ -1,30 +1,23 @@
 /* --- Root Variables and Modern Body Styles --- */
 :root {
-    /* NOVA PALETA INSPIRADA NOS 5 ELEMENTOS */
-    --color-wood: #34d399;      /* Verde (Madeira) */
-    --color-fire: #fb7185;      /* Rosa/Vermelho (Fogo) */
-    --color-earth: #f59e0b;     /* Amarelo/Laranja (Terra) */
-    --color-metal: #a8a29e;     /* Cinza/Branco (Metal) */
-    --color-water: #60a5fa;     /* Azul (Água) */
+    /* Paleta Revitalizada */
+    --color-primary: #2d5a67; /* Um verde-azulado mais profundo e sóbrio */
+    --color-primary-dark: #1e3c45; 
+    --color-secondary: #3aa394; /* Um verde-água vibrante */
+    --color-background-start: #f4f9f8;
+    --color-background-end: #e8f3f1;
+    --color-text: #2a3331; 
+    --color-text-muted: #5a6e6a;
+    --color-accent: #e88c38; /* Um laranja quente como destaque */
+    --color-accent-light: #fdf0e6;
+    --color-subtle-gray: #dce3e1;
 
-    /* Cores Base da UI */
-    --color-primary: #374151;      /* Cinza Escuro (Neutro, para texto e headers) */
-    --color-primary-dark: #1f2937;
-    --color-secondary: #60a5fa;     /* Azul Água como cor secundária */
-    --color-background-start: #f9fafb; /* Fundo quase branco */
-    --color-background-end: #f3f4f6;
-    --color-text: #374151;
-    --color-text-muted: #6b7280;
-    --color-accent: #f59e0b;        /* Laranja Terra como destaque */
-    --color-accent-light: #fffbeb;
-    --color-subtle-gray: #e5e7eb;
-
-    /* Cores dos Elementos (Fixas para diagramas) */
-    --el-wood: var(--color-wood);
-    --el-fire: var(--color-fire);
-    --el-earth: var(--color-earth);
-    --el-metal: var(--color-metal);
-    --el-water: var(--color-water);
+    /* Cores dos Elementos (Fixas) */
+    --el-wood: #4ade80;
+    --el-fire: #f43f5e;
+    --el-earth: #f97316;
+    --el-metal: #a8a29e;
+    --el-water: #0ea5e9;
 }
 
 body {
@@ -236,145 +229,90 @@ aside {
 .yin-card { background: linear-gradient(145deg, #2d3748, #1a202c); color: #e2e8f0; }
 .yang-card { background: linear-gradient(145deg, #ffffff, #f7fafc); color: #4a5568; }
 
-/* --- 5 ELEMENTOS (ESTILO FINAL) --- */
-#element-diagram-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* --- 5 ELEMENTOS (SVG Interativo Profissional) --- */
+#five-elements-svg-container {
+    min-height: 350px;
 }
-#element-diagram-svg {
-    overflow: visible;
+.element-node-svg {
+    cursor: pointer;
+    transition: transform 0.3s ease;
 }
-.element-sphere .sphere-shadow {
-    fill: var(--color-subtle-gray);
-    filter: blur(5px);
-    opacity: 0.6;
-    transition: all 0.3s ease;
-}
-.element-sphere { 
-    cursor: pointer; 
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-}
-.element-sphere:hover {
-    transform: scale(1.08);
-}
-.element-sphere .sphere-circle { 
-    transition: all 0.3s ease; 
+.element-node-svg circle {
     stroke: rgba(0,0,0,0.1);
-    stroke-width: 1px;
+    stroke-width: 2px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.element-sphere .sphere-text { 
-    font-size: 14px; 
-    font-weight: 600; 
-    fill: white; 
-    text-anchor: middle; 
-    pointer-events: none; 
-}
-.element-sphere.active { 
-    transform: scale(1.1); 
-}
-.element-sphere.active .sphere-circle { 
-    stroke: white; 
-    stroke-width: 3px; 
-    filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));
-}
-.cycle-path { 
-    stroke-dasharray: 1000; 
-    stroke-dashoffset: 1000; 
-    transition: stroke 0.4s ease-in-out, stroke-width 0.4s ease-in-out, opacity 0.4s ease-in-out; 
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));
-}
-.cycle-path.draw { 
-    animation: draw-line 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; 
-}
-@keyframes draw-line { to { stroke-dashoffset: 0; } }
-.arrow-marker { transition: fill 0.4s ease-in-out; }
-
-/* NOVA TRANSIÇÃO PARA A CAIXA DE INFORMAÇÃO DOS CICLOS */
-#cycle-info-box {
-    transition: background-color 0.5s ease, color 0.5s ease;
-}
-
-.tab-button {
-    padding: 0.5rem 1.25rem;
-    border-radius: 9999px;
+.element-node-svg text {
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
-    color: var(--color-text-muted);
-    background-color: var(--color-background-end);
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
+    font-size: 16px;
+    fill: white;
+    text-anchor: middle;
+    pointer-events: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
-.tab-button:hover {
-    color: var(--color-primary);
-    background-color: var(--color-accent-light);
+.element-node-svg:hover circle {
+    transform: scale(1.1);
+    stroke: var(--color-accent);
+    stroke-width: 4px;
 }
-.tab-button.active {
-    color: var(--color-primary-dark);
-    background-color: white;
-    border-color: var(--color-secondary);
-    box-shadow: 0 4px 10px -2px rgba(58, 163, 148, 0.2);
+.element-node-svg.active circle {
+    transform: scale(1.15);
+    stroke: var(--color-primary-dark);
+    stroke-width: 5px;
+    filter: url(#glow-filter);
+}
+.cycle-path {
+    stroke-width: 3;
+    fill: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    pointer-events: none;
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+}
+.cycle-path.geracao { stroke: var(--color-secondary); }
+.cycle-path.controlo { stroke: var(--color-accent); }
+
+#five-elements-svg.show-geracao .cycle-path.geracao {
+    opacity: 1;
+    animation: draw-arrow 1.5s ease-out forwards;
+}
+#five-elements-svg.show-controlo .cycle-path.controlo {
+    opacity: 1;
+    animation: draw-arrow 1.5s ease-out forwards;
+}
+
+@keyframes draw-arrow {
+    to {
+        stroke-dashoffset: 0;
+    }
 }
 
 /* --- Timeline --- */
-/* NOVAS TRANSIÇÕES E ESTILOS PARA INTERATIVIDADE NA TIMELINE */
-.timeline-item { 
-    position: relative; 
-    padding: 0.75rem 1rem 1.5rem 2.5rem;
-    margin-left: -1rem; /* Compensa o padding para alinhar */
-    border-radius: 0.75rem;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    cursor: pointer;
-}
-.timeline-item:hover {
-    background-color: var(--color-accent-light);
-    transform: translateX(5px);
-}
-.timeline-item::before { 
-    content: ''; 
-    position: absolute; 
-    left: 14px; 
-    top: 14px; 
-    bottom: 0; 
-    width: 2px; 
-    background-color: var(--color-subtle-gray); 
-    transition: background-color 0.3s ease;
-}
-.timeline-item:hover::before {
-    background-color: var(--color-accent);
-}
-.timeline-container > .timeline-item:last-child { padding-bottom: 0.75rem; }
+.timeline-item { position: relative; padding-left: 2.5rem; padding-bottom: 1.5rem; }
+.timeline-item::before { content: ''; position: absolute; left: 14px; top: 14px; bottom: 0; width: 2px; background-color: var(--color-subtle-gray); }
+.timeline-container > .timeline-item:last-child { padding-bottom: 0; }
 .timeline-container > .timeline-item:last-child::before { display: none; }
-.timeline-marker { 
-    position: absolute; 
-    left: 0; 
-    top: 0.75rem; /* Ajuste para alinhar com o padding */
-    transition: transform 0.3s ease;
+.timeline-marker { position: absolute; left: 0; top: 0; }
+
+/* --- DIAGRAMAS DE DIAGNÓSTICO (ESTILO PROFISSIONAL SVG) --- */
+#lingua-diagram-svg .interactive-areas .diagram-area-svg {
+    fill: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
-.timeline-item:hover .timeline-marker {
-    transform: scale(1.1);
+#lingua-diagram-svg .diagram-area-svg:hover {
+    fill: var(--color-secondary);
+    opacity: 0.3;
+}
+#lingua-diagram-svg .diagram-area-svg.active {
+    fill: var(--color-accent);
+    opacity: 0.5;
+    stroke: var(--color-primary-dark);
+    stroke-width: 2px;
 }
 
-
-/* --- DIAGRAMAS DE DIAGNÓSTICO (ESTILO PROFISSIONAL) --- */
-.diagram-area-svg { 
-    fill: var(--color-secondary); 
-    opacity: 0.1; 
-    stroke: var(--color-secondary); 
-    stroke-width: 2px; 
-    cursor: pointer; 
-    transition: all 0.3s ease; 
-}
-.diagram-area-svg:hover { 
-    opacity: 0.35; 
-    stroke: var(--color-accent); 
-}
-.diagram-area-svg.active { 
-    opacity: 0.5; 
-    stroke: var(--color-accent); 
-    stroke-width: 3px; 
-    filter: url(#glow); 
-}
 .pulse-pos-circle { 
     fill: #fff; 
     stroke: var(--color-secondary); 
@@ -575,6 +513,47 @@ body.content-modal-open #content-modal-container {
     flex-grow: 1;
 }
 
+/* --- NOVO: Estilos do Corpo Interativo --- */
+#interactive-body-map {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+#interactive-body-map svg {
+    width: 100%;
+    height: auto;
+}
+.body-outline {
+    fill: #e5e7eb;
+    stroke: #9ca3af;
+    stroke-width: 1;
+}
+.meridian-path {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.2;
+    transition: opacity 0.3s ease, stroke-width 0.3s ease;
+    cursor: pointer;
+}
+#interactive-body-map:hover .meridian-path {
+    opacity: 0.1;
+}
+#interactive-body-map .meridian-path:hover {
+    opacity: 1;
+    stroke-width: 6;
+}
+#interactive-body-map .meridian-path.active {
+    opacity: 1;
+    stroke-width: 6;
+}
+#interactive-body-map.filtered .meridian-path:not(.active) {
+    pointer-events: none;
+    opacity: 0.05 !important;
+}
+
+
 /* --- ESTILOS PARA NAVEGAÇÃO MÓVEL --- */
 #mobile-menu-container { visibility: hidden; pointer-events: none; }
 body.mobile-menu-open #mobile-menu-container { visibility: visible; }
@@ -590,16 +569,6 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
 .search-result-item h4 { font-weight: 600; color: var(--color-primary); margin-bottom: 0.25rem; }
 .search-result-item p { font-size: 0.8rem; color: var(--color-text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .search-result-item .result-type-badge { display: inline-block; padding: 0.1rem 0.5rem; font-size: 0.7rem; font-weight: 700; border-radius: 9999px; color: white; margin-top: 0.5rem; }
-
-/* --- NOVO: Animação de Destaque para Pesquisa --- */
-@keyframes highlight-fade {
-    0% { background-color: var(--color-accent-light); }
-    100% { background-color: transparent; }
-}
-.highlight {
-    animation: highlight-fade 2.5s ease-out forwards;
-    border-radius: 0.5rem;
-}
 
 /* --- MELHORIAS PARA ECRÃS PEQUENOS --- */
 @media (max-width: 767px) {

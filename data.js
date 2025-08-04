@@ -595,7 +595,6 @@ export const meridianData = [
     }
 ];
 
-
 // Exporta os dados sobre os ciclos de vida
 export const lifeCyclesFemaleData = [
     { age: 7, content: 'A energia do Rim floresce, os dentes de leite são substituídos e o cabelo desenvolve-se.' },
@@ -616,123 +615,160 @@ export const lifeCyclesMaleData = [
     { age: 56, content: 'A energia do Fígado enfraquece, levando a rigidez nos tendões. A essência (Jing) diminui.' },
 ];
 
-// Exporta os dados sobre a anatomia energética (CONTEÚDO ATUALIZADO)
+// Exporta os dados sobre a anatomia energética
 export const anatomyData = [
-    // ATUALIZAÇÃO: Conteúdo do Sistema Esquelético expandido com anatomia ocidental.
-    { 
+    { 
         id: 'esqueletico', 
         title: 'Sistema Esquelético', 
         content: '<div class="card-prose"><p class="mb-4"><strong>Visão MTC:</strong> Governado pelo <strong>Rim</strong>, que armazena a Essência (<span class="tooltip-term" data-term="jing" tabindex="0">Jing</span>). O Jing produz a Medula, que preenche os ossos, a medula espinhal e o cérebro. A força dos ossos, a saúde dos dentes (considerados "o excedente dos ossos") e a função cerebral dependem da força do Jing do Rim. Osteoporose ou problemas dentários crónicos podem indicar uma deficiência do Jing do Rim.</p><h4 class="font-bold text-lg mt-4 mb-2">Anatomia Ocidental Detalhada</h4><h5 class="font-semibold mt-3 mb-1">Esqueleto Axial</h5><ul class="list-disc list-inside text-sm space-y-1"><li><strong>Crânio:</strong><ul class="list-disc list-inside ml-4 mt-1"><li><u>Neurocrânio:</u> Frontal, Parietal (2), Temporal (2), Occipital, Esfenoide, Etmoide.</li><li><u>Viscerocrânio:</u> Mandíbula, Maxila (2), Zigomático (2), Nasal (2), Lacrimal (2), Palatino (2), Vómer, Concha nasal inferior (2).</li><li><u>Ossículos da Audição:</u> Martelo (2), Bigorna (2), Estribo (2).</li></ul></li><li><strong>Osso Hioide:</strong> Localizado no pescoço.</li><li><strong>Coluna Vertebral:</strong><ul class="list-disc list-inside ml-4 mt-1"><li>Vértebras Cervicais (7), Torácicas (12), Lombares (5), Sacro, Cóccix.</li></ul></li><li><strong>Caixa Torácica:</strong><ul class="list-disc list-inside ml-4 mt-1"><li>Esterno (Manúbrio, Corpo, Processo xifoide).</li><li>Costelas (24).</li></ul></li></ul><h5 class="font-semibold mt-3 mb-1">Esqueleto Apendicular</h5><ul class="list-disc list-inside text-sm space-y-1"><li><strong>Cintura Escapular:</strong> Clavícula (2), Omoplata (Escápula) (2).</li><li><strong>Membros Superiores:</strong><ul class="list-disc list-inside ml-4 mt-1"><li><u>Braço:</u> Úmero (2).</li><li><u>Antebraço:</u> Rádio (2), Cúbito (Ulna) (2).</li><li><u>Mão:</u> Ossos do Carpo (16), Metacarpos (10), Falanges (28).</li></ul></li><li><strong>Cintura Pélvica:</strong> Osso do quadril (Ílio, Ísquio, Púbis) (2).</li><li><strong>Membros Inferiores:</strong><ul class="list-disc list-inside ml-4 mt-1"><li><u>Coxa:</u> Fémur (2), Rótula (Patela) (2).</li><li><u>Perna:</u> Tíbia (2), Perónio (Fíbula) (2).</li><li><u>Pé:</u> Ossos do Tarso (14), Metatarsos (10), Falanges (28).</li></ul></li></ul></div>' 
     },
-    // ATUALIZAÇÃO: Conteúdo do Sistema Muscular expandido com anatomia ocidental.
-    { 
+    { 
         id: 'muscular', 
         title: 'Sistema Muscular', 
         content: '<div class="card-prose"><p class="mb-4"><strong>Visão MTC:</strong> A MTC distingue entre Músculos e Tendões. Os <strong>Músculos</strong> são governados pelo <strong>Baço</strong>, que transforma os alimentos em Qi e Sangue para os nutrir. Músculos fracos ou fatigados podem indicar uma deficiência de Qi do Baço. Os <strong>Tendões</strong> são governados pelo <strong>Fígado</strong>, que os humedece com Sangue para garantir flexibilidade e movimento suave. Cãibras, espasmos ou rigidez podem indicar uma deficiência de Sangue no Fígado.</p><h4 class="font-bold text-lg mt-4 mb-2">Principais Músculos por Região</h4><h5 class="font-semibold mt-3 mb-1">Cabeça e Pescoço</h5><ul class="list-disc list-inside text-sm space-y-1"><li><strong>Músculos da Mastigação:</strong> Masséter, Temporal.</li><li><strong>Músculos Faciais:</strong> Orbicular do olho, Orbicular da boca, Bucinador, Zigomático.</li><li><strong>Músculos do Pescoço:</strong> Esternocleidomastoideo, Escalenos, Platisma.</li></ul><h5 class="font-semibold mt-3 mb-1">Tronco</h5><ul class="list-disc list-inside text-sm space-y-1"><li><strong>Peitorais:</strong> Peitoral maior, Peitoral menor, Serrátil anterior.</li><li><strong>Dorsais (Costas):</strong> Trapézio, Grande dorsal (Latíssimo do dorso), Romboides (maior e menor), Eretores da espinha.</li><li><strong>Abdominais:</strong> Reto abdominal, Oblíquo externo, Oblíquo interno, Transverso abdominal.</li><li><strong>Assoalho Pélvico:</strong> Levantador do ânus, Coccígeo.</li></ul><h5 class="font-semibold mt-3 mb-1">Membros Superiores</h5><ul class="list-disc list-inside text-sm space-y-1"><li><strong>Ombro:</strong> Deltoide, Manguito Rotador (Supraespinhoso, Infraespinhoso, Redondo menor, Subescapular).</li><li><strong>Braço:</strong> Bicípite braquial, Braquial, Coracobraquial, Tricípite braquial.</li><li><strong>Antebraço:</strong> Grupo flexor (ex: Flexor radial do carpo), Grupo extensor (ex: Extensor dos dedos).</li></ul><h5 class="font-semibold mt-3 mb-1">Membros Inferiores</h5><ul class="list-disc list-inside text-sm space-y-1"><li><strong>Região Glútea:</strong> Glúteo máximo, Glúteo médio, Glúteo mínimo.</li><li><strong>Coxa (Anterior):</strong> Quadríceps femoral (Reto femoral, Vasto lateral, Vasto medial, Vasto intermédio), Sartório.</li><li><strong>Coxa (Posterior):</strong> Isquiotibiais (Bicípite femoral, Semitendinoso, Semimembranoso).</li><li><strong>Coxa (Medial):</strong> Grupo dos Adutores (Adutor longo, magno, curto).</li><li><strong>Perna (Anterior):</strong> Tibial anterior.</li><li><strong>Perna (Posterior):</strong> Gastrocnémio (Gémeos), Sóleo.</li><li><strong>Perna (Lateral):</strong> Fibulares (longo e curto).</li></ul></div>' 
     },
-    { id: 'cardiovascular', title: 'Sistema Cardiovascular', content: '<div class="card-prose"><p class="mb-4"><strong>Visão MTC:</strong> O <strong>Coração</strong> é o "Imperador". Governa o Sangue e os Vasos Sanguíneos, garantindo a circulação. Mais importante, abriga a Mente (<span class="tooltip-term" data-term="shen" tabindex="0">Shen</span>). A saúde do Coração afeta a circulação (pulso, compleição), mas também a clareza mental, a estabilidade emocional e o sono. Palpitações, ansiedade e insónia são frequentemente tratadas através do Coração.</p><h4 class="font-bold text-lg mb-2">Componentes Chave</h4><ul class="list-disc list-inside text-sm"><li><strong>Coração (Xin):</strong> Abriga o Shen e governa o Sangue.</li><li><strong>Vasos Sanguíneos (Mai):</strong> Extensões do Coração, transportam Qi e Sangue.</li><li><strong>Pericárdio (Xin Bao):</strong> O protetor do Coração.</li></ul></div>' },
-    { id: 'respiratorio', title: 'Sistema Respiratório', content: '<div class="card-prose"><p class="mb-4"><strong>Visão MTC:</strong> O <strong>Pulmão</strong> é o "Primeiro Ministro". Governa o Qi de todo o corpo e a respiração, recebendo o "Qi limpo" do ar. Controla a "descida e dispersão" do Qi e dos fluidos. Também governa a pele e o <span class="tooltip-term" data-term="wei-qi" tabindex="0">Wei Qi</span> (energia de defesa), a nossa primeira linha de defesa contra fatores externos. A tristeza e o pesar podem enfraquecer o Qi do Pulmão.</p><h4 class="font-bold text-lg mb-2">Funções Chave</h4><ul class="list-disc list-inside text-sm"><li><strong>Respiração:</strong> Inalação do Qi do Ar.</li><li><strong>Dispersão:</strong> Distribui Qi e fluidos para a pele.</li><li><strong>Descida:</strong> Envia Qi e fluidos para os Rins e a Bexiga.</li></ul></div>' },
-    { id: 'digestivo', title: 'Sistema Digestivo', content: '<div class="card-prose"><p class="mb-4"><strong>Visão MTC:</strong> Uma parceria central entre o <strong>Estômago</strong> e o <strong>Baço</strong>. O Estômago recebe e "apodrece e amadurece" os alimentos (o seu Qi deve descer). O Baço transforma os alimentos em <span class="tooltip-term" data-term="gu-qi" tabindex="0">Gu Qi</span> (Qi dos Alimentos) e transporta os nutrientes para todo o corpo (o seu Qi deve subir). O <strong>Fígado</strong> assegura o fluxo suave de Qi, essencial para uma boa digestão, enquanto os <strong>Intestinos</strong> separam o puro do impuro.</p><h4 class="font-bold text-lg mb-2">Órgãos Chave</h4><ul class="list-disc list-inside text-sm"><li><strong>Estômago:</strong> Receção.</li><li><strong>Baço:</strong> Transformação e Transporte.</li><li><strong>Fígado:</strong> Assegura o fluxo suave de Qi.</li><li><strong>Intestinos:</strong> Separação e Excreção.</li></ul></div>'},
-    { id: 'nervoso', title: 'Sistema Nervoso', content: '<div class="card-prose"><p class="mb-4"><strong>Visão MTC:</strong> Não existe um "sistema nervoso" como na anatomia ocidental, mas as suas funções estão distribuídas. O <strong>Cérebro</strong> é o "Mar da Medula", nutrido pela Essência do <strong>Rim</strong> e governa a inteligência e a memória. A consciência, o pensamento e a estabilidade emocional são governados pelo <strong>Coração</strong>, que abriga o <span class="tooltip-term" data-term="shen" tabindex="0">Shen</span>. O <strong>Fígado</strong>, ao garantir o fluxo suave de Qi, previne a "tensão nervosa" e a irritabilidade, e abriga a Alma Etérea (<span class="tooltip-term" data-term="hun" tabindex="0">Hun</span>), ligada ao planeamento e aos sonhos.</p><h4 class="font-bold text-lg mb-2">Centros de Controlo</h4><ul class="list-disc list-inside text-sm"><li><strong>Cérebro (Mar da Medula):</strong> Nutrido pelo Rim.</li><li><strong>Coração (Shen):</strong> Governa a mente e a consciência.</li><li><strong>Fígado (Hun):</strong> Governa o planeamento e o fluxo emocional.</li></ul></div>' },
+    { id: 'cardiovascular', title: 'Sistema Cardiovascular', content: '<div class="card-prose"><p class="mb-4"><strong>Visão MTC:</strong> O <strong>Coração</strong> é o "Imperador". Governa o Sangue e os Vasos Sanguíneos, garantindo a circulação. Mais importante, abriga a Mente (<span class="tooltip-term" data-term="shen" tabindex="0">Shen</span>). A saúde do Coração afeta a circulação (pulso, compleição), mas também a clareza mental, a estabilidade emocional e o sono. Palpitações, ansiedade e insónia são frequentemente tratadas através do Coração.</p><h4 class="font-bold text-lg mb-2">Componentes Chave</h4><ul class="list-disc list-inside text-sm"><li><strong>Coração (Xin):</strong> Abriga o Shen e governa o Sangue.</li><li><strong>Vasos Sanguíneos (Mai):</strong> Extensões do Coração, transportam Qi e Sangue.</li><li><strong>Pericárdio (Xin Bao):</strong> O protetor do Coração.</li></ul></div>' },
+    { id: 'respiratorio', title: 'Sistema Respiratório', content: '<div class="card-prose"><p class="mb-4"><strong>Visão MTC:</strong> O <strong>Pulmão</strong> é o "Primeiro Ministro". Governa o Qi de todo o corpo e a respiração, recebendo o "Qi limpo" do ar. Controla a "descida e dispersão" do Qi e dos fluidos. Também governa a pele e o <span class="tooltip-term" data-term="wei-qi" tabindex="0">Wei Qi</span> (energia de defesa), a nossa primeira linha de defesa contra fatores externos. A tristeza e o pesar podem enfraquecer o Qi do Pulmão.</p><h4 class="font-bold text-lg mb-2">Funções Chave</h4><ul class="list-disc list-inside text-sm"><li><strong>Respiração:</strong> Inalação do Qi do Ar.</li><li><strong>Dispersão:</strong> Distribui Qi e fluidos para a pele.</li><li><strong>Descida:</strong> Envia Qi e fluidos para os Rins e a Bexiga.</li></ul></div>' },
+    { id: 'digestivo', title: 'Sistema Digestivo', content: '<div class="card-prose"><p class="mb-4"><strong>Visão MTC:</strong> Uma parceria central entre o <strong>Estômago</strong> e o <strong>Baço</strong>. O Estômago recebe e "apodrece e amadurece" os alimentos (o seu Qi deve descer). O Baço transforma os alimentos em <span class="tooltip-term" data-term="gu-qi" tabindex="0">Gu Qi</span> (Qi dos Alimentos) e transporta os nutrientes para todo o corpo (o seu Qi deve subir). O <strong>Fígado</strong> assegura o fluxo suave de Qi, essencial para uma boa digestão, enquanto os <strong>Intestinos</strong> separam o puro do impuro.</p><h4 class="font-bold text-lg mb-2">Órgãos Chave</h4><ul class="list-disc list-inside text-sm"><li><strong>Estômago:</strong> Receção.</li><li><strong>Baço:</strong> Transformação e Transporte.</li><li><strong>Fígado:</strong> Assegura o fluxo suave de Qi.</li><li><strong>Intestinos:</strong> Separação e Excreção.</li></ul></div>'},
+    { id: 'nervoso', title: 'Sistema Nervoso', content: '<div class="card-prose"><p class="mb-4"><strong>Visão MTC:</strong> Não existe um "sistema nervoso" como na anatomia ocidental, mas as suas funções estão distribuídas. O <strong>Cérebro</strong> é o "Mar da Medula", nutrido pela Essência do <strong>Rim</strong> e governa a inteligência e a memória. A consciência, o pensamento e a estabilidade emocional são governados pelo <strong>Coração</strong>, que abriga o <span class="tooltip-term" data-term="shen" tabindex="0">Shen</span>. O <strong>Fígado</strong>, ao garantir o fluxo suave de Qi, previne a "tensão nervosa" e a irritabilidade, e abriga a Alma Etérea (<span class="tooltip-term" data-term="hun" tabindex="0">Hun</span>), ligada ao planeamento e aos sonhos.</p><h4 class="font-bold text-lg mb-2">Centros de Controlo</h4><ul class="list-disc list-inside text-sm"><li><strong>Cérebro (Mar da Medula):</strong> Nutrido pelo Rim.</li><li><strong>Coração (Shen):</strong> Governa a mente e a consciência.</li><li><strong>Fígado (Hun):</strong> Governa o planeamento e o fluxo emocional.</li></ul></div>' },
 ];
 
 
 // Exporta os dados sobre os 5 Elementos
 export const fiveElementsData = {
-    madeira: { name: 'Madeira', color: 'wood', target: { geracao: 'fogo', controlo: 'terra' }, relations: { geracao: "Água gera Madeira, que gera Fogo.", controlo: "Metal controla Madeira, que controla Terra." }, table: `<tr><td>Órgãos</td><td>Fígado, Vesícula Biliar</td></tr><tr><td>Emoção</td><td>Raiva / Assertividade</td></tr><tr><td>Estação</td><td>Primavera</td></tr><tr><td>Clima</td><td>Vento</td></tr><tr><td>Cor</td><td>Verde</td></tr><tr><td>Sabor</td><td>Azedo</td></tr>`},
-    fogo: { name: 'Fogo', color: 'fire', target: { geracao: 'terra', controlo: 'metal' }, relations: { geracao: "Madeira gera Fogo, que gera Terra.", controlo: "Água controla Fogo, que controla Metal." }, table: `<tr><td>Órgãos</td><td>Coração, I. Delgado</td></tr><tr><td>Emoção</td><td>Alegria / Pânico</td></tr><tr><td>Estação</td><td>Verão</td></tr><tr><td>Clima</td><td>Calor</td></tr><tr><td>Cor</td><td>Vermelho</td></tr><tr><td>Sabor</td><td>Amargo</td></tr>`},
-    terra: { name: 'Terra', color: 'earth', target: { geracao: 'metal', controlo: 'agua' }, relations: { geracao: "Fogo gera Terra, que gera Metal.", controlo: "Madeira controla Terra, que controla Água." }, table: `<tr><td>Órgãos</td><td>Baço, Estômago</td></tr><tr><td>Emoção</td><td>Preocupação / Simpatia</td></tr><tr><td>Estação</td><td>Fim do Verão</td></tr><tr><td>Clima</td><td>Humidade</td></tr><tr><td>Cor</td><td>Amarelo</td></tr><tr><td>Sabor</td><td>Doce</td></tr>`},
-    metal: { name: 'Metal', color: 'metal', target: { geracao: 'agua', controlo: 'madeira' }, relations: { geracao: "Terra gera Metal, que gera Água.", controlo: "Fogo controla Metal, que controla Madeira." }, table: `<tr><td>Órgãos</td><td>Pulmão, I. Grosso</td></tr><tr><td>Emoção</td><td>Tristeza / Desapego</td></tr><tr><td>Estação</td><td>Outono</td></tr><tr><td>Clima</td><td>Secura</td></tr><tr><td>Cor</td><td>Branco</td></tr><tr><td>Sabor</td><td>Picante</td></tr>`},
-    agua: { name: 'Água', color: 'water', target: { geracao: 'madeira', controlo: 'fogo' }, relations: { geracao: "Metal gera Água, que gera Madeira.", controlo: "Terra controla Água, que controla Fogo." }, table: `<tr><td>Órgãos</td><td>Rim, Bexiga</td></tr><tr><td>Emoção</td><td>Medo / Força de Vontade</td></tr><tr><td>Estação</td><td>Inverno</td></tr><tr><td>Clima</td><td>Frio</td></tr><tr><td>Cor</td><td>Preto / Azul</td></tr><tr><td>Sabor</td><td>Salgado</td></tr>`}
+    madeira: { name: 'Madeira', color: 'wood', target: { geracao: 'fogo', controlo: 'terra' }, relations: { geracao: "Água gera Madeira, que gera Fogo.", controlo: "Metal controla Madeira, que controla Terra." }, table: `<tr><td>Órgãos</td><td>Fígado, Vesícula Biliar</td></tr><tr><td>Emoção</td><td>Raiva / Assertividade</td></tr><tr><td>Estação</td><td>Primavera</td></tr><tr><td>Clima</td><td>Vento</td></tr><tr><td>Cor</td><td>Verde</td></tr><tr><td>Sabor</td><td>Azedo</td></tr>`},
+    fogo: { name: 'Fogo', color: 'fire', target: { geracao: 'terra', controlo: 'metal' }, relations: { geracao: "Madeira gera Fogo, que gera Terra.", controlo: "Água controla Fogo, que controla Metal." }, table: `<tr><td>Órgãos</td><td>Coração, I. Delgado</td></tr><tr><td>Emoção</td><td>Alegria / Pânico</td></tr><tr><td>Estação</td><td>Verão</td></tr><tr><td>Clima</td><td>Calor</td></tr><tr><td>Cor</td><td>Vermelho</td></tr><tr><td>Sabor</td><td>Amargo</td></tr>`},
+    terra: { name: 'Terra', color: 'earth', target: { geracao: 'metal', controlo: 'agua' }, relations: { geracao: "Fogo gera Terra, que gera Metal.", controlo: "Madeira controla Terra, que controla Água." }, table: `<tr><td>Órgãos</td><td>Baço, Estômago</td></tr><tr><td>Emoção</td><td>Preocupação / Simpatia</td></tr><tr><td>Estação</td><td>Fim do Verão</td></tr><tr><td>Clima</td><td>Humidade</td></tr><tr><td>Cor</td><td>Amarelo</td></tr><tr><td>Sabor</td><td>Doce</td></tr>`},
+    metal: { name: 'Metal', color: 'metal', target: { geracao: 'agua', controlo: 'madeira' }, relations: { geracao: "Terra gera Metal, que gera Água.", controlo: "Fogo controla Metal, que controla Madeira." }, table: `<tr><td>Órgãos</td><td>Pulmão, I. Grosso</td></tr><tr><td>Emoção</td><td>Tristeza / Desapego</td></tr><tr><td>Estação</td><td>Outono</td></tr><tr><td>Clima</td><td>Secura</td></tr><tr><td>Cor</td><td>Branco</td></tr><tr><td>Sabor</td><td>Picante</td></tr>`},
+    agua: { name: 'Água', color: 'water', target: { geracao: 'madeira', controlo: 'fogo' }, relations: { geracao: "Metal gera Água, que gera Madeira.", controlo: "Terra controla Água, que controla Fogo." }, table: `<tr><td>Órgãos</td><td>Rim, Bexiga</td></tr><tr><td>Emoção</td><td>Medo / Força de Vontade</td></tr><tr><td>Estação</td><td>Inverno</td></tr><tr><td>Clima</td><td>Frio</td></tr><tr><td>Cor</td><td>Preto / Azul</td></tr><tr><td>Sabor</td><td>Salgado</td></tr>`}
 };
 
 // Exporta os dados do Glossário
 export const glossaryData = {
-    qi: { term: 'Qi (氣)', definition: 'A energia vital ou força da vida que flui através de todos os seres vivos, animando todas as funções fisiológicas.', category: 'Substâncias Fundamentais' },
-    jing: { term: 'Jing (精)', definition: 'A Essência, a nossa reserva de energia mais profunda herdada dos pais. Governa o crescimento, a reprodução e o envelhecimento.', category: 'Substâncias Fundamentais' },
-    shen: { term: 'Shen (神)', definition: 'O Espírito ou Mente. Reside no Coração e governa a consciência, o pensamento, a memória e a presença espiritual.', category: 'Substâncias Fundamentais' },
-    xue: { term: 'Xue (血)', definition: 'O Sangue. Uma forma densa de Qi que nutre, humedece e suporta o corpo e a mente. Está intimamente ligado ao Shen.', category: 'Substâncias Fundamentais' },
-    'jin-ye': { term: 'Jin Ye (津液)', definition: 'Os Fluidos Corporais. Inclui todas as secreções e fluidos do corpo, como saliva, suor e lágrimas. Humedecem a pele, músculos e órgãos.', category: 'Substâncias Fundamentais' },
-    'zang-fu': { term: 'Zang-Fu (臟腑)', definition: 'O sistema de órgãos internos. Os Zang (Yin) são órgãos sólidos de armazenamento (Fígado, Coração, Baço, Pulmão, Rim). Os Fu (Yang) são órgãos ocos de transformação e excreção (Vesícula Biliar, Intestinos, etc.).', category: 'Fisiologia Energética' },
-    'dan-tian': { term: 'Dan Tian (丹田)', definition: 'Literalmente "Campo de Cinábrio". Centros energéticos no corpo, sendo o mais conhecido o Dan Tian Inferior, localizado no baixo-ventre, considerado o reservatório principal de Qi.', category: 'Fisiologia Energética' },
-    'wei-qi': { term: 'Wei Qi (衛氣)', definition: 'O Qi Defensivo. Circula na superfície do corpo, protegendo-o de fatores patogénicos externos. É a nossa imunidade energética.', category: 'Fisiologia Energética' },
-    'ying-qi': { term: 'Ying Qi (營氣)', definition: 'O Qi Nutritivo. Flui com o Sangue nos meridianos para nutrir os órgãos internos e todo o corpo.', category: 'Fisiologia Energética' },
-    'yuan-qi': { term: 'Yuan Qi (原氣)', definition: 'O Qi Original. Derivado do Jing Pré-Natal, é a força motriz para todas as atividades fisiológicas, armazenado nos Rins.', category: 'Fisiologia Energética' },
-    'zong-qi': { term: 'Zong Qi (宗氣)', definition: 'O Qi Peitoral ou Ancestral. Formado a partir do ar e dos alimentos, acumula-se no peito e governa a respiração e a circulação.', category: 'Fisiologia Energética' },
-    'gu-qi': { term: 'Gu Qi (谷氣)', definition: 'O Qi dos Alimentos. A primeira fase de energia extraída dos alimentos pelo Baço e Estômago.', category: 'Fisiologia Energética' },
-    hun: { term: 'Hun (魂)', definition: 'A Alma Etérea. Associada ao Fígado, é responsável pelo sono, sonhos, planeamento e visão de vida. Após a morte, retorna ao "céu".', category: 'Aspetos da Mente/Espírito' },
-    po: { term: 'Po (魄)', definition: 'A Alma Corpórea. Associada ao Pulmão, está ligada aos instintos, sensações e aspetos físicos da vida. Dissolve-se com o corpo após a morte.', category: 'Aspetos da Mente/Espírito' },
-    yi: { term: 'Yi (意)', definition: 'O Intelecto ou Pensamento. Associado ao Baço, governa a capacidade de pensar, estudar, memorizar e focar.', category: 'Aspetos da Mente/Espírito' },
-    zhi: { term: 'Zhi (志)', definition: 'A Força de Vontade. Associada aos Rins, é a força motriz por trás da nossa determinação, impulso e ambição.', category: 'Aspetos da Mente/Espírito' },
-    'cinco-emocoes': { term: 'Cinco Emoções (五情)', definition: 'Cada sistema de órgãos Zang está associado a uma emoção: Alegria (Coração), Raiva (Fígado), Preocupação (Baço), Tristeza (Pulmão) e Medo (Rim).', category: 'Conceitos Filosóficos' },
-    'seis-fatores': { term: 'Seis Fatores Patogénicos (六淫)', definition: 'Fatores climáticos externos que podem invadir o corpo e causar doença: Vento, Frio, Calor de Verão, Humidade, Seura e Fogo.', category: 'Patologias e Fatores Externos' },
-    'sete-paixoes': { term: 'Sete Paixões (七情)', definition: 'Causas internas de doença, referindo-se ao excesso das emoções: alegria, raiva, preocupação, pensamento, tristeza, medo e choque.', category: 'Patologias e Fatores Externos' },
-    'pontos-shu': { term: 'Pontos Shu Antigos', definition: 'Cinco pontos específicos em cada um dos 12 meridianos principais, localizados abaixo dos cotovelos e joelhos, que refletem o fluxo de Qi como um rio (do poço à nascente, riacho, rio e mar).', category: 'Pontos de Acupuntura' },
-    'pontos-mu': { term: 'Pontos Mu (Alarme)', definition: 'Pontos na parte frontal do tronco que se tornam sensíveis ou dolorosos quando o seu órgão Zang-Fu correspondente está em desequilíbrio.', category: 'Pontos de Acupuntura' },
-    'pontos-shu-costas': { term: 'Pontos Shu das Costas', definition: 'Pontos no meridiano da Bexiga, ao longo da coluna, que estão diretamente ligados a cada um dos órgãos Zang-Fu e são usados para tratar condições crónicas.', category: 'Pontos de Acupuntura' },
-    'pontos-fonte': { term: 'Pontos Fonte (Yuan)', definition: 'Pontos onde o Qi Original (Yuan Qi) se acumula. São usados para tonificar os órgãos Zang-Fu.', category: 'Pontos de Acupuntura' },
-    'pontos-luo': { term: 'Pontos de Conexão (Luo)', definition: 'Pontos que conectam um meridiano com o seu par acoplado (Yin/Yang), tratando desequilíbrios entre eles.', category: 'Pontos de Acupuntura' },
-    'pontos-xi': { term: 'Pontos de Fenda (Xi)', definition: 'Pontos onde o Qi e o Sangue se acumulam profundamente. Usados para tratar condições agudas e dor.', category: 'Pontos de Acupuntura' },
-    'humidade': { term: 'Humidade (濕)', definition: 'Um fator patogénico que causa sensação de peso, letargia, inchaço e secreções turvas. Pode ser externa (clima) ou interna (dieta inadequada).', category: 'Patologias e Fatores Externos' },
-    'calor': { term: 'Calor (熱)', definition: 'Um fator patogénico que causa sintomas como febre, sede, rubor facial, agitação e inflamação.', category: 'Patologias e Fatores Externos' },
-    'frio': { term: 'Frio (寒)', definition: 'Um fator patogénico que contrai e abranda o fluxo de Qi e Sangue, causando dor, rigidez e sensação de frio.', category: 'Patologias e Fatores Externos' },
-    'vento': { term: 'Vento (風)', definition: 'Um fator patogénico caracterizado por movimento e mudança súbita. Causa sintomas como tremores, espasmos, comichão e dores que se movem.', category: 'Patologias e Fatores Externos' },
-    'secura': { term: 'Secura (燥)', definition: 'Um fator patogénico que consome os fluidos do corpo, causando pele seca, tosse seca, sede e obstipação.', category: 'Patologias e Fatores Externos' },
-    'fogo': { term: 'Fogo (火)', definition: 'Uma forma extrema de Calor, geralmente de origem interna, com sintomas mais intensos como febre alta, hemorragias e agitação mental severa.', category: 'Patologias e Fatores Externos' },
-    'fleuma': { term: 'Fleuma (痰)', definition: 'Uma substância patológica mais densa que a humidade, resultante da estagnação de fluidos corporais. Pode manifestar-se como expectoração ou como nódulos e massas invisíveis que obstruem os meridianos.', category: 'Patologias e Fatores Externos' },
-    'estagnacao-qi': { term: 'Estagnação de Qi', definition: 'Uma das patologias mais comuns, onde o fluxo de Qi está bloqueado ou constrangido, levando a dor, tensão, frustração e suspiros.', category: 'Padrões de Desarmonia' },
-    'estagnacao-sangue': { term: 'Estagnação de Sangue', definition: 'O Sangue não flui livremente, causando dor fixa e em pontada, massas palpáveis e coloração roxa (lábios, unhas, língua).', category: 'Padrões de Desarmonia' },
-    'deficiencia-qi': { term: 'Deficiência de Qi', definition: 'Falta de energia vital, resultando em cansaço, falta de ar, transpiração espontânea e voz fraca.', category: 'Padrões de Desarmonia' },
-    'deficiencia-sangue': { term: 'Deficiência de Sangue (Xue)', definition: 'Uma condição em que o Sangue é insuficiente para nutrir o corpo, causando palidez, tonturas, visão turva, insónia e cabelo/unhas secas.', category: 'Padrões de Desarmonia' },
-    'deficiencia-yin': { term: 'Deficiência de Yin', definition: 'Falta de fluidos e aspetos de arrefecimento, levando a "calor vazio" com sintomas como suores noturnos, calor nos 5 palmos, boca seca e agitação.', category: 'Padrões de Desarmonia' },
-    'deficiencia-yang': { term: 'Deficiência de Yang', definition: 'Falta de calor e função, resultando em sensação de frio, aversão ao frio, membros frios, letargia e edema.', category: 'Padrões de Desarmonia' },
-    'vasos-maravilhosos': { term: 'Oito Vasos Maravilhosos', definition: 'Reservatórios profundos de energia que regulam o Qi e o Sangue nos 12 meridianos principais. Os mais conhecidos são o Vaso da Concepção (Ren Mai) e o Vaso Governador (Du Mai).', category: 'Fisiologia Energética' },
-    'ren-mai': { term: 'Ren Mai (Vaso da Concepção)', definition: 'Um dos 8 Vasos Maravilhosos. Governa todos os meridianos Yin e está intimamente ligado à reprodução e gravidez.', category: 'Fisiologia Energética' },
-    'du-mai': { term: 'Du Mai (Vaso Governador)', definition: 'Um dos 8 Vasos Maravilhosos. Governa todos os meridianos Yang e a energia Yang do corpo, incluindo a coluna e o cérebro.', category: 'Fisiologia Energética' },
-    'chong-mai': { term: 'Chong Mai (Vaso Penetrador)', definition: 'Conhecido como o "Mar de Sangue", é fundamental para a menstruação e circulação no abdómen e no peito.', category: 'Fisiologia Energética' },
-    'dai-mai': { term: 'Dai Mai (Vaso da Cintura)', definition: 'O único meridiano horizontal, que cinge todos os meridianos verticais. Trata problemas na zona da cintura e ginecológicos.', category: 'Fisiologia Energética' },
-    'sabor': { term: 'Sabor (Wei)', definition: 'A propriedade energética de um alimento ou erva (azedo, amargo, doce, picante, salgado) que determina a sua ação terapêutica.', category: 'Conceitos Filosóficos' },
-    'natureza': { term: 'Natureza (Xing)', definition: 'A propriedade de temperatura de um alimento ou erva (frio, fresco, neutro, morno, quente) que descreve o seu efeito no corpo.', category: 'Conceitos Filosóficos' },
-    'meridianos-tendino-musculares': { term: 'Meridianos Tendino-Musculares', definition: 'Vias superficiais que seguem os 12 meridianos principais, distribuindo Wei Qi e protegendo o corpo de traumas externos.', category: 'Fisiologia Energética' },
-    'orificios': { term: 'Orifícios', definition: 'Os 7 orifícios da cabeça (olhos, ouvidos, narinas, boca) mais os 2 orifícios inferiores. A sua clareza está ligada à saúde dos órgãos internos.', category: 'Fisiologia Energética' },
-    'mar-da-medula': { term: 'Mar da Medula', definition: 'Um termo para o Cérebro, que é considerado uma extensão da medula espinhal e nutrido pela Essência (Jing) dos Rins.', category: 'Fisiologia Energética' },
-    'aquecedor-superior': { term: 'Aquecedor Superior (Shang Jiao)', definition: 'A parte superior do Triplo Aquecedor, englobando o Coração e o Pulmão. Compara-se a uma "névoa" que distribui Qi e fluidos.', category: 'Fisiologia Energética' },
-    'aquecedor-medio': { term: 'Aquecedor Médio (Zhong Jiao)', definition: 'A parte média do Triplo Aquecedor, englobando o Baço e o Estômago. Compara-se a um "caldeirão borbulhante" que digere os alimentos.', category: 'Fisiologia Energética' },
-    'aquecedor-inferior': { term: 'Aquecedor Inferior (Xia Jiao)', definition: 'A parte inferior do Triplo Aquecedor, englobando Fígado, Rins, Intestinos e Bexiga. Compara-se a uma "vala de drenagem" que separa e excreta os resíduos.', category: 'Fisiologia Energética' }
+    qi: { term: 'Qi (氣)', definition: 'A energia vital ou força da vida que flui através de todos os seres vivos, animando todas as funções fisiológicas.', category: 'Substâncias Fundamentais' },
+    jing: { term: 'Jing (精)', definition: 'A Essência, a nossa reserva de energia mais profunda herdada dos pais. Governa o crescimento, a reprodução e o envelhecimento.', category: 'Substâncias Fundamentais' },
+    shen: { term: 'Shen (神)', definition: 'O Espírito ou Mente. Reside no Coração e governa a consciência, o pensamento, a memória e a presença espiritual.', category: 'Substâncias Fundamentais' },
+    xue: { term: 'Xue (血)', definition: 'O Sangue. Uma forma densa de Qi que nutre, humedece e suporta o corpo e a mente. Está intimamente ligado ao Shen.', category: 'Substâncias Fundamentais' },
+    'jin-ye': { term: 'Jin Ye (津液)', definition: 'Os Fluidos Corporais. Inclui todas as secreções e fluidos do corpo, como saliva, suor e lágrimas. Humedecem a pele, músculos e órgãos.', category: 'Substâncias Fundamentais' },
+    'zang-fu': { term: 'Zang-Fu (臟腑)', definition: 'O sistema de órgãos internos. Os Zang (Yin) são órgãos sólidos de armazenamento (Fígado, Coração, Baço, Pulmão, Rim). Os Fu (Yang) são órgãos ocos de transformação e excreção (Vesícula Biliar, Intestinos, etc.).', category: 'Fisiologia Energética' },
+    'dan-tian': { term: 'Dan Tian (丹田)', definition: 'Literalmente "Campo de Cinábrio". Centros energéticos no corpo, sendo o mais conhecido o Dan Tian Inferior, localizado no baixo-ventre, considerado o reservatório principal de Qi.', category: 'Fisiologia Energética' },
+    'wei-qi': { term: 'Wei Qi (衛氣)', definition: 'O Qi Defensivo. Circula na superfície do corpo, protegendo-o de fatores patogénicos externos. É a nossa imunidade energética.', category: 'Fisiologia Energética' },
+    'ying-qi': { term: 'Ying Qi (營氣)', definition: 'O Qi Nutritivo. Flui com o Sangue nos meridianos para nutrir os órgãos internos e todo o corpo.', category: 'Fisiologia Energética' },
+    'yuan-qi': { term: 'Yuan Qi (原氣)', definition: 'O Qi Original. Derivado do Jing Pré-Natal, é a força motriz para todas as atividades fisiológicas, armazenado nos Rins.', category: 'Fisiologia Energética' },
+    'zong-qi': { term: 'Zong Qi (宗氣)', definition: 'O Qi Peitoral ou Ancestral. Formado a partir do ar e dos alimentos, acumula-se no peito e governa a respiração e a circulação.', category: 'Fisiologia Energética' },
+    'gu-qi': { term: 'Gu Qi (谷氣)', definition: 'O Qi dos Alimentos. A primeira fase de energia extraída dos alimentos pelo Baço e Estômago.', category: 'Fisiologia Energética' },
+    hun: { term: 'Hun (魂)', definition: 'A Alma Etérea. Associada ao Fígado, é responsável pelo sono, sonhos, planeamento e visão de vida. Após a morte, retorna ao "céu".', category: 'Aspetos da Mente/Espírito' },
+    po: { term: 'Po (魄)', definition: 'A Alma Corpórea. Associada ao Pulmão, está ligada aos instintos, sensações e aspetos físicos da vida. Dissolve-se com o corpo após a morte.', category: 'Aspetos da Mente/Espírito' },
+    yi: { term: 'Yi (意)', definition: 'O Intelecto ou Pensamento. Associado ao Baço, governa a capacidade de pensar, estudar, memorizar e focar.', category: 'Aspetos da Mente/Espírito' },
+    zhi: { term: 'Zhi (志)', definition: 'A Força de Vontade. Associada aos Rins, é a força motriz por trás da nossa determinação, impulso e ambição.', category: 'Aspetos da Mente/Espírito' },
+    'cinco-emocoes': { term: 'Cinco Emoções (五情)', definition: 'Cada sistema de órgãos Zang está associado a uma emoção: Alegria (Coração), Raiva (Fígado), Preocupação (Baço), Tristeza (Pulmão) e Medo (Rim).', category: 'Conceitos Filosóficos' },
+    'seis-fatores': { term: 'Seis Fatores Patogénicos (六淫)', definition: 'Fatores climáticos externos que podem invadir o corpo e causar doença: Vento, Frio, Calor de Verão, Humidade, Seura e Fogo.', category: 'Patologias e Fatores Externos' },
+    'sete-paixoes': { term: 'Sete Paixões (七情)', definition: 'Causas internas de doença, referindo-se ao excesso das emoções: alegria, raiva, preocupação, pensamento, tristeza, medo e choque.', category: 'Patologias e Fatores Externos' },
+    'pontos-shu': { term: 'Pontos Shu Antigos', definition: 'Cinco pontos específicos em cada um dos 12 meridianos principais, localizados abaixo dos cotovelos e joelhos, que refletem o fluxo de Qi como um rio (do poço à nascente, riacho, rio e mar).', category: 'Pontos de Acupuntura' },
+    'pontos-mu': { term: 'Pontos Mu (Alarme)', definition: 'Pontos na parte frontal do tronco que se tornam sensíveis ou dolorosos quando o seu órgão Zang-Fu correspondente está em desequilíbrio.', category: 'Pontos de Acupuntura' },
+    'pontos-shu-costas': { term: 'Pontos Shu das Costas', definition: 'Pontos no meridiano da Bexiga, ao longo da coluna, que estão diretamente ligados a cada um dos órgãos Zang-Fu e são usados para tratar condições crónicas.', category: 'Pontos de Acupuntura' },
+    'pontos-fonte': { term: 'Pontos Fonte (Yuan)', definition: 'Pontos onde o Qi Original (Yuan Qi) se acumula. São usados para tonificar os órgãos Zang-Fu.', category: 'Pontos de Acupuntura' },
+    'pontos-luo': { term: 'Pontos de Conexão (Luo)', definition: 'Pontos que conectam um meridiano com o seu par acoplado (Yin/Yang), tratando desequilíbrios entre eles.', category: 'Pontos de Acupuntura' },
+    'pontos-xi': { term: 'Pontos de Fenda (Xi)', definition: 'Pontos onde o Qi e o Sangue se acumulam profundamente. Usados para tratar condições agudas e dor.', category: 'Pontos de Acupuntura' },
+    'humidade': { term: 'Humidade (濕)', definition: 'Um fator patogénico que causa sensação de peso, letargia, inchaço e secreções turvas. Pode ser externa (clima) ou interna (dieta inadequada).', category: 'Patologias e Fatores Externos' },
+    'calor': { term: 'Calor (熱)', definition: 'Um fator patogénico que causa sintomas como febre, sede, rubor facial, agitação e inflamação.', category: 'Patologias e Fatores Externos' },
+    'frio': { term: 'Frio (寒)', definition: 'Um fator patogénico que contrai e abranda o fluxo de Qi e Sangue, causando dor, rigidez e sensação de frio.', category: 'Patologias e Fatores Externos' },
+    'vento': { term: 'Vento (風)', definition: 'Um fator patogénico caracterizado por movimento e mudança súbita. Causa sintomas como tremores, espasmos, comichão e dores que se movem.', category: 'Patologias e Fatores Externos' },
+    'secura': { term: 'Secura (燥)', definition: 'Um fator patogénico que consome os fluidos do corpo, causando pele seca, tosse seca, sede e obstipação.', category: 'Patologias e Fatores Externos' },
+    'fogo': { term: 'Fogo (火)', definition: 'Uma forma extrema de Calor, geralmente de origem interna, com sintomas mais intensos como febre alta, hemorragias e agitação mental severa.', category: 'Patologias e Fatores Externos' },
+    'fleuma': { term: 'Fleuma (痰)', definition: 'Uma substância patológica mais densa que a humidade, resultante da estagnação de fluidos corporais. Pode manifestar-se como expectoração ou como nódulos e massas invisíveis que obstruem os meridianos.', category: 'Patologias e Fatores Externos' },
+    'estagnacao-qi': { term: 'Estagnação de Qi', definition: 'Uma das patologias mais comuns, onde o fluxo de Qi está bloqueado ou constrangido, levando a dor, tensão, frustração e suspiros.', category: 'Padrões de Desarmonia' },
+    'estagnacao-sangue': { term: 'Estagnação de Sangue', definition: 'O Sangue não flui livremente, causando dor fixa e em pontada, massas palpáveis e coloração roxa (lábios, unhas, língua).', category: 'Padrões de Desarmonia' },
+    'deficiencia-qi': { term: 'Deficiência de Qi', definition: 'Falta de energia vital, resultando em cansaço, falta de ar, transpiração espontânea e voz fraca.', category: 'Padrões de Desarmonia' },
+    'deficiencia-sangue': { term: 'Deficiência de Sangue (Xue)', definition: 'Uma condição em que o Sangue é insuficiente para nutrir o corpo, causando palidez, tonturas, visão turva, insónia e cabelo/unhas secas.', category: 'Padrões de Desarmonia' },
+    'deficiencia-yin': { term: 'Deficiência de Yin', definition: 'Falta de fluidos e aspetos de arrefecimento, levando a "calor vazio" com sintomas como suores noturnos, calor nos 5 palmos, boca seca e agitação.', category: 'Padrões de Desarmonia' },
+    'deficiencia-yang': { term: 'Deficiência de Yang', definition: 'Falta de calor e função, resultando em sensação de frio, aversão ao frio, membros frios, letargia e edema.', category: 'Padrões de Desarmonia' },
+    'vasos-maravilhosos': { term: 'Oito Vasos Maravilhosos', definition: 'Reservatórios profundos de energia que regulam o Qi e o Sangue nos 12 meridianos principais. Os mais conhecidos são o Vaso da Concepção (Ren Mai) e o Vaso Governador (Du Mai).', category: 'Fisiologia Energética' },
+    'ren-mai': { term: 'Ren Mai (Vaso da Concepção)', definition: 'Um dos 8 Vasos Maravilhosos. Governa todos os meridianos Yin e está intimamente ligado à reprodução e gravidez.', category: 'Fisiologia Energética' },
+    'du-mai': { term: 'Du Mai (Vaso Governador)', definition: 'Um dos 8 Vasos Maravilhosos. Governa todos os meridianos Yang e a energia Yang do corpo, incluindo a coluna e o cérebro.', category: 'Fisiologia Energética' },
+    'chong-mai': { term: 'Chong Mai (Vaso Penetrador)', definition: 'Conhecido como o "Mar de Sangue", é fundamental para a menstruação e circulação no abdómen e no peito.', category: 'Fisiologia Energética' },
+    'dai-mai': { term: 'Dai Mai (Vaso da Cintura)', definition: 'O único meridiano horizontal, que cinge todos os meridianos verticais. Trata problemas na zona da cintura e ginecológicos.', category: 'Fisiologia Energética' },
+    'sabor': { term: 'Sabor (Wei)', definition: 'A propriedade energética de um alimento ou erva (azedo, amargo, doce, picante, salgado) que determina a sua ação terapêutica.', category: 'Conceitos Filosóficos' },
+    'natureza': { term: 'Natureza (Xing)', definition: 'A propriedade de temperatura de um alimento ou erva (frio, fresco, neutro, morno, quente) que descreve o seu efeito no corpo.', category: 'Conceitos Filosóficos' },
+    'meridianos-tendino-musculares': { term: 'Meridianos Tendino-Musculares', definition: 'Vias superficiais que seguem os 12 meridianos principais, distribuindo Wei Qi e protegendo o corpo de traumas externos.', category: 'Fisiologia Energética' },
+    'orificios': { term: 'Orifícios', definition: 'Os 7 orifícios da cabeça (olhos, ouvidos, narinas, boca) mais os 2 orifícios inferiores. A sua clareza está ligada à saúde dos órgãos internos.', category: 'Fisiologia Energética' },
+    'mar-da-medula': { term: 'Mar da Medula', definition: 'Um termo para o Cérebro, que é considerado uma extensão da medula espinhal e nutrido pela Essência (Jing) dos Rins.', category: 'Fisiologia Energética' },
+    'aquecedor-superior': { term: 'Aquecedor Superior (Shang Jiao)', definition: 'A parte superior do Triplo Aquecedor, englobando o Coração e o Pulmão. Compara-se a uma "névoa" que distribui Qi e fluidos.', category: 'Fisiologia Energética' },
+    'aquecedor-medio': { term: 'Aquecedor Médio (Zhong Jiao)', definition: 'A parte média do Triplo Aquecedor, englobando o Baço e o Estômago. Compara-se a um "caldeirão borbulhante" que digere os alimentos.', category: 'Fisiologia Energética' },
+    'aquecedor-inferior': { term: 'Aquecedor Inferior (Xia Jiao)', definition: 'A parte inferior do Triplo Aquecedor, englobando Fígado, Rins, Intestinos e Bexiga. Compara-se a uma "vala de drenagem" que separa e excreta os resíduos.', category: 'Fisiologia Energética' }
 };
 
-// Exporta os dados sobre a dietética (LISTA EXPANDIDA COM 300 ALIMENTOS)
+// Exporta os dados sobre os padrões de desarmonia Zang-Fu
+export const zangFuPatternsData = [
+    { id: 'figado', name: 'Fígado', color: 'wood', patterns: [ { name: 'Estagnação de Qi do Fígado', symptoms: 'Distensão e dor nos hipocôndrios, irritabilidade, suspiros frequentes, tensão emocional, pulso em corda. Em mulheres, pode causar TPM com distensão mamária e irregularidades menstruais.', tongue: 'Corpo da língua pode ser normal ou ligeiramente vermelho nas laterais.', pulse: 'Em corda (Xian).', treatmentPrinciple: 'Mover o Qi do Fígado, remover a estagnação, acalmar a mente.' }, { name: 'Subida do Yang do Fígado', symptoms: 'Dores de cabeça (têmporas, atrás dos olhos), tonturas, zumbido (tipo assobio), rosto vermelho, irritabilidade, acessos de raiva. Pode ser uma evolução da Estagnação de Qi ou Deficiência de Yin.', tongue: 'Vermelha, especialmente nas laterais, com saburra amarela fina.', pulse: 'Em corda (Xian), rápido (Shu).', treatmentPrinciple: 'Subjugar o Yang do Fígado, nutrir o Yin, limpar o Calor.' }, { name: 'Fogo do Fígado', symptoms: 'Sintomas de subida do Yang mais intensos. Sede, sabor amargo na boca, obstipação com fezes secas, urina escura, olhos vermelhos, raiva extrema.', tongue: 'Corpo da língua vermelho com laterais mais vermelhas e inchadas, saburra amarela e seca.', pulse: 'Em corda (Xian), rápido (Shu) e cheio (Shi).', treatmentPrinciple: 'Drenar o Fogo do Fígado, limpar o Calor, proteger o Yin.' }, { name: 'Deficiência de Sangue do Fígado', symptoms: 'Visão turva, "moscas volantes", dormência nos membros, cãibras, unhas frágeis e pálidas, períodos menstruais escassos ou amenorreia. Tonturas e tez pálida.', tongue: 'Pálida, especialmente nas laterais, e fina/seca.', pulse: 'Filiforme (Xi) ou em corda e fino.', treatmentPrinciple: 'Nutrir o Sangue do Fígado, tonificar o Fígado.' } ] },
+    { id: 'coracao', name: 'Coração', color: 'fire', patterns: [ { name: 'Deficiência de Qi do Coração', symptoms: 'Palpitações (pioram com esforço), falta de ar ao esforço, transpiração espontânea, cansaço, tez pálida.', tongue: 'Pálida, pode ter uma fissura central que chega à ponta.', pulse: 'Vazio (Xu), fraco (Ruo).', treatmentPrinciple: 'Tonificar o Qi do Coração.' }, { name: 'Deficiência de Yang do Coração', symptoms: 'Sintomas de Deficiência de Qi mais sinais de Frio: aversão ao frio, membros frios, lábios azulados, dor no peito (tipo facada).', tongue: 'Pálida ou roxa, húmida.', pulse: 'Profundo (Chen), lento (Chi) ou com nó (Jie).', treatmentPrinciple: 'Tonificar e aquecer o Yang do Coração.' }, { name: 'Deficiência de Sangue do Coração', symptoms: 'Palpitações, insónia (dificuldade em adormecer), ansiedade, memória fraca, tonturas, tez pálida sem brilho.', tongue: 'Pálida e fina.', pulse: 'Filiforme (Xi) ou agitado (Choppy).', treatmentPrinciple: 'Nutrir o Sangue do Coração, acalmar a Mente (Shen).' }, { name: 'Deficiência de Yin do Coração', symptoms: 'Palpitações, insónia (acordar durante a noite), agitação mental, suores noturnos, calor nos 5 palmos, boca e garganta secas.', tongue: 'Vermelha sem saburra, ponta mais vermelha.', pulse: 'Rápido (Shu) e filiforme (Xi).', treatmentPrinciple: 'Nutrir o Yin do Coração, limpar o Calor por Deficiência, acalmar a Mente.' } ] },
+    { id: 'baco', name: 'Baço', color: 'earth', patterns: [ { name: 'Deficiência de Qi do Baço', symptoms: 'Falta de apetite, cansaço (piora após comer), distensão abdominal após comer, fezes moles, fraqueza nos membros, tez amarelada.', tongue: 'Pálida com marcas de dentes nas laterais.', pulse: 'Vazio (Xu) ou fraco (Ruo).', treatmentPrinciple: 'Tonificar o Qi do Baço, fortalecer o transporte e a transformação.' }, { name: 'Deficiência de Yang do Baço', symptoms: 'Sintomas de Deficiência de Qi mais sinais de Frio: sensação de frio, membros frios, dor abdominal que melhora com calor, edema.', tongue: 'Pálida, húmida, com marcas de dentes.', pulse: 'Profundo (Chen), lento (Chi) e fraco (Ruo).', treatmentPrinciple: 'Aquecer o Centro, tonificar o Yang do Baço.' }, { name: 'Baço não Controla o Sangue', symptoms: 'Sintomas de Deficiência de Qi mais sinais de hemorragias: hematomas fáceis, sangue nas fezes ou urina, períodos menstruais excessivos.', tongue: 'Pálida.', pulse: 'Filiforme (Xi) e fraco (Ruo).', treatmentPrinciple: 'Tonificar o Qi do Baço, suster o Sangue.' }, { name: 'Colapso do Qi do Baço', symptoms: 'Sintomas de Deficiência de Qi mais sensação de peso e prolapso de órgãos (estômago, útero, ânus).', tongue: 'Pálida.', pulse: 'Vazio (Xu) e fraco (Ruo).', treatmentPrinciple: 'Tonificar o Qi do Baço, elevar o Yang.' } ] },
+    { id: 'pulmao', name: 'Pulmão', color: 'metal', patterns: [ { name: 'Deficiência de Qi do Pulmão', symptoms: 'Falta de ar ligeira, voz fraca, tosse fraca, transpiração espontânea durante o dia, aversão ao vento, constipações frequentes.', tongue: 'Pálida.', pulse: 'Vazio (Xu), especialmente na posição do Pulmão.', treatmentPrinciple: 'Tonificar o Qi do Pulmão, fortalecer o Wei Qi.' }, { name: 'Deficiência de Yin do Pulmão', symptoms: 'Tosse seca ou com pouca expectoração, garganta seca, voz rouca, suores noturnos, febre baixa à tarde, maçãs do rosto vermelhas.', tongue: 'Vermelha e descascada, com fissuras.', pulse: 'Flutuante (Fu) e vazio (Xu), ou rápido (Shu) e filiforme (Xi).', treatmentPrinciple: 'Nutrir o Yin do Pulmão, humedecer a secura.' } ] },
+    { id: 'rim', name: 'Rim', color: 'water', patterns: [ { name: 'Deficiência de Yang do Rim', symptoms: 'Sensação de frio (especialmente na lombar e joelhos), aversão ao frio, membros frios, impotência, libido diminuída, urina clara e abundante, edema.', tongue: 'Pálida, inchada e húmida.', pulse: 'Profundo (Chen), fraco (Ruo), lento (Chi).', treatmentPrinciple: 'Tonificar e aquecer o Yang do Rim.' }, { name: 'Deficiência de Yin do Rim', symptoms: 'Tonturas, zumbido, memória fraca, suores noturnos, boca e garganta secas, dor lombar, calor nos 5 palmos, obstipação.', tongue: 'Vermelha sem saburra, com fissuras.', pulse: 'Rápido (Shu) e filiforme (Xi).', treatmentPrinciple: 'Nutrir o Yin do Rim, limpar o Calor por Deficiência.' }, { name: 'Deficiência de Essência (Jing) do Rim', symptoms: 'Em crianças: desenvolvimento lento (ossos, dentes, cabelo), atraso mental. Em adultos: envelhecimento prematuro, cabelo grisalho, perda de dentes, memória fraca, infertilidade, senilidade.', tongue: 'Pode variar, mas geralmente reflete deficiência de Yin ou Yang.', pulse: 'Profundo (Chen) e fraco (Ruo).', treatmentPrinciple: 'Nutrir a Essência (Jing).' }, { name: 'Qi do Rim não é Firme', symptoms: 'Incontinência urinária, enurese, micção frequente e clara, ejaculação prematura, espermatorreia, prolapso uterino, abortos espontâneos recorrentes.', tongue: 'Pálida.', pulse: 'Profundo (Chen) e fraco (Ruo).', treatmentPrinciple: 'Consolidar o Qi do Rim.' } ] }
+];
+
+// Exporta os dados para as 10+1 perguntas do diagnóstico
+export const dezPerguntasData = [
+    { title: '1. Calafrios e Febre', content: 'Ajuda a distinguir entre invasão de Frio ou Vento-Calor e a determinar a força do Qi defensivo (Wei Qi).' },
+    { title: '2. Transpiração', content: 'Transpiração espontânea durante o dia pode indicar Deficiência de Qi. Suores noturnos podem indicar Deficiência de Yin.' },
+    { title: '3. Cabeça e Corpo', content: 'Dores de cabeça (localização, tipo de dor) e dores no corpo ajudam a identificar os meridianos e órgãos afetados.' },
+    { title: '4. Fezes e Urina', content: 'A frequência, consistência e cor dão pistas sobre o estado do Baço, Rins e a presença de Frio ou Calor.' },
+    { title: '5. Alimentação e Sabor', content: 'Apetite, digestão e preferências de sabor refletem a saúde do Baço e do Estômago.' },
+    { title: '6. Peito e Abdómen', content: 'Sensação de opressão, dor ou distensão pode indicar Estagnação de Qi no Fígado, Coração ou Pulmão.' },
+    { title: '7. Sono', content: 'Dificuldade em adormecer está muitas vezes ligada à Deficiência de Sangue (Coração/Fígado). Acordar frequentemente durante a noite pode indicar Deficiência de Yin com Calor Vazio.' },
+    { title: '8. Sede e Bebida', content: 'A ausência ou presença de sede, e a preferência por bebidas frias ou quentes, ajuda a diferenciar padrões de Frio e Calor.' },
+    { title: '9. Audição e Visão', content: 'Zumbido e problemas de visão estão frequentemente ligados ao Rim e ao Fígado.' },
+    { title: '10. Emoções', content: 'O estado emocional é um indicador chave. Irritabilidade (Fígado), ansiedade (Coração), preocupação (Baço), etc.' },
+    { title: '+1. Ginecologia (para mulheres)', content: 'Ciclo menstrual, cor e quantidade do fluxo, e sintomas associados (TPM) dão informações vitais sobre o estado do Qi, Sangue, e dos Vasos Maravilhosos (Ren Mai, Chong Mai).' }
+];
+
+// Exporta os dados sobre as posições do pulso (formato corrigido para o diagrama)
+export const pulsePositionData = {
+    cun: { title: 'Posição Cun (Polegada)', left: 'Coração, Pericárdio', right: 'Pulmão' },
+    guan: { title: 'Posição Guan (Barreira)', left: 'Fígado, Vesícula Biliar', right: 'Baço, Estômago' },
+    chi: { title: 'Posição Chi (Pé)', left: 'Rim Yin', right: 'Rim Yang, Bexiga' }
+};
+
+// Exporta os dados sobre os tipos de pulso (para a lista no acordeão)
+export const pulseTypeData = [
+    { id: 'flutuante', type: 'common', title: 'Flutuante (Fu)', content: 'Indica um padrão exterior.' },
+    { id: 'profundo', type: 'common', title: 'Profundo (Chen)', content: 'Indica um padrão interior.' },
+    { id: 'lento', type: 'common', title: 'Lento (Chi)', content: 'Indica um padrão de Frio.' },
+    { id: 'rapido', type: 'common', title: 'Rápido (Shu)', content: 'Indica um padrão de Calor.' },
+    { id: 'em-corda', type: 'common', title: 'Em Corda (Xian)', content: 'É o pulso característico da desarmonia do Fígado.' }
+];
+
 export const foodData = [
     { name: 'Abacate', temp: 'Fresco', flavor: 'Doce', organs: 'Fígado, Pulmão, Intestino Grosso', actions: 'Tonifica o Sangue e o Yin, humedece os intestinos.' },
     { name: 'Abacaxi', temp: 'Neutro', flavor: 'Doce, Azedo', organs: 'Estômago, Bexiga', actions: 'Elimina calor de verão, promove a digestão, gera fluidos.' },
     { name: 'Abóbora', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Tonifica o Qi do Baço, resolve a Humidade e a Fleuma, alivia a dor.' },
     { name: 'Abobrinha', temp: 'Fresco', flavor: 'Doce', organs: 'Estômago, Pulmão', actions: 'Limpa o Calor, gera fluidos, alivia a sede.' },
-{ name: 'Açafrão', temp: 'Morno', flavor: 'Picante, Doce', organs: 'Coração, Fígado', actions: 'Move o Sangue, quebra a estase, acalma o Shen.' },
+    { name: 'Açafrão', temp: 'Morno', flavor: 'Picante, Doce', organs: 'Coração, Fígado', actions: 'Move o Sangue, quebra a estase, acalma o Shen.' },
     { name: 'Acelga', temp: 'Fresco', flavor: 'Doce', organs: 'Intestino Grosso, Estômago', actions: 'Limpa o Calor, humedece a secura, desintoxica.' },
-{ name: 'Agave (Néctar)', temp: 'Frio', flavor: 'Doce', organs: 'Pulmão, Estômago', actions: 'Humedece o Pulmão, gera fluidos.' },
+    { name: 'Agave (Néctar)', temp: 'Frio', flavor: 'Doce', organs: 'Pulmão, Estômago', actions: 'Humedece o Pulmão, gera fluidos.' },
     { name: 'Agrião', temp: 'Fresco', flavor: 'Picante, Doce', organs: 'Pulmão, Estômago', actions: 'Limpa o Calor do Pulmão, resolve a Fleuma, promove a micção.' },
-{ name: 'Aipo', temp: 'Fresco', flavor: 'Doce, Amargo', organs: 'Fígado, Estômago', actions: 'Acalma o Fígado, limpa Calor, pára sangramentos.' },
+    { name: 'Aipo', temp: 'Fresco', flavor: 'Doce, Amargo', organs: 'Fígado, Estômago', actions: 'Acalma o Fígado, limpa Calor, pára sangramentos.' },
     { name: 'Alcachofra', temp: 'Frio', flavor: 'Amargo, Doce', organs: 'Fígado, Vesícula Biliar, Estômago', actions: 'Limpa o Calor do Fígado e da Vesícula Biliar, promove a diurese.' },
-{ name: 'Alcaçuz (Raiz)', temp: 'Neutro', flavor: 'Doce', organs: 'Coração, Pulmão, Baço, Estômago', actions: 'Tonifica o Qi do Baço, humedece o Pulmão, modera a toxicidade das ervas.' },
-{ name: 'Alcaparra', temp: 'Morno', flavor: 'Picante, Salgado', organs: 'Baço, Rim', actions: 'Aquece o interior, expele a Humidade-Frio.' },
+    { name: 'Alcaçuz (Raiz)', temp: 'Neutro', flavor: 'Doce', organs: 'Coração, Pulmão, Baço, Estômago', actions: 'Tonifica o Qi do Baço, humedece o Pulmão, modera a toxicidade das ervas.' },
+    { name: 'Alcaparra', temp: 'Morno', flavor: 'Picante, Salgado', organs: 'Baço, Rim', actions: 'Aquece o interior, expele a Humidade-Frio.' },
     { name: 'Alecrim', temp: 'Morno', flavor: 'Picante', organs: 'Fígado, Baço, Pulmão', actions: 'Aquece o interior, acalma o Shen, move o Qi.' },
     { name: 'Alface Romana', temp: 'Fresco', flavor: 'Doce', organs: 'Coração, Intestino Delgado', actions: 'Limpa o Calor, promove a lactação.' },
     { name: 'Alface', temp: 'Fresco', flavor: 'Doce, Amargo', organs: 'Intestinos, Estômago', actions: 'Elimina Calor, promove a micção, acalma a mente.' },
-{ name: 'Alfafa', temp: 'Fresco', flavor: 'Amargo, Doce', organs: 'Fígado, Estômago, Rim', actions: 'Limpa Calor, promove a diurese, tonifica o Yin.' },
+    { name: 'Alfafa', temp: 'Fresco', flavor: 'Amargo, Doce', organs: 'Fígado, Estômago, Rim', actions: 'Limpa Calor, promove a diurese, tonifica o Yin.' },
     { name: 'Alfarroba', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Estômago, Intestino Grosso', actions: 'Fortalece o Baço, pára a diarreia.' },
     { name: 'Alga Kombu', temp: 'Frio', flavor: 'Salgado', organs: 'Rim, Fígado, Estômago', actions: 'Amolece durezas, resolve Fleuma, promove a micção.' },
     { name: 'Alga Nori', temp: 'Frio', flavor: 'Doce, Salgado', organs: 'Pulmão, Estômago', actions: 'Resolve Fleuma, limpa Calor.' },
     { name: 'Alga Wakame', temp: 'Frio', flavor: 'Salgado', organs: 'Fígado, Rim', actions: 'Reduz o edema, amolece nódulos.' },
     { name: 'Alho Francês', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Fígado, Estômago', actions: 'Aquece o interior, move o Qi, dispersa estagnação de Sangue.' },
     { name: 'Alho', temp: 'Quente', flavor: 'Picante', organs: 'Baço, Estômago, Pulmão', actions: 'Aquece o centro, desintoxica, expele parasitas.' },
-{ name: 'Alperce', temp: 'Morno', flavor: 'Doce, Azedo', organs: 'Pulmão, Intestino Grosso', actions: 'Humedece o Pulmão, gera fluidos, pára a tosse.' },
-{ name: 'Amaranto', temp: 'Fresco', flavor: 'Doce', organs: 'Intestino Grosso, Rim', actions: 'Limpa Calor, resolve a Humidade, tonifica o Yin.' },
+    { name: 'Alperce', temp: 'Morno', flavor: 'Doce, Azedo', organs: 'Pulmão, Intestino Grosso', actions: 'Humedece o Pulmão, gera fluidos, pára a tosse.' },
+    { name: 'Amaranto', temp: 'Fresco', flavor: 'Doce', organs: 'Intestino Grosso, Rim', actions: 'Limpa Calor, resolve a Humidade, tonifica o Yin.' },
     { name: 'Ameixa Umeboshi', temp: 'Morno', flavor: 'Azedo, Salgado', organs: 'Fígado, Baço, Pulmão', actions: 'Adstringente, pára tosse e diarreia, neutraliza toxinas.' },
     { name: 'Ameixa', temp: 'Neutro', flavor: 'Doce, Azedo', organs: 'Fígado, Rim', actions: 'Gera fluidos, nutre o Yin do Fígado.' },
     { name: 'Amêndoa', temp: 'Neutro', flavor: 'Doce', organs: 'Pulmão, Intestino Grosso', actions: 'Humedece o Pulmão e os intestinos, pára a tosse.' },
-{ name: 'Amendoim', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Pulmão', actions: 'Tonifica o Baço, humedece o Pulmão, nutre o Sangue.' },
+    { name: 'Amendoim', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Pulmão', actions: 'Tonifica o Baço, humedece o Pulmão, nutre o Sangue.' },
     { name: 'Amora', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Fígado, Rim', actions: 'Tonifica o Sangue e o Yin, arrefece o Sangue.' },
-{ name: 'Ananás', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Estômago, Bexiga', actions: 'Limpa o Calor de Verão, promove a digestão.' },
+    { name: 'Ananás', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Estômago, Bexiga', actions: 'Limpa o Calor de Verão, promove a digestão.' },
     { name: 'Anchova', temp: 'Morno', flavor: 'Salgado', organs: 'Baço, Rim', actions: 'Tonifica o Qi e o Sangue.' },
     { name: 'Anguila', temp: 'Neutro', flavor: 'Doce', organs: 'Fígado, Rim', actions: 'Tonifica o Yin e o Yang do Rim, expele Vento-Humidade.' },
     { name: 'Anis Estrelado', temp: 'Quente', flavor: 'Picante, Doce', organs: 'Fígado, Rim, Baço', actions: 'Aquece o interior, dispersa o Frio, regula o Qi.' },
@@ -789,217 +825,175 @@ export const foodData = [
     { name: 'Cravo-da-índia', temp: 'Quente', flavor: 'Picante', organs: 'Rim, Baço, Estômago', actions: 'Aquece o centro, faz descer o Qi rebelde.' },
     { name: 'Damasco', temp: 'Morno', flavor: 'Doce, Azedo', organs: 'Pulmão', actions: 'Humedece o Pulmão, gera fluidos.' },
     { name: 'Endívia', temp: 'Frio', flavor: 'Amargo', organs: 'Coração, Intestino Delgado', actions: 'Limpa Calor, promove a diurese.' },
-{ name: 'Endro', temp: 'Morno', flavor: 'Picante', organs: 'Fígado, Rim, Estômago', actions: 'Aquece o Rim, dispersa o Frio, regula o Qi.' },
-{ name: 'Enguia', temp: 'Morno', flavor: 'Doce', organs: 'Fígado, Rim', actions: 'Tonifica o Qi e o Sangue, expele Vento-Humidade.' },
-{ name: 'Ervilha de Quebrar', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Fortalece o Baço, harmoniza o centro.' },
+    { name: 'Endro', temp: 'Morno', flavor: 'Picante', organs: 'Fígado, Rim, Estômago', actions: 'Aquece o Rim, dispersa o Frio, regula o Qi.' },
+    { name: 'Enguia', temp: 'Morno', flavor: 'Doce', organs: 'Fígado, Rim', actions: 'Tonifica o Qi e o Sangue, expele Vento-Humidade.' },
+    { name: 'Ervilha de Quebrar', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Fortalece o Baço, harmoniza o centro.' },
     { name: 'Ervilha', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Harmoniza o centro, promove a micção.' },
     { name: 'Escargot', temp: 'Frio', flavor: 'Salgado', organs: 'Intestino Grosso', actions: 'Limpa Calor, desintoxica, reduz o inchaço.' },
     { name: 'Espargos', temp: 'Fresco', flavor: 'Doce, Amargo', organs: 'Pulmão, Rim', actions: 'Tonifica o Yin do Pulmão e do Rim, elimina Calor.' },
     { name: 'Espelta', temp: 'Fresco', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Tonifica o Baço, limpa o Calor.' },
     { name: 'Espinafres', temp: 'Fresco', flavor: 'Doce', organs: 'Intestinos, Estômago', actions: 'Nutre o Sangue, humedece a secura, arrefece.' },
-{ name: 'Estragão', temp: 'Morno', flavor: 'Picante, Amargo', organs: 'Fígado, Baço', actions: 'Move o Qi, aquece o centro, promove a digestão.' },
-{ name: 'Faisão', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Fígado', actions: 'Tonifica o Qi do Baço, resolve a Fleuma.' },
+    { name: 'Estragão', temp: 'Morno', flavor: 'Picante, Amargo', organs: 'Fígado, Baço', actions: 'Move o Qi, aquece o centro, promove a digestão.' },
+    { name: 'Faisão', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Fígado', actions: 'Tonifica o Qi do Baço, resolve a Fleuma.' },
     { name: 'Favas', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Fortalece o Baço, resolve a Humidade.' },
     { name: 'Feijão Azuki', temp: 'Neutro', flavor: 'Doce, Azedo', organs: 'Coração, Rim', actions: 'Promove a micção, reduz o edema, desintoxica.' },
     { name: 'Feijão Branco', temp: 'Neutro', flavor: 'Doce', organs: 'Pulmão, Baço', actions: 'Tonifica o Yin, fortalece o Baço.' },
-{ name: 'Feijão Frade', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Fortalece o Baço, resolve a Humidade.' },
+    { name: 'Feijão Frade', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Fortalece o Baço, resolve a Humidade.' },
     { name: 'Feijão Mungo', temp: 'Frio', flavor: 'Doce', organs: 'Coração, Estômago', actions: 'Limpa o Calor de Verão, desintoxica.' },
     { name: 'Feijão Preto', temp: 'Neutro', flavor: 'Doce', organs: 'Rim, Fígado', actions: 'Tonifica o Yin e o Sangue, beneficia os Rins.' },
     { name: 'Feijão Verde', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Tonifica o Yin, fortalece o Baço.' },
-{ name: 'Figo da Índia', temp: 'Frio', flavor: 'Doce', organs: 'Pulmão, Coração', actions: 'Limpa o Calor, arrefece o Sangue, desintoxica.' },
+    { name: 'Figo da Índia', temp: 'Frio', flavor: 'Doce', organs: 'Pulmão, Coração', actions: 'Limpa o Calor, arrefece o Sangue, desintoxica.' },
     { name: 'Figo', temp: 'Neutro', flavor: 'Doce', organs: 'Pulmão, Intestino Grosso, Baço', actions: 'Humedece o Pulmão, elimina toxinas, trata obstipação.' },
-{ name: 'Folha de Louro', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Bexiga', actions: 'Aquece o centro, expele o Frio, move o Qi.' },
+    { name: 'Folha de Louro', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Bexiga', actions: 'Aquece o centro, expele o Frio, move o Qi.' },
     { name: 'Framboesa', temp: 'Morno', flavor: 'Doce, Azedo', organs: 'Fígado, Rim', actions: 'Tonifica o Rim, consolida a Essência.' },
     { name: 'Frango', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Aquece o centro, tonifica o Qi e o Sangue.' },
     { name: 'Funcho', temp: 'Morno', flavor: 'Picante', organs: 'Fígado, Rim, Estômago', actions: 'Aquece o Fígado e o Rim, dispersa o Frio, alivia a dor.' },
     { name: 'Ganso', temp: 'Neutro', flavor: 'Doce', organs: 'Pulmão, Baço', actions: 'Tonifica o Qi e o Sangue.' },
-{ name: 'Gema de Ovo', temp: 'Neutro', flavor: 'Doce', organs: 'Coração, Fígado, Rim', actions: 'Nutre o Sangue e o Yin, acalma o Shen.' },
+    { name: 'Gema de Ovo', temp: 'Neutro', flavor: 'Doce', organs: 'Coração, Fígado, Rim', actions: 'Nutre o Sangue e o Yin, acalma o Shen.' },
     { name: 'Gengibre', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Baço, Estômago', actions: 'Aquece o interior, expele o frio, harmoniza o estômago, trata náuseas.' },
     { name: 'Gergelim (Sementes)', temp: 'Neutro', flavor: 'Doce', organs: 'Fígado, Rim', actions: 'Tonifica a Essência e o Sangue, humedece os intestinos.' },
-{ name: 'Gergelim Preto', temp: 'Neutro', flavor: 'Doce', organs: 'Fígado, Rim, Intestino Grosso', actions: 'Tonifica o Yin do Fígado e do Rim, nutre a Essência, escurece o cabelo.' },
-{ name: 'Gila', temp: 'Frio', flavor: 'Doce', organs: 'Pulmão, Estômago', actions: 'Limpa Calor, humedece o Pulmão.' },
+    { name: 'Gergelim Preto', temp: 'Neutro', flavor: 'Doce', organs: 'Fígado, Rim, Intestino Grosso', actions: 'Tonifica o Yin do Fígado e do Rim, nutre a Essência, escurece o cabelo.' },
+    { name: 'Gila', temp: 'Frio', flavor: 'Doce', organs: 'Pulmão, Estômago', actions: 'Limpa Calor, humedece o Pulmão.' },
     { name: 'Ginseng', temp: 'Morno', flavor: 'Doce, Amargo', organs: 'Pulmão, Baço', actions: 'Tonifica potentemente o Qi Original, acalma o Shen.' },
-{ name: 'Girassol (Sementes)', temp: 'Neutro', flavor: 'Doce', organs: 'Intestino Grosso', actions: 'Humedece os intestinos, expele parasitas.' },
-{ name: 'Goiaba', temp: 'Neutro', flavor: 'Doce, Azedo', organs: 'Estômago, Intestino Grosso', actions: 'Adstringente, pára a diarreia, gera fluidos.' },
+    { name: 'Girassol (Sementes)', temp: 'Neutro', flavor: 'Doce', organs: 'Intestino Grosso', actions: 'Humedece os intestinos, expele parasitas.' },
+    { name: 'Goiaba', temp: 'Neutro', flavor: 'Doce, Azedo', organs: 'Estômago, Intestino Grosso', actions: 'Adstringente, pára a diarreia, gera fluidos.' },
     { name: 'Goji Berries', temp: 'Neutro', flavor: 'Doce', organs: 'Fígado, Rim, Pulmão', actions: 'Tonifica o Yin do Fígado e do Rim, beneficia a visão.' },
-{ name: 'Graínha de Uva (Óleo)', temp: 'Fresco', flavor: 'Doce', organs: 'Fígado, Rim', actions: 'Arrefece e move o Sangue.' },
-{ name: 'Grão de Bico', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Coração', actions: 'Tonifica o Qi, nutre o Sangue.' },
+    { name: 'Graínha de Uva (Óleo)', temp: 'Fresco', flavor: 'Doce', organs: 'Fígado, Rim', actions: 'Arrefece e move o Sangue.' },
+    { name: 'Grão de Bico', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Coração', actions: 'Tonifica o Qi, nutre o Sangue.' },
     { name: 'Grão-de-bico', temp: 'Neutro', flavor: 'Doce', organs: 'Coração, Baço, Rim', actions: 'Tonifica o Qi, nutre o Coração e o Rim.' },
-{ name: 'Grelos', temp: 'Fresco', flavor: 'Amargo, Picante', organs: 'Fígado, Pulmão', actions: 'Limpa o Calor do Fígado, move o Qi.' },
+    { name: 'Grelos', temp: 'Fresco', flavor: 'Amargo, Picante', organs: 'Fígado, Pulmão', actions: 'Limpa o Calor do Fígado, move o Qi.' },
     { name: 'Groselha', temp: 'Neutro', flavor: 'Azedo, Doce', organs: 'Fígado, Pulmão', actions: 'Nutre o Sangue, adstringe.' },
-{ name: 'Hibisco (Chá)', temp: 'Frio', flavor: 'Azedo', organs: 'Fígado, Coração, Rim', actions: 'Limpa Calor, promove a diurese, arrefece o Sangue.' },
+    { name: 'Hibisco (Chá)', temp: 'Frio', flavor: 'Azedo', organs: 'Fígado, Coração, Rim', actions: 'Limpa Calor, promove a diurese, arrefece o Sangue.' },
     { name: 'Hortelã', temp: 'Fresco', flavor: 'Picante', organs: 'Pulmão, Fígado', actions: 'Dispersa Vento-Calor, alivia dor de cabeça e garganta, move o Qi do Fígado.' },
     { name: 'Inhame', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Pulmão, Rim', actions: 'Tonifica o Qi e o Yin do Baço, Pulmão e Rim.' },
     { name: 'Iogurte', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Pulmão, Intestino Grosso', actions: 'Gera fluidos, humedece a secura.' },
-{ name: 'Jasmim (Flor)', temp: 'Fresco', flavor: 'Doce, Picante', organs: 'Fígado, Baço', actions: 'Acalma o Fígado, move o Qi, acalma a mente.' },
+    { name: 'Jasmim (Flor)', temp: 'Fresco', flavor: 'Doce, Picante', organs: 'Fígado, Baço', actions: 'Acalma o Fígado, move o Qi, acalma a mente.' },
     { name: 'Javali', temp: 'Neutro', flavor: 'Doce, Salgado', organs: 'Baço, Estômago', actions: 'Tonifica o Baço, humedece a secura.' },
-{ name: 'Kefir', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Fígado, Intestino Grosso', actions: 'Promove a digestão, limpa o Calor.' },
+    { name: 'Kefir', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Fígado, Intestino Grosso', actions: 'Promove a digestão, limpa o Calor.' },
     { name: 'Kiwi', temp: 'Frio', flavor: 'Doce, Azedo', organs: 'Estômago, Bexiga', actions: 'Limpa o Calor, alivia a sede.' },
-{ name: 'Laranja Amarga', temp: 'Fresco', flavor: 'Amargo, Azedo', organs: 'Fígado, Estômago', actions: 'Move o Qi estagnado, promove a digestão.' },
+    { name: 'Laranja Amarga', temp: 'Fresco', flavor: 'Amargo, Azedo', organs: 'Fígado, Estômago', actions: 'Move o Qi estagnado, promove a digestão.' },
     { name: 'Laranja', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Pulmão, Estômago', actions: 'Promove fluidos, humedece o Pulmão.' },
-{ name: 'Lavanda', temp: 'Fresco', flavor: 'Picante', organs: 'Coração, Fígado, Pulmão', actions: 'Acalma o Fígado, acalma o Shen, limpa o Calor.' },
+    { name: 'Lavanda', temp: 'Fresco', flavor: 'Picante', organs: 'Coração, Fígado, Pulmão', actions: 'Acalma o Fígado, acalma o Shen, limpa o Calor.' },
     { name: 'Leite de Cabra', temp: 'Morno', flavor: 'Doce', organs: 'Fígado, Estômago', actions: 'Tonifica o Yin, humedece a secura.' },
     { name: 'Leite de Vaca', temp: 'Neutro', flavor: 'Doce', organs: 'Coração, Pulmão, Estômago', actions: 'Tonifica o Sangue e o Yin, promove fluidos.' },
     { name: 'Lentilhas', temp: 'Neutro', flavor: 'Doce', organs: 'Coração, Rim', actions: 'Fortalece o Rim, promove a micção.' },
-{ name: 'Levedura de Cerveja', temp: 'Fresco', flavor: 'Doce, Amargo', organs: 'Baço, Estômago', actions: 'Promove a digestão, resolve a estagnação de alimentos.' },
+    { name: 'Levedura de Cerveja', temp: 'Fresco', flavor: 'Doce, Amargo', organs: 'Baço, Estômago', actions: 'Promove a digestão, resolve a estagnação de alimentos.' },
     { name: 'Lichia', temp: 'Morno', flavor: 'Doce, Azedo', organs: 'Baço, Fígado', actions: 'Tonifica o Sangue, regula o Qi.' },
-{ name: 'Lima', temp: 'Frio', flavor: 'Azedo', organs: 'Fígado, Estômago', actions: 'Gera fluidos, move o Qi do Fígado.' },
+    { name: 'Lima', temp: 'Frio', flavor: 'Azedo', organs: 'Fígado, Estômago', actions: 'Gera fluidos, move o Qi do Fígado.' },
     { name: 'Limão', temp: 'Fresco', flavor: 'Azedo', organs: 'Fígado, Estômago', actions: 'Move o Qi do Fígado, promove fluidos, harmoniza o Estômago.' },
     { name: 'Linguado', temp: 'Neutro', flavor: 'Doce', organs: 'Baço', actions: 'Tonifica o Qi.' },
     { name: 'Linhaça', temp: 'Neutro', flavor: 'Doce', organs: 'Pulmão, Intestino Grosso', actions: 'Humedece os intestinos, nutre o Yin.' },
-{ name: 'Lótus (Semente)', temp: 'Neutro', flavor: 'Doce, Adstringente', organs: 'Coração, Baço, Rim', actions: 'Tonifica o Baço, nutre o Coração, consolida a Essência.' },
-{ name: 'Lúcia-lima', temp: 'Fresco', flavor: 'Picante, Amargo', organs: 'Fígado, Estômago', actions: 'Harmoniza o Estômago, acalma o Shen.' },
+    { name: 'Lótus (Semente)', temp: 'Neutro', flavor: 'Doce, Adstringente', organs: 'Coração, Baço, Rim', actions: 'Tonifica o Baço, nutre o Coração, consolida a Essência.' },
+    { name: 'Lúcia-lima', temp: 'Fresco', flavor: 'Picante, Amargo', organs: 'Fígado, Estômago', actions: 'Harmoniza o Estômago, acalma o Shen.' },
     { name: 'Lula', temp: 'Neutro', flavor: 'Salgado, Azedo', organs: 'Fígado, Rim', actions: 'Tonifica o Sangue e o Yin.' },
     { name: 'Lúpulo', temp: 'Frio', flavor: 'Amargo', organs: 'Fígado, Vesícula Biliar', actions: 'Acalma o Fígado, promove a digestão.' },
     { name: 'Maçã', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Pulmão, Baço, Estômago', actions: 'Gera fluidos, humedece o Pulmão, promove a digestão.' },
     { name: 'Macarrão de Trigo', temp: 'Fresco', flavor: 'Doce', organs: 'Coração', actions: 'Limpa o Calor do Coração.' },
-{ name: 'Malagueta', temp: 'Quente', flavor: 'Picante', organs: 'Coração, Baço', actions: 'Dispersa o Frio, aquece o interior, promove a circulação.' },
-{ name: 'Mandioca', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Tonifica o Qi, fortalece o Baço.' },
-{ name: 'Manga', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Pulmão, Estômago', actions: 'Gera fluidos, pára a tosse, beneficia o Estômago.' },
+    { name: 'Malagueta', temp: 'Quente', flavor: 'Picante', organs: 'Coração, Baço', actions: 'Dispersa o Frio, aquece o interior, promove a circulação.' },
+    { name: 'Mandioca', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Tonifica o Qi, fortalece o Baço.' },
+    { name: 'Manga', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Pulmão, Estômago', actions: 'Gera fluidos, pára a tosse, beneficia o Estômago.' },
     { name: 'Manjericão', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Baço, Estômago', actions: 'Liberta o exterior, resolve a Humidade.' },
-{ name: 'Manjerona', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Baço', actions: 'Aquece o centro, expele o Frio.' },
+    { name: 'Manjerona', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Baço', actions: 'Aquece o centro, expele o Frio.' },
     { name: 'Manteiga', temp: 'Morno', flavor: 'Doce', organs: 'Pulmão, Intestino Grosso', actions: 'Tonifica o Qi, humedece a secura.' },
     { name: 'Maracujá', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Coração, Fígado', actions: 'Limpa o Calor do Coração, acalma o Shen.' },
-{ name: 'Marisco', temp: 'Frio', flavor: 'Salgado', organs: 'Fígado, Rim', actions: 'Nutre o Yin, amolece durezas.' },
-{ name: 'Marmelo', temp: 'Neutro', flavor: 'Azedo, Doce', organs: 'Baço, Estômago, Intestino Grosso', actions: 'Adstringente, pára a diarreia, harmoniza o Estômago.' },
-{ name: 'Medronho', temp: 'Neutro', flavor: 'Doce, Adstringente', organs: 'Rim, Intestino Grosso', actions: 'Consolida a Essência, pára a diarreia.' },
+    { name: 'Marisco', temp: 'Frio', flavor: 'Salgado', organs: 'Fígado, Rim', actions: 'Nutre o Yin, amolece durezas.' },
+    { name: 'Marmelo', temp: 'Neutro', flavor: 'Azedo, Doce', organs: 'Baço, Estômago, Intestino Grosso', actions: 'Adstringente, pára a diarreia, harmoniza o Estômago.' },
+    { name: 'Medronho', temp: 'Neutro', flavor: 'Doce, Adstringente', organs: 'Rim, Intestino Grosso', actions: 'Consolida a Essência, pára a diarreia.' },
     { name: 'Mel', temp: 'Neutro', flavor: 'Doce', organs: 'Pulmão, Baço, Intestino Grosso', actions: 'Humedece o Pulmão e os intestinos, alivia a dor.' },
-{ name: 'Melaço', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Fígado, Rim', actions: 'Tonifica o Sangue e o Qi, humedece a secura.' },
+    { name: 'Melaço', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Fígado, Rim', actions: 'Tonifica o Sangue e o Qi, humedece a secura.' },
     { name: 'Melancia', temp: 'Frio', flavor: 'Doce', organs: 'Coração, Estômago, Bexiga', actions: 'Elimina calor de verão, gera fluidos, alivia a sede, promove a micção.' },
     { name: 'Melão', temp: 'Frio', flavor: 'Doce', organs: 'Coração, Estômago', actions: 'Limpa o Calor de Verão, promove a micção.' },
-{ name: 'Melissa', temp: 'Fresco', flavor: 'Picante, Doce', organs: 'Coração, Fígado', actions: 'Acalma o Shen, acalma o Fígado, expele Vento.' },
+    { name: 'Melissa', temp: 'Fresco', flavor: 'Picante, Doce', organs: 'Coração, Fígado', actions: 'Acalma o Shen, acalma o Fígado, expele Vento.' },
     { name: 'Menta', temp: 'Fresco', flavor: 'Picante', organs: 'Pulmão, Fígado', actions: 'Dispersa Vento-Calor, move o Qi do Fígado.' },
     { name: 'Mexilhão', temp: 'Morno', flavor: 'Salgado', organs: 'Fígado, Rim', actions: 'Tonifica o Fígado e o Rim, nutre a Essência.' },
     { name: 'Milho', temp: 'Neutro', flavor: 'Doce', organs: 'Estômago, Intestino Grosso', actions: 'Tonifica o Qi, promove a micção.' },
     { name: 'Mirtilo', temp: 'Fresco', flavor: 'Azedo, Doce', organs: 'Fígado, Rim', actions: 'Tonifica o Sangue, beneficia os olhos.' },
-{ name: 'Miso', temp: 'Morno', flavor: 'Salgado, Doce', organs: 'Baço, Estômago, Rim', actions: 'Aquece o centro, desintoxica, tonifica o Baço.' },
+    { name: 'Miso', temp: 'Morno', flavor: 'Salgado, Doce', organs: 'Baço, Estômago, Rim', actions: 'Aquece o centro, desintoxica, tonifica o Baço.' },
     { name: 'Morango', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Pulmão, Baço', actions: 'Humedece o Pulmão, gera fluidos.' },
     { name: 'Mostarda (folhas)', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão', actions: 'Resolve a Fleuma-Frio no Pulmão.' },
-{ name: 'Mostarda (Semente)', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão', actions: 'Aquece o Pulmão, resolve a Fleuma-Frio.' },
+    { name: 'Mostarda (Semente)', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão', actions: 'Aquece o Pulmão, resolve a Fleuma-Frio.' },
     { name: 'Nabo', temp: 'Fresco', flavor: 'Picante, Doce', organs: 'Pulmão, Estômago', actions: 'Resolve a Fleuma-Calor, promove a digestão.' },
-{ name: 'Nectarina', temp: 'Morno', flavor: 'Doce, Azedo', organs: 'Fígado, Pulmão', actions: 'Move o Sangue, gera fluidos.' },
+    { name: 'Nectarina', temp: 'Morno', flavor: 'Doce, Azedo', organs: 'Fígado, Pulmão', actions: 'Move o Sangue, gera fluidos.' },
     { name: 'Nêspera', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Pulmão, Baço', actions: 'Humedece o Pulmão, pára a tosse.' },
     { name: 'Noz', temp: 'Morno', flavor: 'Doce', organs: 'Rim, Pulmão, Intestino Grosso', actions: 'Tonifica o Rim, aquece o Pulmão, humedece os intestinos.' },
     { name: 'Noz-moscada', temp: 'Morno', flavor: 'Picante', organs: 'Baço, Estômago, Intestino Grosso', actions: 'Aquece o centro, pára a diarreia.' },
-{ name: 'Óleo de Coco', temp: 'Fresco', flavor: 'Doce', organs: 'Coração, Baço', actions: 'Limpa o Calor, tonifica o Qi.' },
-{ name: 'Óleo de Fígado de Bacalhau', temp: 'Morno', flavor: 'Doce, Salgado', organs: 'Fígado, Rim', actions: 'Nutre o Sangue e o Yin, beneficia os olhos.' },
-{ name: 'Orégãos', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Fígado', actions: 'Liberta o exterior, expele Vento-Calor, move o Qi.' },
+    { name: 'Óleo de Coco', temp: 'Fresco', flavor: 'Doce', organs: 'Coração, Baço', actions: 'Limpa o Calor, tonifica o Qi.' },
+    { name: 'Óleo de Fígado de Bacalhau', temp: 'Morno', flavor: 'Doce, Salgado', organs: 'Fígado, Rim', actions: 'Nutre o Sangue e o Yin, beneficia os olhos.' },
+    { name: 'Orégãos', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Fígado', actions: 'Liberta o exterior, expele Vento-Calor, move o Qi.' },
     { name: 'Ostra', temp: 'Fresco', flavor: 'Salgado', organs: 'Fígado, Rim', actions: 'Nutre o Yin, acalma o Shen, amolece durezas.' },
-{ name: 'Ouriço-do-mar', temp: 'Frio', flavor: 'Salgado', organs: 'Rim', actions: 'Resolve a Fleuma, amolece durezas.' },
+    { name: 'Ouriço-do-mar', temp: 'Frio', flavor: 'Salgado', organs: 'Rim', actions: 'Resolve a Fleuma, amolece durezas.' },
     { name: 'Ovo de Codorna', temp: 'Neutro', flavor: 'Doce', organs: 'Rim, Pulmão', actions: 'Tonifica o Qi e o Sangue.' },
     { name: 'Ovo de Galinha', temp: 'Neutro', flavor: 'Doce', organs: 'Rim, Baço', actions: 'Tonifica o Sangue e o Yin, humedece a secura.' },
     { name: 'Painço', temp: 'Fresco', flavor: 'Doce, Salgado', organs: 'Baço, Rim, Estômago', actions: 'Tonifica o Baço e o Rim, limpa o Calor.' },
     { name: 'Papaia', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Promove a digestão, fortalece o Estômago.' },
-{ name: 'Pastinaca', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Tonifica o Qi, aquece o centro.' },
+    { name: 'Pastinaca', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Tonifica o Qi, aquece o centro.' },
     { name: 'Pato', temp: 'Fresco', flavor: 'Doce, Salgado', organs: 'Pulmão, Rim', actions: 'Tonifica o Yin, promove a micção, reduz o inchaço.' },
     { name: 'Pepino', temp: 'Frio', flavor: 'Doce', organs: 'Pulmão, Estômago, Intestino Grosso', actions: 'Elimina calor, desintoxica, promove a micção.' },
     { name: 'Pera', temp: 'Fresco', flavor: 'Doce', organs: 'Pulmão, Estômago', actions: 'Humedece o Pulmão e a secura, transforma a Fleuma-Calor.' },
-{ name: 'Perca', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Tonifica o Baço, resolve a Humidade.' },
-{ name: 'Perdiz', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Fígado', actions: 'Tonifica o Qi do centro, nutre o Sangue do Fígado.' },
+    { name: 'Perca', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Tonifica o Baço, resolve a Humidade.' },
+    { name: 'Perdiz', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Fígado', actions: 'Tonifica o Qi do centro, nutre o Sangue do Fígado.' },
     { name: 'Peru', temp: 'Fresco', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Tonifica o Baço, fortalece os tendões.' },
     { name: 'Pêssego', temp: 'Morno', flavor: 'Doce, Azedo', organs: 'Pulmão, Intestino Grosso', actions: 'Move o Sangue, humedece os intestinos.' },
     { name: 'Pimenta Caiena', temp: 'Quente', flavor: 'Picante', organs: 'Coração, Baço', actions: 'Aquece fortemente o interior, dispersa o Frio.' },
     { name: 'Pimenta Preta', temp: 'Quente', flavor: 'Picante', organs: 'Estômago, Intestino Grosso', actions: 'Aquece o centro, alivia a dor.' },
     { name: 'Pimento', temp: 'Morno', flavor: 'Picante', organs: 'Coração, Baço', actions: 'Move o Sangue, alivia a dor.' },
-{ name: 'Pinhão (Miolo)', temp: 'Morno', flavor: 'Doce', organs: 'Pulmão, Intestino Grosso', actions: 'Humedece o Pulmão e os intestinos, pára a tosse.' },
+    { name: 'Pinhão (Miolo)', temp: 'Morno', flavor: 'Doce', organs: 'Pulmão, Intestino Grosso', actions: 'Humedece o Pulmão e os intestinos, pára a tosse.' },
     { name: 'Pinhão', temp: 'Morno', flavor: 'Doce', organs: 'Pulmão, Fígado, Intestino Grosso', actions: 'Humedece o Pulmão e os intestinos.' },
     { name: 'Pistácio', temp: 'Neutro', flavor: 'Doce', organs: 'Rim, Intestino Grosso', actions: 'Tonifica o Qi do Rim.' },
-{ name: 'Poejo', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Fígado', actions: 'Liberta o exterior, promove a digestão.' },
-{ name: 'Polenta', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Coração', actions: 'Tonifica o Qi, acalma o Shen.' },
+    { name: 'Poejo', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Fígado', actions: 'Liberta o exterior, promove a digestão.' },
+    { name: 'Polenta', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Coração', actions: 'Tonifica o Qi, acalma o Shen.' },
     { name: 'Polvo', temp: 'Neutro', flavor: 'Doce, Salgado', organs: 'Fígado, Rim', actions: 'Tonifica o Sangue.' },
     { name: 'Pombo', temp: 'Morno', flavor: 'Salgado', organs: 'Fígado, Rim', actions: 'Tonifica o Qi e o Sangue, aquece o Yang.' },
     { name: 'Queijo', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Pulmão, Baço', actions: 'Gera fluidos, humedece a secura.' },
     { name: 'Quiabo', temp: 'Fresco', flavor: 'Doce', organs: 'Rim, Bexiga', actions: 'Limpa o Calor, promove a micção.' },
-{ name: 'Quinoa', temp: 'Morno', flavor: 'Doce, Azedo', organs: 'Rim, Intestino Grosso, Fígado', actions: 'Tonifica o Qi e o Sangue, fortalece o Rim.' },
+    { name: 'Quinoa', temp: 'Morno', flavor: 'Doce, Azedo', organs: 'Rim, Intestino Grosso, Fígado', actions: 'Tonifica o Qi e o Sangue, fortalece o Rim.' },
     { name: 'Rabanete', temp: 'Fresco', flavor: 'Picante, Doce', organs: 'Pulmão, Estômago', actions: 'Resolve a Fleuma, promove a digestão.' },
-{ name: 'Rábano', temp: 'Morno', flavor: 'Picante', organs: 'Vesícula Biliar, Estômago', actions: 'Move o Qi, promove a digestão.' },
-{ name: 'Raiz de Lótus', temp: 'Frio', flavor: 'Doce', organs: 'Coração, Baço, Estômago', actions: 'Limpa Calor, arrefece o Sangue, pára sangramentos.' },
+    { name: 'Rábano', temp: 'Morno', flavor: 'Picante', organs: 'Vesícula Biliar, Estômago', actions: 'Move o Qi, promove a digestão.' },
+    { name: 'Raiz de Lótus', temp: 'Frio', flavor: 'Doce', organs: 'Coração, Baço, Estômago', actions: 'Limpa Calor, arrefece o Sangue, pára sangramentos.' },
     { name: 'Repolho', temp: 'Neutro', flavor: 'Doce', organs: 'Estômago, Intestino Grosso', actions: 'Harmoniza o Estômago, pára a dor.' },
     { name: 'Requeijão', temp: 'Fresco', flavor: 'Doce', organs: 'Pulmão, Estômago', actions: 'Nutre o Yin, limpa o Calor.' },
-{ name: 'Robalo', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Tonifica o Baço, nutre o Rim.' },
+    { name: 'Robalo', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Tonifica o Baço, nutre o Rim.' },
     { name: 'Romã', temp: 'Morno', flavor: 'Azedo, Doce', organs: 'Rim, Intestino Grosso', actions: 'Adstringente, pára a diarreia e o sangramento.' },
     { name: 'Rosmaninho', temp: 'Morno', flavor: 'Picante', organs: 'Fígado, Coração', actions: 'Acalma o Shen, move o Qi.' },
-{ name: 'Rúcula', temp: 'Fresco', flavor: 'Amargo, Picante', organs: 'Fígado, Pulmão', actions: 'Limpa o Calor, desce o Qi do Pulmão.' },
+    { name: 'Rúcula', temp: 'Fresco', flavor: 'Amargo, Picante', organs: 'Fígado, Pulmão', actions: 'Limpa o Calor, desce o Qi do Pulmão.' },
     { name: 'Ruibarbo', temp: 'Frio', flavor: 'Amargo', organs: 'Coração, Fígado, Intestino Grosso', actions: 'Drena o Calor, move o Sangue, desbloqueia os intestinos.' },
-{ name: 'Sabugueiro (Baga)', temp: 'Fresco', flavor: 'Doce', organs: 'Pulmão, Bexiga', actions: 'Liberta o exterior, limpa Vento-Calor, promove a diurese.' },
-{ name: 'Sagú', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Pulmão', actions: 'Tonifica o Qi, humedece o Pulmão.' },
+    { name: 'Sabugueiro (Baga)', temp: 'Fresco', flavor: 'Doce', organs: 'Pulmão, Bexiga', actions: 'Liberta o exterior, limpa Vento-Calor, promove a diurese.' },
+    { name: 'Sagú', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Pulmão', actions: 'Tonifica o Qi, humedece o Pulmão.' },
     { name: 'Salmão', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Aquece o centro, tonifica o Qi e o Sangue.' },
     { name: 'Salsa', temp: 'Morno', flavor: 'Picante', organs: 'Fígado, Baço', actions: 'Move o Sangue, promove a digestão.' },
     { name: 'Salsicha', temp: 'Morno', flavor: 'Salgado', organs: 'Baço, Estômago', actions: 'Tonifica o Qi.' },
-{ name: 'Salsifi', temp: 'Neutro', flavor: 'Doce', organs: 'Pulmão, Fígado', actions: 'Limpa o Calor, desintoxica.' },
-{ name: 'Salva', temp: 'Morno', flavor: 'Picante, Amargo', organs: 'Pulmão, Coração', actions: 'Move o Sangue, acalma o Shen, resolve a Fleuma.' },
+    { name: 'Salsifi', temp: 'Neutro', flavor: 'Doce', organs: 'Pulmão, Fígado', actions: 'Limpa o Calor, desintoxica.' },
+    { name: 'Salva', temp: 'Morno', flavor: 'Picante, Amargo', organs: 'Pulmão, Coração', actions: 'Move o Sangue, acalma o Shen, resolve a Fleuma.' },
     { name: 'Sardinha', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Tonifica o Qi, aquece o centro.' },
     { name: 'Sementes de Abóbora', temp: 'Neutro', flavor: 'Doce', organs: 'Intestino Grosso', actions: 'Expele parasitas.' },
     { name: 'Sementes de Girassol', temp: 'Neutro', flavor: 'Doce', organs: 'Intestino Grosso', actions: 'Humedece os intestinos.' },
-{ name: 'Sementes de Papoila', temp: 'Neutro', flavor: 'Azedo, Adstringente', organs: 'Pulmão, Intestino Grosso, Rim', actions: 'Adstringente, pára tosse, diarreia e dor.' },
-{ name: 'Serralha', temp: 'Frio', flavor: 'Amargo', organs: 'Estômago, Fígado', actions: 'Limpa Calor, desintoxica.' },
+    { name: 'Sementes de Papoila', temp: 'Neutro', flavor: 'Azedo, Adstringente', organs: 'Pulmão, Intestino Grosso, Rim', actions: 'Adstringente, pára tosse, diarreia e dor.' },
+    { name: 'Serralha', temp: 'Frio', flavor: 'Amargo', organs: 'Estômago, Fígado', actions: 'Limpa Calor, desintoxica.' },
     { name: 'Soja (grão)', temp: 'Fresco', flavor: 'Doce', organs: 'Baço, Intestino Grosso', actions: 'Tonifica o Qi, limpa o Calor, desintoxica.' },
-{ name: 'Soja (Leite)', temp: 'Fresco', flavor: 'Doce', organs: 'Pulmão, Intestino Grosso', actions: 'Humedece a secura, tonifica o Qi.' },
-{ name: 'Sorgo', temp: 'Morno', flavor: 'Doce, Adstringente', organs: 'Baço, Intestino Grosso', actions: 'Tonifica o Baço, pára a diarreia.' },
+    { name: 'Soja (Leite)', temp: 'Fresco', flavor: 'Doce', organs: 'Pulmão, Intestino Grosso', actions: 'Humedece a secura, tonifica o Qi.' },
+    { name: 'Sorgo', temp: 'Morno', flavor: 'Doce, Adstringente', organs: 'Baço, Intestino Grosso', actions: 'Tonifica o Baço, pára a diarreia.' },
     { name: 'Tâmara', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Tonifica o Qi e o Sangue, acalma o Shen.' },
-{ name: 'Tamarindo', temp: 'Frio', flavor: 'Azedo, Doce', organs: 'Estômago, Intestino Grosso', actions: 'Limpa Calor, promove a digestão, laxante suave.' },
+    { name: 'Tamarindo', temp: 'Frio', flavor: 'Azedo, Doce', organs: 'Estômago, Intestino Grosso', actions: 'Limpa Calor, promove a digestão, laxante suave.' },
     { name: 'Tangerina', temp: 'Morno', flavor: 'Doce, Picante', organs: 'Pulmão, Baço', actions: 'Regula o Qi, resolve a Fleuma.' },
-{ name: 'Tapioca', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Tonifica o Qi, fácil de digerir.' },
-{ name: 'Tempeh', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Tonifica o Qi, fortalece o Baço.' },
+    { name: 'Tapioca', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Tonifica o Qi, fácil de digerir.' },
+    { name: 'Tempeh', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Tonifica o Qi, fortalece o Baço.' },
     { name: 'Tofu', temp: 'Frio', flavor: 'Doce', organs: 'Baço, Estômago, Intestino Grosso', actions: 'Limpa o Calor, humedece a secura, desintoxica.' },
     { name: 'Tomate', temp: 'Fresco', flavor: 'Doce, Azedo', organs: 'Fígado, Estômago', actions: 'Gera fluidos, arrefece o Sangue, acalma o Fígado.' },
     { name: 'Tomilho', temp: 'Morno', flavor: 'Picante', organs: 'Pulmão, Baço', actions: 'Expele Vento-Frio, resolve a Humidade.' },
-{ name: 'Tremoço', temp: 'Frio', flavor: 'Amargo, Salgado', organs: 'Baço, Estômago', actions: 'Resolve a Humidade, promove a diurese.' },
+    { name: 'Tremoço', temp: 'Frio', flavor: 'Amargo, Salgado', organs: 'Baço, Estômago', actions: 'Resolve a Humidade, promove a diurese.' },
     { name: 'Trigo Sarraceno', temp: 'Fresco', flavor: 'Doce', organs: 'Baço, Estômago, Intestino Grosso', actions: 'Fortalece o Baço, pára a diarreia.' },
-{ name: 'Trigo Sarraceno', temp: 'Fresco', flavor: 'Doce', organs: 'Baço, Estômago, Intestino Grosso', actions: 'Fortalece o Baço, pára a diarreia.' },
     { name: 'Trigo', temp: 'Fresco', flavor: 'Doce', organs: 'Coração, Baço, Rim', actions: 'Nutre o Coração, acalma o Shen, limpa o Calor.' },
-{ name: 'Trufa', temp: 'Neutro', flavor: 'Doce', organs: 'Rim, Fígado', actions: 'Tonifica o Yang, nutre a Essência.' },
+    { name: 'Trufa', temp: 'Neutro', flavor: 'Doce', organs: 'Rim, Fígado', actions: 'Tonifica o Yang, nutre a Essência.' },
     { name: 'Truta', temp: 'Morno', flavor: 'Doce', organs: 'Baço, Estômago', actions: 'Aquece o centro, tonifica o Qi.' },
-{ name: 'Urtiga', temp: 'Fresco', flavor: 'Doce, Picante', organs: 'Fígado, Pulmão', actions: 'Expele Vento, nutre o Sangue, pára sangramentos.' },
-{ name: 'Urze (Chá)', temp: 'Fresco', flavor: 'Amargo', organs: 'Rim, Bexiga', actions: 'Promove a diurese, limpa Humidade-Calor.' },
+    { name: 'Urtiga', temp: 'Fresco', flavor: 'Doce, Picante', organs: 'Fígado, Pulmão', actions: 'Expele Vento, nutre o Sangue, pára sangramentos.' },
+    { name: 'Urze (Chá)', temp: 'Fresco', flavor: 'Amargo', organs: 'Rim, Bexiga', actions: 'Promove a diurese, limpa Humidade-Calor.' },
     { name: 'Uva', temp: 'Neutro', flavor: 'Doce, Azedo', organs: 'Fígado, Rim, Baço', actions: 'Tonifica o Qi e o Sangue, fortalece os ossos.' },
     { name: 'Vagem', temp: 'Neutro', flavor: 'Doce', organs: 'Baço, Rim', actions: 'Tonifica o Yin, fortalece o Baço.' },
-{ name: 'Veado (Carne)', temp: 'Morno', flavor: 'Doce', organs: 'Fígado, Rim', actions: 'Tonifica o Yang, nutre o Sangue.' },
+    { name: 'Veado (Carne)', temp: 'Morno', flavor: 'Doce', organs: 'Fígado, Rim', actions: 'Tonifica o Yang, nutre o Sangue.' },
     { name: 'Vinagre', temp: 'Morno', flavor: 'Azedo, Amargo', organs: 'Fígado, Estômago', actions: 'Move o Sangue, remove estagnação, pára o sangramento.' },
-{ name: 'Zimbro', temp: 'Morno', flavor: 'Picante', organs: 'Rim, Bexiga', actions: 'Aquece o interior, promove a diurese, expele Vento-Frio.' },
+    { name: 'Zimbro', temp: 'Morno', flavor: 'Picante', organs: 'Rim, Bexiga', actions: 'Aquece o interior, promove a diurese, expele Vento-Frio.' },
 
 ].sort((a, b) => a.name.localeCompare(b.name));
-
-// Exporta os dados sobre os padrões de desarmonia Zang-Fu
-export const zangFuPatternsData = [
-    { id: 'figado', name: 'Fígado', color: 'wood', patterns: [ { name: 'Estagnação de Qi do Fígado', symptoms: 'Distensão e dor nos hipocôndrios, irritabilidade, suspiros frequentes, tensão emocional, pulso em corda. Em mulheres, pode causar TPM com distensão mamária e irregularidades menstruais.', tongue: 'Corpo da língua pode ser normal ou ligeiramente vermelho nas laterais.', pulse: 'Em corda (Xian).', treatmentPrinciple: 'Mover o Qi do Fígado, remover a estagnação, acalmar a mente.' }, { name: 'Subida do Yang do Fígado', symptoms: 'Dores de cabeça (têmporas, atrás dos olhos), tonturas, zumbido (tipo assobio), rosto vermelho, irritabilidade, acessos de raiva. Pode ser uma evolução da Estagnação de Qi ou Deficiência de Yin.', tongue: 'Vermelha, especialmente nas laterais, com saburra amarela fina.', pulse: 'Em corda (Xian), rápido (Shu).', treatmentPrinciple: 'Subjugar o Yang do Fígado, nutrir o Yin, limpar o Calor.' }, { name: 'Fogo do Fígado', symptoms: 'Sintomas de subida do Yang mais intensos. Sede, sabor amargo na boca, obstipação com fezes secas, urina escura, olhos vermelhos, raiva extrema.', tongue: 'Corpo da língua vermelho com laterais mais vermelhas e inchadas, saburra amarela e seca.', pulse: 'Em corda (Xian), rápido (Shu) e cheio (Shi).', treatmentPrinciple: 'Drenar o Fogo do Fígado, limpar o Calor, proteger o Yin.' }, { name: 'Deficiência de Sangue do Fígado', symptoms: 'Visão turva, "moscas volantes", dormência nos membros, cãibras, unhas frágeis e pálidas, períodos menstruais escassos ou amenorreia. Tonturas e tez pálida.', tongue: 'Pálida, especialmente nas laterais, e fina/seca.', pulse: 'Filiforme (Xi) ou em corda e fino.', treatmentPrinciple: 'Nutrir o Sangue do Fígado, tonificar o Fígado.' } ] },
-    { id: 'coracao', name: 'Coração', color: 'fire', patterns: [ { name: 'Deficiência de Qi do Coração', symptoms: 'Palpitações (pioram com esforço), falta de ar ao esforço, transpiração espontânea, cansaço, tez pálida.', tongue: 'Pálida, pode ter uma fissura central que chega à ponta.', pulse: 'Vazio (Xu), fraco (Ruo).', treatmentPrinciple: 'Tonificar o Qi do Coração.' }, { name: 'Deficiência de Yang do Coração', symptoms: 'Sintomas de Deficiência de Qi mais sinais de Frio: aversão ao frio, membros frios, lábios azulados, dor no peito (tipo facada).', tongue: 'Pálida ou roxa, húmida.', pulse: 'Profundo (Chen), lento (Chi) ou com nó (Jie).', treatmentPrinciple: 'Tonificar e aquecer o Yang do Coração.' }, { name: 'Deficiência de Sangue do Coração', symptoms: 'Palpitações, insónia (dificuldade em adormecer), ansiedade, memória fraca, tonturas, tez pálida sem brilho.', tongue: 'Pálida e fina.', pulse: 'Filiforme (Xi) ou agitado (Choppy).', treatmentPrinciple: 'Nutrir o Sangue do Coração, acalmar a Mente (Shen).' }, { name: 'Deficiência de Yin do Coração', symptoms: 'Palpitações, insónia (acordar durante a noite), agitação mental, suores noturnos, calor nos 5 palmos, boca e garganta secas.', tongue: 'Vermelha sem saburra, ponta mais vermelha.', pulse: 'Rápido (Shu) e filiforme (Xi).', treatmentPrinciple: 'Nutrir o Yin do Coração, limpar o Calor por Deficiência, acalmar a Mente.' } ] },
-    { id: 'baco', name: 'Baço', color: 'earth', patterns: [ { name: 'Deficiência de Qi do Baço', symptoms: 'Falta de apetite, cansaço (piora após comer), distensão abdominal após comer, fezes moles, fraqueza nos membros, tez amarelada.', tongue: 'Pálida com marcas de dentes nas laterais.', pulse: 'Vazio (Xu) ou fraco (Ruo).', treatmentPrinciple: 'Tonificar o Qi do Baço, fortalecer o transporte e a transformação.' }, { name: 'Deficiência de Yang do Baço', symptoms: 'Sintomas de Deficiência de Qi mais sinais de Frio: sensação de frio, membros frios, dor abdominal que melhora com calor, edema.', tongue: 'Pálida, húmida, com marcas de dentes.', pulse: 'Profundo (Chen), lento (Chi) e fraco (Ruo).', treatmentPrinciple: 'Aquecer o Centro, tonificar o Yang do Baço.' }, { name: 'Baço não Controla o Sangue', symptoms: 'Sintomas de Deficiência de Qi mais sinais de hemorragias: hematomas fáceis, sangue nas fezes ou urina, períodos menstruais excessivos.', tongue: 'Pálida.', pulse: 'Filiforme (Xi) e fraco (Ruo).', treatmentPrinciple: 'Tonificar o Qi do Baço, suster o Sangue.' }, { name: 'Colapso do Qi do Baço', symptoms: 'Sintomas de Deficiência de Qi mais sensação de peso e prolapso de órgãos (estômago, útero, ânus).', tongue: 'Pálida.', pulse: 'Vazio (Xu) e fraco (Ruo).', treatmentPrinciple: 'Tonificar o Qi do Baço, elevar o Yang.' } ] },
-    { id: 'pulmao', name: 'Pulmão', color: 'metal', patterns: [ { name: 'Deficiência de Qi do Pulmão', symptoms: 'Falta de ar ligeira, voz fraca, tosse fraca, transpiração espontânea durante o dia, aversão ao vento, constipações frequentes.', tongue: 'Pálida.', pulse: 'Vazio (Xu), especialmente na posição do Pulmão.', treatmentPrinciple: 'Tonificar o Qi do Pulmão, fortalecer o Wei Qi.' }, { name: 'Deficiência de Yin do Pulmão', symptoms: 'Tosse seca ou com pouca expectoração, garganta seca, voz rouca, suores noturnos, febre baixa à tarde, maçãs do rosto vermelhas.', tongue: 'Vermelha e descascada, com fissuras.', pulse: 'Flutuante (Fu) e vazio (Xu), ou rápido (Shu) e filiforme (Xi).', treatmentPrinciple: 'Nutrir o Yin do Pulmão, humedecer a secura.' } ] },
-    { id: 'rim', name: 'Rim', color: 'water', patterns: [ { name: 'Deficiência de Yang do Rim', symptoms: 'Sensação de frio (especialmente na lombar e joelhos), aversão ao frio, membros frios, impotência, libido diminuída, urina clara e abundante, edema.', tongue: 'Pálida, inchada e húmida.', pulse: 'Profundo (Chen), fraco (Ruo), lento (Chi).', treatmentPrinciple: 'Tonificar e aquecer o Yang do Rim.' }, { name: 'Deficiência de Yin do Rim', symptoms: 'Tonturas, zumbido, memória fraca, suores noturnos, boca e garganta secas, dor lombar, calor nos 5 palmos, obstipação.', tongue: 'Vermelha sem saburra, com fissuras.', pulse: 'Rápido (Shu) e filiforme (Xi).', treatmentPrinciple: 'Nutrir o Yin do Rim, limpar o Calor por Deficiência.' }, { name: 'Deficiência de Essência (Jing) do Rim', symptoms: 'Em crianças: desenvolvimento lento (ossos, dentes, cabelo), atraso mental. Em adultos: envelhecimento prematuro, cabelo grisalho, perda de dentes, memória fraca, infertilidade, senilidade.', tongue: 'Pode variar, mas geralmente reflete deficiência de Yin ou Yang.', pulse: 'Profundo (Chen) e fraco (Ruo).', treatmentPrinciple: 'Nutrir a Essência (Jing).' }, { name: 'Qi do Rim não é Firme', symptoms: 'Incontinência urinária, enurese, micção frequente e clara, ejaculação prematura, espermatorreia, prolapso uterino, abortos espontâneos recorrentes.', tongue: 'Pálida.', pulse: 'Profundo (Chen) e fraco (Ruo).', treatmentPrinciple: 'Consolidar o Qi do Rim.' } ] }
-];
-
-
-// Exporta os dados para as 10+1 perguntas do diagnóstico
-export const dezPerguntasData = [
-    { title: '1. Calafrios e Febre', content: 'Ajuda a distinguir entre invasão de Frio ou Vento-Calor e a determinar a força do Qi defensivo (Wei Qi).' },
-    { title: '2. Transpiração', content: 'Transpiração espontânea durante o dia pode indicar Deficiência de Qi. Suores noturnos podem indicar Deficiência de Yin.' },
-    { title: '3. Cabeça e Corpo', content: 'Dores de cabeça (localização, tipo de dor) e dores no corpo ajudam a identificar os meridianos e órgãos afetados.' },
-    { title: '4. Fezes e Urina', content: 'A frequência, consistência e cor dão pistas sobre o estado do Baço, Rins e a presença de Frio ou Calor.' },
-    { title: '5. Alimentação e Sabor', content: 'Apetite, digestão e preferências de sabor refletem a saúde do Baço e do Estômago.' },
-    { title: '6. Peito e Abdómen', content: 'Sensação de opressão, dor ou distensão pode indicar Estagnação de Qi no Fígado, Coração ou Pulmão.' },
-    { title: '7. Sono', content: 'Dificuldade em adormecer está muitas vezes ligada à Deficiência de Sangue (Coração/Fígado). Acordar frequentemente durante a noite pode indicar Deficiência de Yin com Calor Vazio.' },
-    { title: '8. Sede e Bebida', content: 'A ausência ou presença de sede, e a preferência por bebidas frias ou quentes, ajuda a diferenciar padrões de Frio e Calor.' },
-    { title: '9. Audição e Visão', content: 'Zumbido e problemas de visão estão frequentemente ligados ao Rim e ao Fígado.' },
-    { title: '10. Emoções', content: 'O estado emocional é um indicador chave. Irritabilidade (Fígado), ansiedade (Coração), preocupação (Baço), etc.' },
-    { title: '+1. Ginecologia (para mulheres)', content: 'Ciclo menstrual, cor e quantidade do fluxo, e sintomas associados (TPM) dão informações vitais sobre o estado do Qi, Sangue, e dos Vasos Maravilhosos (Ren Mai, Chong Mai).' }
-];
-
-// Exporta os dados sobre as posições do pulso (formato corrigido para o diagrama)
-export const pulsePositionData = {
-    cun: { title: 'Posição Cun (Polegada)', left: 'Coração, Pericárdio', right: 'Pulmão' },
-    guan: { title: 'Posição Guan (Barreira)', left: 'Fígado, Vesícula Biliar', right: 'Baço, Estômago' },
-    chi: { title: 'Posição Chi (Pé)', left: 'Rim Yin', right: 'Rim Yang, Bexiga' }
-};
-
-// Exporta os dados sobre os tipos de pulso (para a lista no acordeão)
-export const pulseTypeData = [
-    { id: 'flutuante', type: 'common', title: 'Flutuante (Fu)', content: 'Indica um padrão exterior.' },
-    { id: 'profundo', type: 'common', title: 'Profundo (Chen)', content: 'Indica um padrão interior.' },
-    { id: 'lento', type: 'common', title: 'Lento (Chi)', content: 'Indica um padrão de Frio.' },
-    { id: 'rapido', type: 'common', title: 'Rápido (Shu)', content: 'Indica um padrão de Calor.' },
-    { id: 'em-corda', type: 'common', title: 'Em Corda (Xian)', content: 'É o pulso característico da desarmonia do Fígado.' }
-];
 
 // Exporta os dados sobre os Grandes Mestres da MTC
 export const greatMastersData = [
@@ -1250,9 +1244,89 @@ export const greatMastersData = [
 // Exporta os dados sobre Terapias
 export const therapiesData = [
     {
+        id: 'tuina',
+        title: 'Tuina (推拿)',
+        icon: 'icon-hand',
+        content: `<div class="card-prose">
+            <p class="mb-4"><strong>Tuina</strong> (que significa "empurrar e agarrar") é um sistema de massagem terapêutica e manipulação corporal que constitui um dos pilares da Medicina Chinesa, a par da Acupuntura e da Fitoterapia. É muito mais do que uma massagem de relaxamento; é uma prática clínica usada para tratar uma vasta gama de condições, desde problemas musculoesqueléticos a desequilíbrios internos.</p>
+            
+            <h4 class="font-bold text-lg mt-6 mb-2">Princípios Fundamentais</h4>
+            <p class="text-sm mb-3">O Tuina baseia-se nos mesmos princípios da Acupuntura:</p>
+            <ul class="list-disc list-inside text-sm space-y-1">
+                <li><strong>Teoria dos Meridianos (Jingluo):</strong> As manipulações seguem os canais de energia para desobstruir o fluxo de Qi e Sangue.</li>
+                <li><strong>Diagnóstico MTC:</strong> O tratamento é sempre baseado num diagnóstico completo (observação da língua, palpação do pulso, etc.) para tratar o padrão de desarmonia subjacente, e não apenas os sintomas locais.</li>
+                <li><strong>Holismo:</strong> Trata o corpo como um todo interligado, onde uma dor no ombro pode estar relacionada com um desequilíbrio no Fígado, por exemplo.</li>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Principais Manipulações (Shou Fa - 手法)</h4>
+            <p class="text-sm mb-3">Existem centenas de técnicas, mas algumas das mais fundamentais incluem:</p>
+            <ol class="list-decimal list-inside space-y-3">
+                <li><strong>Tui Fa (推法) - Empurrar:</strong> Um movimento de pressão deslizante, usado para mover o Qi e o Sangue ao longo dos meridianos.</li>
+                <li><strong>Na Fa (拿法) - Agarrar:</strong> Agarrar e levantar os tecidos moles (músculos, tendões) para libertar a tensão e a estagnação.</li>
+                <li><strong>An Fa (按法) - Pressionar:</strong> Pressão estática e perpendicular sobre um ponto de acupuntura para o estimular.</li>
+                <li><strong>Mo Fa (摩法) - Esfregar Circularmente:</strong> Movimentos circulares suaves que aquecem a área e harmonizam o fluxo de Qi.</li>
+                <li><strong>Gun Fa (滾法) - Rolar:</strong> Uma técnica rítmica usando o dorso da mão e os nós dos dedos, eficaz para relaxar grandes áreas musculares como as costas.</li>
+                <li><strong>Dou Fa (抖法) - Sacudir:</strong> Vibrações rápidas aplicadas a um membro para relaxar as articulações e os músculos.</li>
+                <li><strong>Ba Shen Fa (拔伸法) - Puxar e Alongar:</strong> Técnicas de tração para descomprimir articulações, como a coluna vertebral.</li>
+            </ol>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Indicações e Contraindicações</h4>
+            <div class="grid md:grid-cols-2 gap-x-8">
+                <div>
+                    <h5 class="font-semibold text-green-700">Principais Indicações:</h5>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                        <li><strong>Problemas Musculoesqueléticos:</strong> Dores lombares, torcicolos, ombro congelado, ciática, entorses.</li>
+                        <li><strong>Dores de Cabeça:</strong> Especialmente as de origem tensional ou relacionadas com o Fígado.</li>
+                        <li><strong>Distúrbios Digestivos:</strong> Obstipação, distensão abdominal.</li>
+                        <li><strong>Stress e Ansiedade:</strong> Acalma o Fígado e o Coração, relaxando o sistema nervoso.</li>
+                        <li><strong>Pediatria:</strong> O Tuina Pediátrico é uma especialidade muito eficaz para tratar constipações, cólicas e problemas digestivos em crianças.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold text-red-700">Principais Contraindicações:</h5>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                        <li>Áreas com fraturas, infeções agudas, feridas abertas ou tumores malignos.</li>
+                        <li>Doenças infeciosas agudas ou febre alta.</li>
+                        <li>Distúrbios hemorrágicos graves.</li>
+                        <li>Abdómen e região lombo-sagrada em mulheres grávidas.</li>
+                        <li>Não deve ser aplicado imediatamente após uma refeição pesada.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>`
+    },
+    {
+        id: 'dietetica',
+        title: 'Dietética Energética (食疗 - Shíliáo)',
+        icon: 'icon-soup',
+        content: `<div class="card-prose">
+            <p class="mb-4">A <strong>Dietética Energética</strong> é uma das modalidades terapêuticas mais fundamentais da MTC. Baseia-se no princípio de que os alimentos, tal como as ervas, têm propriedades energéticas (natureza e sabor) que podem ser usadas para equilibrar o corpo, prevenir doenças e apoiar o tratamento de desarmonias.</p>
+            
+            <h4 class="font-bold text-lg mt-6 mb-2">Princípios Chave</h4>
+            <ul class="list-disc list-inside text-sm space-y-2">
+                <li>
+                    <strong>Natureza (Xing):</strong> Refere-se ao efeito de temperatura de um alimento no corpo. Alimentos <strong>frios/frescos</strong> (ex: melancia, pepino) são usados para limpar o Calor, enquanto alimentos <strong>mornos/quentes</strong> (ex: gengibre, canela) são usados para expelir o Frio e aquecer o corpo.
+                </li>
+                <li>
+                    <strong>Sabor (Wei):</strong> Os cinco sabores têm ações terapêuticas específicas e afinidade com determinados órgãos:
+                    <ul class="list-disc list-inside ml-4 mt-1">
+                        <li><strong>Azedo (Madeira/Fígado):</strong> Adstringente, ajuda a suster fluidos.</li>
+                        <li><strong>Amargo (Fogo/Coração):</strong> Drena o Calor e a Humidade, faz descer o Qi.</li>
+                        <li><strong>Doce (Terra/Baço):</strong> Tonifica o Qi, harmoniza e humedece.</li>
+                        <li><strong>Picante (Metal/Pulmão):</strong> Dispersa e move o Qi e o Sangue.</li>
+                        <li><strong>Salgado (Água/Rim):</strong> Amolece durezas e drena para baixo.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4 class="font-bold text-lg mt-6 mb-2">Aplicação Terapêutica</h4>
+            <p class="text-sm">O objetivo não é comer apenas um tipo de alimento, mas sim criar um equilíbrio. Por exemplo, numa condição de "Frio no Estômago", recomendam-se alimentos mornos e de sabor doce para aquecer e tonificar o centro. Numa condição de "Calor no Fígado", alimentos frescos e de sabor amargo ou azedo seriam mais apropriados para limpar o Calor e acalmar o Fígado.</p>
+        </div>`
+    },
+    {
         id: 'acupuntura',
         title: 'Acupuntura (针灸 - Zhēnjiǔ)',
-        icon: 'icon-needle', 
+        icon: 'icon-needle',
         content: `<div class="card-prose">
             <p class="mb-4">A <strong>Acupuntura</strong> é a prática de inserir agulhas muito finas em pontos específicos do corpo (os "acupontos" ou <em>Xue Wei</em>) para estimular e reequilibrar o fluxo de Qi nos Meridianos (<em>Jingluo</em>). É a terapia da Medicina Chinesa mais conhecida no Ocidente.</p>
             
@@ -1296,7 +1370,7 @@ export const therapiesData = [
     {
         id: 'ventosaterapia',
         title: 'Ventosaterapia (拔罐 - Báguàn)',
-        icon: 'icon-cup', 
+        icon: 'icon-cup',
         content: `<div class="card-prose">
             <p class="mb-4">A <strong>Ventosaterapia</strong> é um método no qual se cria um vácuo parcial em copos, que são depois aplicados na pele. A sucção resultante puxa a pele e as camadas superficiais dos músculos, promovendo um fluxo vigoroso de Qi e Sangue na área, aliviando a dor e expelindo fatores patogénicos.</p>
             
@@ -1343,7 +1417,7 @@ export const therapiesData = [
     {
         id: 'moxabustao',
         title: 'Moxabustão (灸 - Jiǔ)',
-        icon: 'icon-fire', 
+        icon: 'icon-fire',
         content: `<div class="card-prose">
             <p class="mb-4">A <strong>Moxabustão</strong> é uma terapia de calor que utiliza a erva seca <strong><em>Artemisia Vulgaris</em> (艾叶 - Ai Ye)</strong>. O calor gerado pela sua combustão lenta penetra profundamente nos meridianos para aquecer, mover o Qi, expelir o Frio e a Humidade, e tonificar o Yang Qi.</p>
             
@@ -1382,7 +1456,7 @@ export const therapiesData = [
     {
         id: 'fitoterapia',
         title: 'Fitoterapia Chinesa (中药 - Zhōngyào)',
-        icon: 'icon-leaf', 
+        icon: 'icon-leaf',
         content: `<div class="card-prose">
             <p class="mb-4">A <strong>Fitoterapia Chinesa</strong> é um dos pilares mais sofisticados da MTC. Utiliza uma vasta matéria médica (plantas, minerais) para criar fórmulas personalizadas que tratam padrões de desarmonia. As ervas raramente são usadas isoladamente; o seu poder reside na sinergia complexa das fórmulas.</p>
             
@@ -1423,7 +1497,7 @@ export const therapiesData = [
     {
         id: 'qigong',
         title: 'Qigong (气功)',
-        icon: 'icon-wind', 
+        icon: 'icon-wind',
         content: `<div class="card-prose">
             <p class="mb-4"><strong>Qigong</strong> (Trabalho da Energia) é uma prática ancestral chinesa que combina movimento lento, técnicas de respiração e foco mental para cultivar e equilibrar o Qi (energia vital). É a base de práticas mais complexas como o Tai Chi.</p>
 
@@ -1466,7 +1540,7 @@ export const therapiesData = [
     {
         id: 'taichi',
         title: 'Tai Chi (太极拳)',
-        icon: 'icon-yin-yang', 
+        icon: 'icon-yin-yang',
         content: `<div class="card-prose">
             <p class="mb-4">O <strong>Tai Chi Chuan</strong> (Punho do Supremo Último) é uma arte marcial interna que evoluiu do Qigong. É frequentemente descrito como "meditação em movimento", consistindo em sequências de movimentos fluidos e interligados (as "formas").</p>
 
@@ -1527,86 +1601,5 @@ export const therapiesData = [
                 </div>
             </div>
         </div>`
-    },
- {
-        id: 'tuina',
-    title: 'Tuina (推拿)',
-    icon: 'icon-hand', 
-    content: `<div class="card-prose">
-        <p class="mb-4"><strong>Tuina</strong> (que significa "empurrar e agarrar") é um sistema de massagem terapêutica e manipulação corporal que constitui um dos pilares da Medicina Chinesa, a par da Acupuntura e da Fitoterapia. É muito mais do que uma massagem de relaxamento; é uma prática clínica usada para tratar uma vasta gama de condições, desde problemas musculoesqueléticos a desequilíbrios internos.</p>
-        
-        <h4 class="font-bold text-lg mt-6 mb-2">Princípios Fundamentais</h4>
-        <p class="text-sm mb-3">O Tuina baseia-se nos mesmos princípios da Acupuntura:</p>
-        <ul class="list-disc list-inside text-sm space-y-1">
-            <li><strong>Teoria dos Meridianos (Jingluo):</strong> As manipulações seguem os canais de energia para desobstruir o fluxo de Qi e Sangue.</li>
-            <li><strong>Diagnóstico MTC:</strong> O tratamento é sempre baseado num diagnóstico completo (observação da língua, palpação do pulso, etc.) para tratar o padrão de desarmonia subjacente, e não apenas os sintomas locais.</li>
-            <li><strong>Holismo:</strong> Trata o corpo como um todo interligado, onde uma dor no ombro pode estar relacionada com um desequilíbrio no Fígado, por exemplo.</li>
-        </ul>
-
-        <h4 class="font-bold text-lg mt-6 mb-2">Principais Manipulações (Shou Fa - 手法)</h4>
-        <p class="text-sm mb-3">Existem centenas de técnicas, mas algumas das mais fundamentais incluem:</p>
-        <ol class="list-decimal list-inside space-y-3">
-            <li><strong>Tui Fa (推法) - Empurrar:</strong> Um movimento de pressão deslizante, usado para mover o Qi e o Sangue ao longo dos meridianos.</li>
-            <li><strong>Na Fa (拿法) - Agarrar:</strong> Agarrar e levantar os tecidos moles (músculos, tendões) para libertar a tensão e a estagnação.</li>
-            <li><strong>An Fa (按法) - Pressionar:</strong> Pressão estática e perpendicular sobre um ponto de acupuntura para o estimular.</li>
-            <li><strong>Mo Fa (摩法) - Esfregar Circularmente:</strong> Movimentos circulares suaves que aquecem a área e harmonizam o fluxo de Qi.</li>
-            <li><strong>Gun Fa (滾法) - Rolar:</strong> Uma técnica rítmica usando o dorso da mão e os nós dos dedos, eficaz para relaxar grandes áreas musculares como as costas.</li>
-            <li><strong>Dou Fa (抖法) - Sacudir:</strong> Vibrações rápidas aplicadas a um membro para relaxar as articulações e os músculos.</li>
-            <li><strong>Ba Shen Fa (拔伸法) - Puxar e Alongar:</strong> Técnicas de tração para descomprimir articulações, como a coluna vertebral.</li>
-        </ol>
-
-        <h4 class="font-bold text-lg mt-6 mb-2">Indicações e Contraindicações</h4>
-        <div class="grid md:grid-cols-2 gap-x-8">
-            <div>
-                <h5 class="font-semibold text-green-700">Principais Indicações:</h5>
-                <ul class="list-disc list-inside text-sm space-y-1">
-                    <li><strong>Problemas Musculoesqueléticos:</strong> Dores lombares, torcicolos, ombro congelado, ciática, entorses.</li>
-                    <li><strong>Dores de Cabeça:</strong> Especialmente as de origem tensional ou relacionadas com o Fígado.</li>
-                    <li><strong>Distúrbios Digestivos:</strong> Obstipação, distensão abdominal.</li>
-                    <li><strong>Stress e Ansiedade:</strong> Acalma o Fígado e o Coração, relaxando o sistema nervoso.</li>
-                    <li><strong>Pediatria:</strong> O Tuina Pediátrico é uma especialidade muito eficaz para tratar constipações, cólicas e problemas digestivos em crianças.</li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-semibold text-red-700">Principais Contraindicações:</h5>
-                <ul class="list-disc list-inside text-sm space-y-1">
-                    <li>Áreas com fraturas, infeções agudas, feridas abertas ou tumores malignos.</li>
-                    <li>Doenças infeciosas agudas ou febre alta.</li>
-                    <li>Distúrbios hemorrágicos graves.</li>
-                    <li>Abdómen e região lombo-sagrada em mulheres grávidas.</li>
-                    <li>Não deve ser aplicado imediatamente após uma refeição pesada.</li>
-                </ul>
-            </div>
-        </div>
-    </div>`
-},
-{
-    id: 'dietetica-energetica',
-    title: 'Dietética Energética (食疗 - Shíliáo)',
-    icon: 'icon-soup',
-    content: `<div class="card-prose">
-        <p class="mb-4">A <strong>Dietética Energética</strong> é um dos pilares fundamentais da MTC, baseada no princípio de que "a comida é o primeiro remédio". Em vez de focar em calorias ou vitaminas, esta abordagem classifica os alimentos com base nas suas propriedades energéticas (natureza, sabor) e no seu efeito sobre o fluxo de Qi e os órgãos internos.</p>
-        
-        <h4 class="font-bold text-lg mt-6 mb-2">Princípios Fundamentais</h4>
-        <ul class="list-disc list-inside text-sm space-y-2">
-            <li>
-                <strong>Natureza (Xing):</strong> Refere-se ao efeito de temperatura de um alimento no corpo após a digestão. Alimentos <strong>frios/frescos</strong> (ex: melancia, pepino) são usados para limpar o Calor, enquanto alimentos <strong>mornos/quentes</strong> (ex: gengibre, canela) são usados para expelir o Frio e aquecer o corpo.
-            </li>
-            <li>
-                <strong>Sabor (Wei):</strong> Os cinco sabores têm ações terapêuticas específicas e afinidade com determinados órgãos:
-                <ul class="list-disc list-inside ml-4 mt-1">
-                    <li><strong>Azedo (Madeira/Fígado):</strong> Adstringente, ajuda a suster fluidos.</li>
-                    <li><strong>Amargo (Fogo/Coração):</strong> Drena o Calor e a Humidade, faz descer o Qi.</li>
-                    <li><strong>Doce (Terra/Baço):</strong> Tonifica o Qi, harmoniza e humedece.</li>
-                    <li><strong>Picante (Metal/Pulmão):</strong> Dispersa e move o Qi e o Sangue.</li>
-                    <li><strong>Salgado (Água/Rim):</strong> Amolece durezas e drena para baixo.</li>
-                </ul>
-            </li>
-        </ul>
-
-        <h4 class="font-bold text-lg mt-6 mb-2">Aplicação Terapêutica</h4>
-        <p class="text-sm">O objetivo não é comer apenas um tipo de alimento, mas sim criar um equilíbrio. Por exemplo, numa condição de "Frio no Estômago", recomendam-se alimentos mornos e de sabor doce para aquecer e tonificar o centro. Numa condição de "Calor no Fígado", alimentos frescos e de sabor amargo ou azedo seriam mais apropriados para limpar o calor e acalmar o Fígado.</p>
-    </div>`
-}
-]
-}
+    }
+];

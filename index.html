@@ -29,7 +29,7 @@
                 <circle fill="url(#yin-grad-loader)" cx="100" cy="149" r="18"/><circle fill="url(#yang-grad-loader)" cx="100" cy="51" r="18"/>
             </g>
         </svg>
-        <p id="loading-text" class="mt-4 text-lg text-primary-dark font-semibold">Bem-vindo(a) ao Guia de MTC</p>
+        <p id="loading-text" class="mt-4 text-lg text-primary-dark font-semibold">Bem-vindo ao Guia de MTC</p>
     </div>
 
     <!-- Definições de Ícones SVG -->
@@ -39,13 +39,6 @@
         <symbol id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></symbol>
         <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></symbol>
         <symbol id="icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
-        
-        <!-- Marcador de Seta para Diagramas -->
-        <defs>
-            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 L 2 5 Z" class="arrow-marker" fill="currentColor"/>
-            </marker>
-        </defs>
         
         <!-- Logótipo Yin Yang Estático -->
         <symbol id="icon-app-logo" viewBox="0 0 24 24">
@@ -74,7 +67,18 @@
     </svg>
 
     <div class="flex h-screen bg-gray-100">
-        <!-- Sidebar para Desktop -->
+        <!-- Sidebar para Desktop e Móvel -->
+        <div id="mobile-menu-container" class="fixed inset-0 z-40 md:hidden">
+            <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50"></div>
+            <aside id="sidebar" class="w-64 bg-white shadow-lg p-4 flex-shrink-0 flex flex-col h-full transition-transform duration-300 -translate-x-full">
+                <div class="sidebar-header">
+                    <svg class="w-8 h-8 sidebar-logo"><use href="#icon-app-logo"></use></svg>
+                    <h1 class="font-playfair font-bold">Guia de MTC</h1>
+                </div>
+                <button id="close-menu-btn" class="absolute top-4 right-4 p-1"><svg class="w-6 h-6 text-gray-600"><use href="#icon-close"></use></svg><span class="sr-only">Fechar Menu</span></button>
+                <nav id="navigation-hub" class="space-y-1 overflow-y-auto flex-grow mt-4"></nav>
+            </aside>
+        </div>
         <aside class="w-64 bg-white shadow-lg p-4 flex-shrink-0 hidden md:flex flex-col">
             <div class="sidebar-header">
                 <svg class="w-8 h-8 sidebar-logo"><use href="#icon-app-logo"></use></svg>
@@ -87,149 +91,259 @@
             <nav id="desktop-navigation-hub" class="space-y-1 overflow-y-auto flex-grow"></nav>
         </aside>
 
-        <!-- Wrapper Principal -->
+        <!-- Área de Conteúdo Principal -->
         <div class="flex-1 flex flex-col h-screen">
-            
-            <!-- REMOVED: Ecrã Inicial para Móvel com o menu radial foi removido. -->
-
-            <!-- Área de Conteúdo Principal (Agora visível por defeito) -->
-            <div id="main-view-wrapper" class="flex-1 flex flex-col h-screen flex">
-                <header class="md:hidden bg-white shadow-md p-4 flex items-center justify-between sticky top-0 z-30">
-                    <h2 id="current-section-title" class="text-lg font-playfair font-bold text-primary">Início</h2>
-                    <div>
-                        <button id="open-search-btn-mobile" class="p-1 mr-2"><svg class="w-6 h-6 text-gray-600"><use href="#icon-search"></use></svg><span class="sr-only">Abrir Pesquisa</span></button>
-                        <button id="open-menu-btn" class="p-1"><svg class="w-6 h-6 text-gray-600"><use href="#icon-menu"></use></svg><span class="sr-only">Abrir Menu</span></button>
-                    </div>
-                </header>
-
-                <div id="main-content-area" class="flex-grow p-4 md:p-12 overflow-y-auto">
-                    <main id="main-content">
-                        <!-- Todas as secções de conteúdo existentes vão aqui, sem alterações -->
-                        <section id="inicio" class="content-section">
-                            <div class="floating-card">
-                                <div class="card-header"><h3>Bem-vindo ao Guia de MTC</h3></div>
-                                <div class="card-content card-prose">
-                                    <p>Este guia interativo foi concebido para ser uma referência rápida e completa sobre os conceitos fundamentais da Medicina Tradicional Chinesa (MTC). Utilize o menu lateral para navegar pelas diferentes secções.</p>
-                                    <h4>Como Utilizar:</h4>
-                                    <ul class="list-disc list-inside">
-                                        <li><strong>Navegação:</strong> Clique nos itens do menu para explorar os fundamentos, meridianos, diagnóstico e muito mais.</li>
-                                        <li><strong>Pesquisa Global:</strong> Utilize a barra de pesquisa para encontrar rapidamente informações sobre pontos de acupuntura, alimentos, padrões de desarmonia ou termos do glossário.</li>
-                                        <li><strong>Interatividade:</strong> Muitas secções contêm elementos interativos, como diagramas e abas, para facilitar a aprendizagem.</li>
-                                    </ul>
-                                    <p>Explore, aprenda e encontre o caminho para uma vida em harmonia.</p>
-                                </div>
-                            </div>
-                        </section>
-                        <section id="yin-yang" class="content-section"><div id="yin-yang-container" class="visual-card"></div></section>
-                        <section id="substancias-fundamentais" class="content-section">
-                            <div class="floating-card">
-                                <div class="card-header"><h3>As 5 Substâncias Fundamentais</h3></div>
-                                <div class="card-content card-prose">
-                                    <p>As cinco substâncias vitais são os alicerces da vida do ponto de vista da MTC. São as matérias-primas essenciais que formam o corpo, a mente e o espírito. O seu equilíbrio e livre circulação são cruciais para a saúde.</p>
-                                    <div class="space-y-4">
-                                        <div><h4>Qi (氣) - Energia Vital</h4><p>A força da vida que anima todas as funções do corpo.</p></div>
-                                        <div><h4>Xue (血) - Sangue</h4><p>Nutre, humedece e serve como veículo para o Shen (Mente).</p></div>
-                                        <div><h4>Jing (精) - Essência</h4><p>A nossa reserva de energia mais profunda que governa o crescimento e reprodução.</p></div>
-                                        <div><h4>Shen (神) - Espírito/Mente</h4><p>Abrange a consciência, o pensamento e a estabilidade emocional.</p></div>
-                                        <div><h4>Jin Ye (津液) - Fluidos Corporais</h4><p>Todos os fluidos do corpo que humedecem e lubrificam.</p></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                        <section id="tipos-de-qi" class="content-section">
-                            <div class="text-center mb-12"><h2 class="text-3xl font-playfair font-bold text-primary">Os Diferentes Tipos de Qi</h2><p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num cartão para ver a descrição.</p></div>
-                            <div id="qi-cards-container" class="flip-grid"></div>
-                        </section>
-                        <section id="cinco-elementos" class="content-section">
-                             <div class="floating-card mb-6">
-                                <div class="card-header"><h3>A Teoria dos Cinco Elementos</h3></div>
-                                <div class="card-content">
-                                   <div id="cycle-info-box"></div>
-                                   <div class="flex justify-center gap-4 mb-6">
-                                      <button id="btn-geracao" class="tab-button">Geração (Sheng)</button>
-                                      <button id="btn-controlo" class="tab-button">Controlo (Ke)</button>
-                                   </div>
-                                   <div class="grid md:grid-cols-2 gap-8 items-center">
-                                      <div id="element-diagram-container" class="relative w-full max-w-xs mx-auto aspect-square"><svg id="element-diagram-svg" class="absolute inset-0 w-full h-full" viewBox="0 0 300 300"><g id="cycle-paths-container"></g><g id="element-spheres-container"></g></svg></div>
-                                      <div id="element-details-container"></div>
-                                   </div>
-                                </div>
-                             </div>
-                        </section>
-                        <section id="ciclos-de-vida" class="content-section">
-                            <div class="grid md:grid-cols-2 gap-8">
-                                <div class="floating-card"><div class="card-header"><h3>Ciclos Femininos (7 Anos)</h3></div><div id="female-cycles-timeline" class="card-content timeline-container"></div></div>
-                                <div class="floating-card"><div class="card-header"><h3>Ciclos Masculinos (8 Anos)</h3></div><div id="male-cycles-timeline" class="card-content timeline-container"></div></div>
-                            </div>
-                        </section>
-                        <section id="meridianos" class="content-section">
-                            <div class="text-center mb-12"><h2 class="text-3xl font-playfair font-bold text-primary">Os 12 Meridianos Principais</h2><p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num meridiano para explorar os seus detalhes.</p></div>
-                            <div id="meridian-grid-container" class="zoom-grid"></div>
-                        </section>
-                        <section id="anatomia-energetica" class="content-section">
-                            <div class="text-center mb-12"><h2 class="text-3xl font-playfair font-bold text-primary">Anatomia Energética</h2><p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num sistema para explorar a sua visão na MTC.</p></div>
-                            <div id="anatomy-grid-container" class="zoom-grid"></div>
-                        </section>
-                        <section id="padroes-zang-fu" class="content-section">
-                             <div class="text-center mb-12"><h2 class="text-3xl font-playfair font-bold text-primary">Padrões de Desarmonia Zang-Fu</h2><p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num órgão para ver os seus padrões de desarmonia comuns.</p></div>
-                            <div id="zangfu-grid-container" class="zoom-grid"></div>
-                        </section>
-                        <section id="diagnostico" class="content-section">
-                            <div class="floating-card mb-8">
-                                <div class="card-header"><h3>Diagnóstico da Língua</h3></div>
-                                <div class="card-content grid md:grid-cols-2 gap-8 items-center diagnosis-grid">
-                                    <div id="lingua-diagram-container" class="relative max-w-xs mx-auto"><svg id="lingua-diagram-svg" viewBox="0 0 200 280" class="w-full h-auto"><defs><filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"></feGaussianBlur><feMerge><feMergeNode in="coloredBlur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs><path d="M100 275 C 40 220, 20 150, 100 10 C 180 150, 160 220, 100 275 Z" fill="#F8B4C4" stroke="#D17C90" stroke-width="1.5"/><path d="M100 275 C 98 240, 98 180, 100 100 C 102 180, 102 240, 100 275 Z" fill="#D17C90" opacity="0.3"/><g><path class="diagram-area-svg" data-area="raiz" d="M100 60 C 65 65, 50 25, 100 10 C 150 25, 135 65, 100 60 Z"/><path class="diagram-area-svg" data-area="centro" d="M100 130 C 70 130, 65 60, 100 60 C 135 60, 130 130, 100 130 Z"/><path class="diagram-area-svg" data-area="laterais" d="M65 130 C 40 130, 28 100, 50 60 L 65 60 V 130 Z"/><path class="diagram-area-svg" data-area="laterais" d="M135 130 C 160 130, 172 100, 150 60 L 135 60 V 130 Z"/><path class="diagram-area-svg" data-area="pre-ponta" d="M100 195 C 70 195, 65 130, 100 130 C 135 130, 130 195, 100 195 Z"/><path class="diagram-area-svg" data-area="ponta" d="M100 275 C 70 230, 70 195, 100 195 C 130 195, 130 230, 100 275 Z"/></g></svg></div>
-                                    <div id="lingua-info-box" class="diagnosis-info-panel flex items-center justify-center"><p class="text-center text-gray-500">Clique numa área da língua para ver a informação correspondente.</p></div>
-                                </div>
-                            </div>
-                            <div class="floating-card mb-8">
-                                <div class="card-header"><h3>Diagnóstico do Pulso</h3></div>
-                                <div class="card-content grid md:grid-cols-2 gap-8 items-center diagnosis-grid">
-                                    <div id="pulso-diagram-container" class="relative w-64 mx-auto"><svg id="pulso-diagram-svg" viewBox="0 0 150 200"><defs><linearGradient id="wrist-grad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F0D4B3"/><stop offset="100%" stop-color="#E6BE99"/></linearGradient></defs><path d="M 55,200 L 55,80 Q 50,70 60,70 L 90,70 Q 100,70 95,80 L 95,200 Z" fill="url(#wrist-grad)" stroke="#D1A377" stroke-width="1.5"/><path d="M 90,70 C 120,70 145,40 125,10 C 105,-20 45,-20 25,10 C 5,40 30,70 60,70 Z" fill="url(#wrist-grad)" stroke="#D1A377" stroke-width="1.5"/><g><circle data-pos="chi" class="pulse-pos-circle" cx="75" cy="115" r="12"/><circle data-pos="guan" class="pulse-pos-circle" cx="75" cy="85" r="12"/><circle data-pos="cun" class="pulse-pos-circle" cx="75" cy="55" r="12"/><text x="98" y="120" class="pulse-pos-label font-bold">Chi</text><text x="98" y="90" class="pulse-pos-label font-bold">Guan</text><text x="98" y="60" class="pulse-pos-label font-bold">Cun</text></g></svg></div>
-                                    <div id="pulso-info-box" class="diagnosis-info-panel flex items-center justify-center"><p class="text-center text-gray-500">Clique numa posição do pulso para ver os órgãos correspondentes.</p></div>
-                                </div>
-                            </div>
-                             <div class="floating-card">
-                                 <div class="card-header"><h3>Outros Métodos de Diagnóstico</h3></div>
-                                 <div class="card-content"><div id="diagnosis-accordion-container" class="accordion-container"></div></div>
-                            </div>
-                        </section>
-                        <section id="dietetica" class="content-section">
-                            <div class="floating-card">
-                                <div class="card-header"><h3>Dietética Energética</h3></div>
-                                <div class="card-content">
-                                    <input type="search" id="food-search-input" placeholder="Pesquisar alimento..." class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent">
-                                    <div id="food-alpha-nav"></div>
-                                    <div id="food-results-container"></div>
-                                </div>
-                            </div>
-                        </section>
-                        <section id="terapias" class="content-section">
-                            <div class="text-center mb-12"><h2 class="text-3xl font-playfair font-bold text-primary">Terapêuticas da MTC</h2><p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num cartão para explorar os seus detalhes.</p></div>
-                            <div id="therapies-grid-container" class="zoom-grid"></div>
-                        </section>
-                        <section id="grandes-mestres" class="content-section">
-                            <div class="text-center mb-12"><h2 class="text-3xl font-playfair font-bold text-primary">Grandes Mestres</h2><p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num mestre para saber mais sobre as suas contribuições.</p></div>
-                            <div id="masters-grid-container" class="flip-grid"></div>
-                        </section>
-                        <section id="glossario" class="content-section"><div id="glossary-container"></div></section>
-                    </main>
+            <header class="md:hidden bg-white shadow-md p-4 flex items-center justify-between sticky top-0 z-30">
+                <h2 id="current-section-title" class="text-lg font-playfair font-bold text-primary">Início</h2>
+                <div>
+                    <button id="open-search-btn-mobile" class="p-1 mr-2"><svg class="w-6 h-6 text-gray-600"><use href="#icon-search"></use></svg><span class="sr-only">Abrir Pesquisa</span></button>
+                    <button id="open-menu-btn" class="p-1"><svg class="w-6 h-6 text-gray-600"><use href="#icon-menu"></use></svg><span class="sr-only">Abrir Menu</span></button>
                 </div>
+            </header>
+
+            <div id="main-content-area" class="flex-grow p-4 md:p-12 overflow-y-auto">
+                <main id="main-content">
+                    
+                    <section id="inicio" class="content-section">
+                        <div class="floating-card">
+                            <div class="card-header"><h3>Bem-vindo ao Guia de MTC</h3></div>
+                            <div class="card-content card-prose">
+                                <p>Este guia interativo foi concebido para ser uma referência rápida e completa sobre os conceitos fundamentais da Medicina Tradicional Chinesa (MTC). Utilize o menu lateral para navegar pelas diferentes secções.</p>
+                                <h4>Como Utilizar:</h4>
+                                <ul class="list-disc list-inside">
+                                    <li><strong>Navegação:</strong> Clique nos itens do menu para explorar os fundamentos, meridianos, diagnóstico e muito mais.</li>
+                                    <li><strong>Pesquisa Global:</strong> Utilize a barra de pesquisa para encontrar rapidamente informações sobre pontos de acupuntura, alimentos, padrões de desarmonia ou termos do glossário.</li>
+                                    <li><strong>Interatividade:</strong> Muitas secções contêm elementos interativos, como diagramas e abas, para facilitar a aprendizagem.</li>
+                                </ul>
+                                <p>Explore, aprenda e encontre o caminho para uma vida em harmonia.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="yin-yang" class="content-section"><div id="yin-yang-container" class="visual-card"></div></section>
+
+                    <section id="substancias-fundamentais" class="content-section">
+                        <div class="floating-card">
+                            <div class="card-header"><h3>As 5 Substâncias Fundamentais</h3></div>
+                            <div class="card-content card-prose">
+                                <p>As cinco substâncias vitais são os alicerces da vida do ponto de vista da MTC. São as matérias-primas essenciais que formam o corpo, a mente e o espírito. O seu equilíbrio e livre circulação são cruciais para a saúde.</p>
+                                <div class="space-y-4">
+                                    <div><h4>Qi (氣) - Energia Vital</h4><p>A força da vida que anima todas as funções do corpo.</p></div>
+                                    <div><h4>Xue (血) - Sangue</h4><p>Nutre, humedece e serve como veículo para o Shen (Mente).</p></div>
+                                    <div><h4>Jing (精) - Essência</h4><p>A nossa reserva de energia mais profunda que governa o crescimento e reprodução.</p></div>
+                                    <div><h4>Shen (神) - Espírito/Mente</h4><p>Abrange a consciência, o pensamento e a estabilidade emocional.</p></div>
+                                    <div><h4>Jin Ye (津液) - Fluidos Corporais</h4><p>Todos os fluidos do corpo que humedecem e lubrificam.</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="tipos-de-qi" class="content-section">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Os Diferentes Tipos de Qi</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num cartão para ver a descrição.</p>
+                        </div>
+                        <div id="qi-cards-container" class="flip-grid"></div>
+                    </section>
+
+                    <section id="cinco-elementos" class="content-section">
+                         <div class="floating-card mb-6">
+                            <div class="card-header"><h3>A Teoria dos Cinco Elementos</h3></div>
+                            <div class="card-content">
+                               <div id="cycle-info-box"></div>
+                               <div class="flex justify-center gap-4 mb-6">
+                                  <button id="btn-geracao" class="tab-button">Geração (Sheng)</button>
+                                  <button id="btn-controlo" class="tab-button">Controlo (Ke)</button>
+                               </div>
+                               <div class="grid md:grid-cols-2 gap-8 items-center">
+                                  <div id="five-elements-svg-container" class="relative w-full max-w-sm mx-auto aspect-square">
+                                      <svg id="five-elements-svg" viewBox="0 0 400 400">
+                                          <defs>
+                                              <marker id="arrow-head-geracao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                                  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--color-secondary)" />
+                                              </marker>
+                                              <marker id="arrow-head-controlo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                                  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--color-accent)" />
+                                              </marker>
+                                              <filter id="glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+                                                  <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                                                  <feMerge>
+                                                      <feMergeNode in="coloredBlur"/>
+                                                      <feMergeNode in="SourceGraphic"/>
+                                                  </feMerge>
+                                              </filter>
+                                          </defs>
+                                          <g class="cycle-paths">
+                                              <!-- Geração -->
+                                              <path class="cycle-path geracao" d="M 80, 150 A 145 145 0 0 1 200 70" marker-end="url(#arrow-head-geracao)"/> <!-- Madeira -> Fogo -->
+                                              <path class="cycle-path geracao" d="M 220, 70 A 145 145 0 0 1 320, 150" marker-end="url(#arrow-head-geracao)"/> <!-- Fogo -> Terra -->
+                                              <path class="cycle-path geracao" d="M 315, 165 L 265, 260" marker-end="url(#arrow-head-geracao)"/> <!-- Terra -> Metal -->
+                                              <path class="cycle-path geracao" d="M 235, 270 L 125, 270" marker-end="url(#arrow-head-geracao)"/> <!-- Metal -> Agua -->
+                                              <path class="cycle-path geracao" d="M 95, 260 L 85, 165" marker-end="url(#arrow-head-geracao)"/> <!-- Agua -> Madeira -->
+                                              
+                                              <!-- Controlo -->
+                                              <path class="cycle-path controlo" d="M 200, 95 L 310, 150" marker-end="url(#arrow-head-controlo)"/> <!-- Fogo -> Terra -->
+                                              <path class="cycle-path controlo" d="M 310, 160 L 120, 260" marker-end="url(#arrow-head-controlo)"/> <!-- Terra -> Agua -->
+                                              <path class="cycle-path controlo" d="M 120, 260 L 80, 160" marker-end="url(#arrow-head-controlo)"/> <!-- Agua -> Madeira -->
+                                              <path class="cycle-path controlo" d="M 80, 140 L 240, 260" marker-end="url(#arrow-head-controlo)"/> <!-- Madeira -> Metal -->
+                                              <path class="cycle-path controlo" d="M 240, 260 L 200, 95" marker-end="url(#arrow-head-controlo)"/> <!-- Metal -> Fogo -->
+                                          </g>
+                                          <g class="element-nodes">
+                                              <g class="element-node-svg" data-id="madeira" transform="translate(70 150)">
+                                                  <circle r="35" fill="var(--el-wood)"/>
+                                                  <text y="5">Madeira</text>
+                                              </g>
+                                              <g class="element-node-svg" data-id="fogo" transform="translate(200 60)">
+                                                  <circle r="35" fill="var(--el-fire)"/>
+                                                  <text y="5">Fogo</text>
+                                              </g>
+                                              <g class="element-node-svg" data-id="terra" transform="translate(330 150)">
+                                                  <circle r="35" fill="var(--el-earth)"/>
+                                                  <text y="5">Terra</text>
+                                              </g>
+                                              <g class="element-node-svg" data-id="metal" transform="translate(250 270)">
+                                                  <circle r="35" fill="var(--el-metal)"/>
+                                                  <text y="5">Metal</text>
+                                              </g>
+                                              <g class="element-node-svg" data-id="agua" transform="translate(110 270)">
+                                                  <circle r="35" fill="var(--el-water)"/>
+                                                  <text y="5">Água</text>
+                                              </g>
+                                          </g>
+                                      </svg>
+                                  </div>
+                                  <div id="element-details-container"></div>
+                               </div>
+                            </div>
+                         </div>
+                    </section>
+
+                    <section id="ciclos-de-vida" class="content-section">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="floating-card">
+                                <div class="card-header"><h3>Ciclos Femininos (7 Anos)</h3></div>
+                                <div id="female-cycles-timeline" class="card-content timeline-container"></div>
+                            </div>
+                            <div class="floating-card">
+                                <div class="card-header"><h3>Ciclos Masculinos (8 Anos)</h3></div>
+                                <div id="male-cycles-timeline" class="card-content timeline-container"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="meridianos" class="content-section">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Os 12 Meridianos Principais</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Passe o rato sobre um meridiano no diagrama para o destacar. Clique para filtrar a lista abaixo.</p>
+                        </div>
+                        
+                        <!-- NOVO: Corpo Interativo -->
+                        <div id="interactive-body-map" class="mb-12"></div>
+                        <div class="text-center mb-12">
+                            <button id="reset-meridian-filter" class="tab-button hidden">Mostrar Todos os Meridianos</button>
+                        </div>
+                        
+                        <div id="meridian-grid-container" class="zoom-grid"></div>
+                    </section>
+
+                    <section id="anatomia-energetica" class="content-section">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Anatomia Energética</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num sistema para explorar a sua visão na MTC.</p>
+                        </div>
+                        <div id="anatomy-grid-container" class="zoom-grid"></div>
+                    </section>
+
+                    <section id="padroes-zang-fu" class="content-section">
+                         <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Padrões de Desarmonia Zang-Fu</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num órgão para ver os seus padrões de desarmonia comuns.</p>
+                        </div>
+                        <div id="zangfu-grid-container" class="zoom-grid"></div>
+                    </section>
+
+                    <section id="diagnostico" class="content-section">
+                        <div class="floating-card mb-8">
+                            <div class="card-header"><h3>Diagnóstico da Língua</h3></div>
+                            <div class="card-content grid md:grid-cols-2 gap-8 items-center diagnosis-grid">
+                                <div id="lingua-diagram-container" class="relative max-w-xs mx-auto">
+                                    <!-- O SVG da língua será carregado aqui pelo JavaScript -->
+                                </div>
+                                <div id="lingua-info-box" class="diagnosis-info-panel flex items-center justify-center">
+                                    <p class="text-center text-gray-500">Clique numa área da língua para ver a informação correspondente.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="floating-card mb-8">
+                            <div class="card-header"><h3>Diagnóstico do Pulso</h3></div>
+                            <div class="card-content grid md:grid-cols-2 gap-8 items-center diagnosis-grid">
+                                <div id="pulso-diagram-container" class="relative w-64 mx-auto">
+                                     <svg id="pulso-diagram-svg" viewBox="0 0 150 200">
+                                        <defs>
+                                            <linearGradient id="wrist-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="#F0D4B3"/>
+                                                <stop offset="100%" stop-color="#E6BE99"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <!-- Braço -->
+                                        <path d="M 55,200 L 55,80 Q 50,70 60,70 L 90,70 Q 100,70 95,80 L 95,200 Z" fill="url(#wrist-grad)" stroke="#D1A377" stroke-width="1.5"/>
+                                        <!-- Mão -->
+                                        <path d="M 90,70 C 120,70 145,40 125,10 C 105,-20 45,-20 25,10 C 5,40 30,70 60,70 Z" fill="url(#wrist-grad)" stroke="#D1A377" stroke-width="1.5"/>
+                                        <!-- Posições do Pulso -->
+                                        <g>
+                                            <circle data-pos="chi" class="pulse-pos-circle" cx="75" cy="115" r="12"/>
+                                            <circle data-pos="guan" class="pulse-pos-circle" cx="75" cy="85" r="12"/>
+                                            <circle data-pos="cun" class="pulse-pos-circle" cx="75" cy="55" r="12"/>
+                                            <text x="98" y="120" class="pulse-pos-label font-bold">Chi</text>
+                                            <text x="98" y="90" class="pulse-pos-label font-bold">Guan</text>
+                                            <text x="98" y="60" class="pulse-pos-label font-bold">Cun</text>
+                                        </g>
+                                     </svg>
+                                </div>
+                                <div id="pulso-info-box" class="diagnosis-info-panel flex items-center justify-center">
+                                    <p class="text-center text-gray-500">Clique numa posição do pulso para ver os órgãos correspondentes.</p>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="floating-card">
+                             <div class="card-header"><h3>Outros Métodos de Diagnóstico</h3></div>
+                             <div class="card-content">
+                                <div id="diagnosis-accordion-container" class="accordion-container"></div>
+                             </div>
+                        </div>
+                    </section>
+
+                    <section id="dietetica" class="content-section">
+                        <div class="floating-card">
+                            <div class="card-header"><h3>Dietética Energética</h3></div>
+                            <div class="card-content">
+                                <input type="search" id="food-search-input" placeholder="Pesquisar alimento..." class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent">
+                                <div id="food-alpha-nav"></div>
+                                <div id="food-results-container"></div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section id="terapias" class="content-section">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Terapêuticas da MTC</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num cartão para explorar os seus detalhes.</p>
+                        </div>
+                        <div id="therapies-grid-container" class="zoom-grid"></div>
+                    </section>
+                    
+                    <section id="grandes-mestres" class="content-section">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Grandes Mestres</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num mestre para saber mais sobre as suas contribuições.</p>
+                        </div>
+                        <div id="masters-grid-container" class="flip-grid"></div>
+                    </section>
+
+                    <section id="glossario" class="content-section"><div id="glossary-container"></div></section>
+                </main>
             </div>
         </div>
-    </div>
-
-    <!-- Sidebar Móvel -->
-    <div id="mobile-menu-container" class="fixed inset-0 z-40 md:hidden">
-        <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50"></div>
-        <aside id="sidebar" class="w-64 bg-white shadow-lg p-4 flex-shrink-0 flex flex-col h-full transition-transform duration-300 -translate-x-full">
-            <div class="sidebar-header">
-                <svg class="w-8 h-8 sidebar-logo"><use href="#icon-app-logo"></use></svg>
-                <h1 class="font-playfair font-bold">Guia de MTC</h1>
-            </div>
-            <button id="close-menu-btn" class="absolute top-4 right-4 p-1"><svg class="w-6 h-6 text-gray-600"><use href="#icon-close"></use></svg><span class="sr-only">Fechar Menu</span></button>
-            <nav id="navigation-hub" class="space-y-1 overflow-y-auto flex-grow mt-4"></nav>
-        </aside>
     </div>
 
     <!-- Modal de Pesquisa Global -->
@@ -255,10 +369,14 @@
                 <svg class="w-6 h-6 text-gray-700"><use href="#icon-close"></use></svg>
                 <span class="sr-only">Fechar</span>
             </button>
-            <div id="content-modal-content"></div>
+            <div id="content-modal-content">
+                <!-- Conteúdo será injetado aqui pelo JS -->
+            </div>
         </div>
     </div>
-
+    
+    <!-- Fuse.js for fuzzy searching -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
     <script type="module" src="app.js"></script>
 </body>
 </html>
