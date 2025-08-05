@@ -51,8 +51,6 @@ const contentModalOverlay = document.getElementById('content-modal-overlay');
 
 // Elementos do Corpo Interativo
 const meridianGridContainer = document.getElementById('meridian-grid-container');
-const interactiveBodyMapContainer = document.getElementById('interactive-body-map');
-const resetMeridianFilterBtn = document.getElementById('reset-meridian-filter');
 
 
 // --- LÓGICA DE NAVEGAÇÃO RESPONSIVA E PESQUISA ---
@@ -443,52 +441,26 @@ const renderMasterModalContent = (item) => `
 
 // --- LÓGICA DE DIAGNÓSTICO (SVG MELHORADO) ---
 function setupDiagnosisDiagrams() {
-    const tongueContainer = document.getElementById('lingua-diagram-container');
+    const tongueSVG = document.getElementById('lingua-diagram-svg');
     const tongueInfoBox = document.getElementById('lingua-info-box');
-
-    // NOTE: In a real-world scenario, you would place 'tongue.svg' in an assets folder.
-    // For this environment, we assume it's available at the root.
-    const tongueSVGPath = 'tongue.svg'; 
-
-    if (tongueContainer && tongueInfoBox) {
-        fetch(tongueSVGPath)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+    if (tongueSVG && tongueInfoBox) {
+        const areas = tongueSVG.querySelectorAll('.diagram-area-svg');
+        areas.forEach(area => {
+            area.addEventListener('click', () => {
+                areas.forEach(a => a.classList.remove('active'));
+                const currentAreaId = area.dataset.area;
+                tongueSVG.querySelectorAll(`[data-area="${currentAreaId}"]`).forEach(part => part.classList.add('active'));
+                
+                const info = linguaData[currentAreaId];
+                if (info) {
+                    tongueInfoBox.innerHTML = `
+                        <div class="text-left">
+                            <h4 class="font-playfair font-bold text-lg text-primary mb-2">${info.title}</h4>
+                            <p class="text-sm text-gray-600">${info.info}</p>
+                        </div>`;
                 }
-                return response.text();
-            })
-            .then(svgData => {
-                tongueContainer.innerHTML = svgData;
-                const tongueSVG = tongueContainer.querySelector('svg');
-                if (tongueSVG) {
-                    // Add the necessary classes to the loaded SVG for styling
-                    tongueSVG.classList.add('w-full', 'h-auto');
-                    tongueSVG.id = 'lingua-diagram-svg';
-
-                    const areas = tongueSVG.querySelectorAll('.diagram-area-svg');
-                    areas.forEach(area => {
-                        area.addEventListener('click', () => {
-                            areas.forEach(a => a.classList.remove('active'));
-                            const currentAreaId = area.dataset.area;
-                            tongueSVG.querySelectorAll(`[data-area="${currentAreaId}"]`).forEach(part => part.classList.add('active'));
-                            
-                            const info = linguaData[currentAreaId];
-                            if (info) {
-                                tongueInfoBox.innerHTML = `
-                                    <div class="text-left">
-                                        <h4 class="font-playfair font-bold text-lg text-primary mb-2">${info.title}</h4>
-                                        <p class="text-sm text-gray-600">${info.info}</p>
-                                    </div>`;
-                            }
-                        });
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error loading the tongue SVG:', error);
-                tongueContainer.innerHTML = '<p class="text-center text-red-500">Não foi possível carregar o diagrama da língua.</p>';
             });
+        });
     }
 
     const pulseSVG = document.getElementById('pulso-diagram-svg');
@@ -560,9 +532,18 @@ function initializeFiveElements() {
     const cycleInfoBox = document.getElementById('cycle-info-box');
     const btnGeracao = document.getElementById('btn-geracao');
     const btnControlo = document.getElementById('btn-controlo');
+    const relationshipLine = document.getElementById('relationship-line');
     
     let currentCycle = 'geracao';
     let currentElement = 'madeira';
+
+    const positions = {
+        madeira: { x: 70, y: 150 },
+        fogo: { x: 200, y: 60 },
+        terra: { x: 330, y: 150 },
+        metal: { x: 250, y: 270 },
+        agua: { x: 110, y: 270 },
+    };
 
     const cycleInfo = {
         geracao: { title: 'Ciclo de Geração (Sheng)', description: 'Este ciclo representa a nutrição e o apoio. Cada elemento é a "mãe" do seguinte.', color: 'bg-green-100', textColor: 'text-green-800' },
@@ -572,6 +553,8 @@ function initializeFiveElements() {
     function updateDetails(elementId) {
         currentElement = elementId;
         const elData = fiveElementsData[elementId];
+        
+        // Update text details
         elementDetailsContainer.innerHTML = `<div class="text-left p-6 rounded-lg border-2" style="border-color: var(--el-${elData.color}); background-color: #fafcff;">
             <h3 class="text-2xl font-playfair font-bold mb-4" style="color: var(--el-${elData.color});">${elData.name}</h3>
             <div class="card-prose">
@@ -581,9 +564,20 @@ function initializeFiveElements() {
             </div>
         </div>`;
         
+        // Update active element style
         svg.querySelectorAll('.element-node-svg').forEach(node => {
             node.classList.toggle('active', node.dataset.id === elementId);
         });
+
+        // Update and animate the relationship line
+        const targetElementId = elData.target[currentCycle];
+        const startPos = positions[elementId];
+        const endPos = positions[targetElementId];
+        
+        relationshipLine.setAttribute('d', `M ${startPos.x} ${startPos.y} L ${endPos.x} ${endPos.y}`);
+        relationshipLine.classList.remove('geracao', 'controlo', 'active');
+        relationshipLine.getBoundingClientRect(); // Trigger reflow
+        relationshipLine.classList.add(currentCycle, 'active');
     }
 
     function switchCycle(newCycle) {
@@ -595,13 +589,6 @@ function initializeFiveElements() {
         cycleInfoBox.className = `mb-6 p-4 rounded-lg text-center transition-colors duration-500 ${info.color} ${info.textColor}`;
         cycleInfoBox.innerHTML = `<h4 class="font-bold">${info.title}</h4><p class="text-sm">${info.description}</p>`;
         
-        // Remove both classes and then add the correct one to re-trigger animation
-        svg.classList.remove('show-geracao', 'show-controlo');
-        // A tiny delay is needed for the browser to register the class removal before adding the new one
-        setTimeout(() => {
-            svg.classList.add(`show-${newCycle}`);
-        }, 10);
-
         updateDetails(currentElement);
     }
 
@@ -622,71 +609,9 @@ function setupGlossary() { const glossaryContainer = document.getElementById('gl
 
 function setupDietetics() { const foodSearchInput = document.getElementById('food-search-input'); const foodResultsContainer = document.getElementById('food-results-container'); const foodAlphaNav = document.getElementById('food-alpha-nav'); function renderFoodList(foods) { const groupedFoods = foods.reduce((acc, food) => { const firstLetter = food.name.charAt(0).toUpperCase(); if (!acc[firstLetter]) acc[firstLetter] = []; acc[firstLetter].push(food); return acc; }, {}); const letters = Object.keys(groupedFoods).sort(); if (foodAlphaNav) foodAlphaNav.innerHTML = letters.map(letter => `<a href="#food-letter-${letter}">${letter}</a>`).join(''); if (foodResultsContainer) { foodResultsContainer.innerHTML = letters.map(letter => `<h3 id="food-letter-${letter}" class="food-group-header" tabindex="-1">${letter}</h3><div class="food-group-items">${groupedFoods[letter].map(food => `<div class="food-item floating-card p-4 mb-3"><h4 class="font-bold text-lg text-green-800">${food.name}</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mt-2"><div><strong>Temp:</strong> <span class="font-semibold">${food.temp}</span></div><div><strong>Sabor:</strong> <span class="font-semibold">${food.flavor}</span></div><div class="col-span-2"><strong>Órgãos:</strong> <span class="font-semibold">${food.organs}</span></div></div><p class="text-sm mt-2"><strong>Ações:</strong> ${food.actions}</p></div>`).join('')}</div>`).join(''); } } if (foodSearchInput) { renderFoodList(foodData); foodSearchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase().trim(); const headers = foodResultsContainer.querySelectorAll('.food-group-header'); headers.forEach(header => { const groupWrapper = header.nextElementSibling; if (!groupWrapper) return; const items = groupWrapper.querySelectorAll('.food-item'); let groupHasVisibleItems = false; items.forEach(item => { const foodName = item.querySelector('h4').textContent.toLowerCase(); const isVisible = foodName.includes(searchTerm); item.classList.toggle('hidden', !isVisible); if (isVisible) groupHasVisibleItems = true; }); header.style.display = groupHasVisibleItems ? 'block' : 'none'; groupWrapper.style.display = groupHasVisibleItems ? 'block' : 'none'; }); }); } }
 
-// NOVO: Função para renderizar a grelha de meridianos
 function renderMeridianGrid(data) {
     if (!meridianGridContainer) return;
     meridianGridContainer.innerHTML = data.map(item => renderMeridianCard(item)).join('');
-}
-
-// NOVO: Função para configurar o mapa do corpo interativo
-function setupInteractiveBodyMap() {
-    if (!interactiveBodyMapContainer) return;
-    
-    // O SVG completo é inserido aqui para manter o HTML limpo
-    const bodySVG = `
-    <svg viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <filter id="glow-meridian" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"></feGaussianBlur>
-                <feMerge>
-                    <feMergeNode in="coloredBlur"></feMergeNode>
-                    <feMergeNode in="SourceGraphic"></feMergeNode>
-                </feMerge>
-            </filter>
-        </defs>
-        <!-- Contorno do Corpo -->
-        <path class="body-outline" d="M200,10 C150,10 120,40 120,80 C120,120 100,130 100,180 L100,450 C100,550 120,590 150,590 L250,590 C280,590 300,550 300,450 L300,180 C300,130 280,120 280,80 C280,40 250,10 200,10 Z" />
-        
-        <!-- Trajetos dos Meridianos -->
-        <g id="meridian-paths">
-            <path class="meridian-path" id="path-pulmao" data-meridian="pulmao" stroke="var(--el-metal)" d="M180,150 Q160,200 130,250 L115,350"/>
-            <path class="meridian-path" id="path-intestino-grosso" data-meridian="intestino-grosso" stroke="var(--el-metal)" d="M110,355 L90,200 Q95,140 130,120"/>
-            <path class="meridian-path" id="path-estomago" data-meridian="estomago" stroke="var(--el-earth)" d="M185,110 L185,250 Q185,400 160,550"/>
-            <path class="meridian-path" id="path-baco" data-meridian="baco" stroke="var(--el-earth)" d="M155,550 Q170,400 170,250 L170,180"/>
-            <path class="meridian-path" id="path-coracao" data-meridian="coracao" stroke="var(--el-fire)" d="M190,160 L190,250 L140,360"/>
-            <path class="meridian-path" id="path-intestino-delgado" data-meridian="intestino-delgado" stroke="var(--el-fire)" d="M135,365 L185,260 Q185,190 160,130"/>
-            <path class="meridian-path" id="path-bexiga" data-meridian="bexiga" stroke="var(--el-water)" d="M220,100 L220,580"/>
-            <path class="meridian-path" id="path-rim" data-meridian="rim" stroke="var(--el-water)" d="M230,580 L230,200 Q230,150 200,130"/>
-            <path class="meridian-path" id="path-pericardio" data-meridian="pericardio" stroke="var(--el-fire)" d="M210,160 L210,250 L260,360"/>
-            <path class="meridian-path" id="path-triplo-aquecedor" data-meridian="triplo-aquecedor" stroke="var(--el-fire)" d="M265,365 L215,260 Q215,190 240,130"/>
-            <path class="meridian-path" id="path-vesicula-biliar" data-meridian="vesicula-biliar" stroke="var(--el-wood)" d="M245,110 L245,250 Q245,400 270,550"/>
-            <path class="meridian-path" id="path-figado" data-meridian="figado" stroke="var(--el-wood)" d="M275,550 Q260,400 260,250 L260,180"/>
-        </g>
-    </svg>`;
-    interactiveBodyMapContainer.innerHTML = bodySVG;
-
-    const paths = interactiveBodyMapContainer.querySelectorAll('.meridian-path');
-    
-    paths.forEach(path => {
-        path.addEventListener('click', () => {
-            const meridianId = path.dataset.meridian;
-            const filteredData = meridianData.filter(m => m.id === meridianId);
-            renderMeridianGrid(filteredData);
-
-            paths.forEach(p => p.classList.remove('active'));
-            path.classList.add('active');
-            
-            interactiveBodyMapContainer.classList.add('filtered');
-            resetMeridianFilterBtn.classList.remove('hidden');
-        });
-    });
-
-    resetMeridianFilterBtn.addEventListener('click', () => {
-        renderMeridianGrid(meridianData);
-        paths.forEach(p => p.classList.remove('active'));
-        interactiveBodyMapContainer.classList.remove('filtered');
-        resetMeridianFilterBtn.classList.add('hidden');
-    });
 }
 
 
@@ -739,6 +664,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupZoomGrid('therapies-grid-container', therapiesData, renderTherapyCard, renderTherapyModalContent);
     setupZoomGrid('zangfu-grid-container', zangFuPatternsData, renderZangFuCard, renderZangFuModalContent);
     setupZoomGrid('anatomy-grid-container', anatomyData, renderAnatomyCard, renderAnatomyModalContent);
+    setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent);
+
 
     // Setup da grelha com flip para os Mestres
     setupFlipGrid('masters-grid-container', greatMastersData, renderMasterFlipCard);
@@ -751,12 +678,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('cinco-elementos')) {
         initializeFiveElements();
     }
-
-    // Setup do Corpo Interativo e grelha de meridianos inicial
-    setupInteractiveBodyMap();
-    renderMeridianGrid(meridianData); // Renderiza todos os meridianos inicialmente
-    setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent);
-
 
     // Animações e inicialização
     document.querySelectorAll('aside .sidebar-link, aside .nav-group').forEach((el, index) => {

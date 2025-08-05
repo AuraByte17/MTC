@@ -262,28 +262,25 @@ aside {
     stroke-width: 5px;
     filter: url(#glow-filter);
 }
-.cycle-path {
+
+.relationship-line {
     stroke-width: 3;
     fill: none;
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    pointer-events: none;
-    stroke-dasharray: 200;
-    stroke-dashoffset: 200;
+    transition: opacity 0.3s, stroke 0.3s;
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
 }
-.cycle-path.geracao { stroke: var(--color-secondary); }
-.cycle-path.controlo { stroke: var(--color-accent); }
-
-#five-elements-svg.show-geracao .cycle-path.geracao {
+.relationship-line.active {
     opacity: 1;
-    animation: draw-arrow 1.5s ease-out forwards;
+    animation: draw-line 0.8s ease-out forwards;
 }
-#five-elements-svg.show-controlo .cycle-path.controlo {
-    opacity: 1;
-    animation: draw-arrow 1.5s ease-out forwards;
-}
+.relationship-line.geracao { stroke: var(--color-secondary); }
+.relationship-line.geracao marker { fill: var(--color-secondary); }
+.relationship-line.controlo { stroke: var(--color-accent); }
+.relationship-line.controlo marker { fill: var(--color-accent); }
 
-@keyframes draw-arrow {
+@keyframes draw-line {
     to {
         stroke-dashoffset: 0;
     }
@@ -310,7 +307,7 @@ aside {
     fill: var(--color-accent);
     opacity: 0.5;
     stroke: var(--color-primary-dark);
-    stroke-width: 2px;
+    stroke-width: 20px; /* Aumentado para ser visível no novo viewBox */
 }
 
 .pulse-pos-circle { 
@@ -512,47 +509,6 @@ body.content-modal-open #content-modal-container {
     overflow-y: auto;
     flex-grow: 1;
 }
-
-/* --- NOVO: Estilos do Corpo Interativo --- */
-#interactive-body-map {
-    position: relative;
-    max-width: 600px;
-    margin: 0 auto;
-}
-#interactive-body-map svg {
-    width: 100%;
-    height: auto;
-}
-.body-outline {
-    fill: #e5e7eb;
-    stroke: #9ca3af;
-    stroke-width: 1;
-}
-.meridian-path {
-    fill: none;
-    stroke-width: 4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    opacity: 0.2;
-    transition: opacity 0.3s ease, stroke-width 0.3s ease;
-    cursor: pointer;
-}
-#interactive-body-map:hover .meridian-path {
-    opacity: 0.1;
-}
-#interactive-body-map .meridian-path:hover {
-    opacity: 1;
-    stroke-width: 6;
-}
-#interactive-body-map .meridian-path.active {
-    opacity: 1;
-    stroke-width: 6;
-}
-#interactive-body-map.filtered .meridian-path:not(.active) {
-    pointer-events: none;
-    opacity: 0.05 !important;
-}
-
 
 /* --- ESTILOS PARA NAVEGAÇÃO MÓVEL --- */
 #mobile-menu-container { visibility: hidden; pointer-events: none; }
