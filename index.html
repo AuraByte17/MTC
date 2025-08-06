@@ -1,317 +1,378 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
-
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App de Treino de Wing Chun | Versão Profissional</title>
-
-    <!-- Google Fonts -->
+    <title>Guia de MTC</title>
+    
+    <!-- Scripts e Fontes Externas -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Teko:wght@400;600;700&display=swap"
-        rel="stylesheet">
-
-    <!-- External Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
-    <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Ligação ao seu ficheiro CSS externo -->
+    <link rel="stylesheet" href="style.css">
 </head>
+<body class="text-gray-800">
 
-<body>
-    <!-- Overlay for mobile menu -->
-    <div id="mobile-menu-overlay"></div>
+    <!-- Ecrã de Carregamento -->
+    <div id="loading-screen">
+        <svg id="yin-yang-loader-svg" class="loader-logo" viewBox="0 0 200 200">
+             <defs>
+                <linearGradient id="yin-grad-loader" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#4a5568" /><stop offset="100%" stop-color="#1a202c" /></linearGradient>
+                <linearGradient id="yang-grad-loader" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ffffff" /><stop offset="100%" stop-color="#e2e8f0" /></linearGradient>
+            </defs>
+            <g>
+                <circle cx="100" cy="100" r="98" fill="url(#yang-grad-loader)" stroke="#e2e8f0" stroke-width="2"/>
+                <path fill="url(#yin-grad-loader)" d="M100,2 a98,98 0 0,0 0,196 a49,49 0 0,1 0,-98 a49,49 0 0,0 0,-98 Z"/>
+                <circle fill="url(#yin-grad-loader)" cx="100" cy="149" r="18"/><circle fill="url(#yang-grad-loader)" cx="100" cy="51" r="18"/>
+            </g>
+        </svg>
+        <p id="loading-text" class="mt-4 text-lg text-primary-dark font-semibold">Bem-vindo ao Guia de MTC</p>
+    </div>
 
-    <!-- Main application layout -->
-    <div class="app-layout">
-        <!-- Responsive Sidebar -->
-        <aside id="app-sidebar" class="app-sidebar">
+    <!-- Definições de Ícones SVG -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <!-- Ícones Utilitários -->
+        <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></symbol>
+        <symbol id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></symbol>
+        <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></symbol>
+        <symbol id="icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+        
+        <!-- Logótipo Yin Yang Estático -->
+        <symbol id="icon-app-logo" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" fill="white" stroke="currentColor" stroke-width="1"/>
+            <path d="M12 2 A10 10 0 0 0 12 22 A5 5 0 0 1 12 12 A5 5 0 0 0 12 2 Z" fill="currentColor"/>
+            <circle cx="12" cy="7" r="1.5" fill="white"/>
+            <circle cx="12" cy="17" r="1.5" fill="currentColor"/>
+        </symbol>
+
+        <!-- Ícones da Aplicação -->
+        <symbol id="icon-yin-yang" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a7.5 7.5 0 0 1 0 15v5A10 10 0 0 1 12 2Z"></path></symbol>
+        <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></symbol>
+        <symbol id="icon-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></symbol>
+        <symbol id="icon-atom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><path d="M20.2 20.2c2.04-2.03.02-5.91-2.8-8.7-2.82-2.82-6.67-4.84-8.7-2.8-2.04 2.03-.02 5.91 2.8 8.7 2.82 2.82 6.67 4.84 8.7 2.8Z"></path><path d="M3.8 20.2c-2.04-2.03-.02-5.91 2.8-8.7 2.82-2.82 6.67-4.84 8.7-2.8 2.04 2.03.02 5.91-2.8 8.7-2.82 2.82-6.67 4.84-8.7 2.8Z"></path></symbol>
+        <symbol id="icon-wind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"></path><path d="M9.6 4.6A2 2 0 1 1 11 8H2"></path><path d="M12.6 19.4A2 2 0 1 0 14 16H2"></path></symbol>
+        <symbol id="icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></symbol>
+        <symbol id="icon-git-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></symbol>
+        <symbol id="icon-refresh-cw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></symbol>
+        <symbol id="icon-body" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"></circle><path d="M9 20h6"></path><path d="M9 16.5v-4l2-3h2l2 3v4"></path></symbol>
+        <symbol id="icon-stethoscope" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5.4 2l-1.6 6.4c-.3 1.2.5 2.5 1.7 2.8l1.2.3c1.2.3 2.5-.5 2.8-1.7L12 5.1s.5-.8 1.2-.3l1.2 1 1-1.2-1.2-1c-.5-.5.3-1.2.3-1.2l4.9-2.5s.8-.5-.3-1.7l-1.5-1.5c-1.2-1.2-1.7-.3-1.7-.3L12.5 8l-1.6-6.4C10.6 1 9.4.2 8.2.5L7 1.7c-1.2.3-2 1.5-1.7 2.8L4.8 2.3z"></path><path d="M7.8 12.3 5.4 20a.5.5 0 0 0 .9.4l1.4-2.9c.2-.4.8-.5 1.1-.2l2.6 2.6c.3.3.8.3 1.1 0l2.6-2.6c.3-.3.9-.2 1.1.2l1.4 2.9a.5.5 0 0 0 .9-.4l-2.4-7.7"></path></symbol>
+        <symbol id="icon-clipboard-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H9a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"></path><path d="M9.5 3v1.5a1.5 1.5 0 0 0 3 0V3"></path><path d="M11.99 16.03a2.5 2.5 0 0 0 4.02 0c.73-2.07-2.1-4.2-4.02-4.2-1.92 0-4.75 2.13-4.02 4.2a2.5 2.5 0 0 0 4.02 0Z"></path></symbol>
+        <symbol id="icon-soup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"></path><path d="M7 21h10"></path><path d="M19.5 12 22 6"></path><path d="M16 6c0-1.5-1-4-4-4S8 4.5 8 6"></path></symbol>
+        <symbol id="icon-lotus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.83 16.14A2 2 0 0 1 10.24 18H13.8a2 2 0 0 1 1.44-1.86l-1.3-4.09a2 2 0 0 0-3.48 0Z"></path><path d="M12 2a2.83 2.83 0 0 0-2 5.17l-1.28 4.01a2 2 0 0 0 1.44 2.58h6.58a2 2 0 0 0 1.44-2.58L14 7.17A2.83 2.83 0 0 0 12 2Z"></path><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"></path><path d="M12 18v4"></path></symbol>
+        <symbol id="icon-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></symbol>
+        <symbol id="icon-scroll" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h10v2a2 2 0 0 0 2 2h2v-4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2Z"></path><path d="M8 12h13"></path></symbol>
+    </svg>
+
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar para Desktop e Móvel -->
+        <div id="mobile-menu-container" class="fixed inset-0 z-40 md:hidden">
+            <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50"></div>
+            <aside id="sidebar" class="w-64 bg-white shadow-lg p-4 flex-shrink-0 flex flex-col h-full transition-transform duration-300 -translate-x-full">
+                <div class="sidebar-header">
+                    <svg class="w-8 h-8 sidebar-logo"><use href="#icon-app-logo"></use></svg>
+                    <h1 class="font-playfair font-bold">Guia de MTC</h1>
+                </div>
+                <button id="close-menu-btn" class="absolute top-4 right-4 p-1"><svg class="w-6 h-6 text-gray-600"><use href="#icon-close"></use></svg><span class="sr-only">Fechar Menu</span></button>
+                <nav id="navigation-hub" class="space-y-1 overflow-y-auto flex-grow mt-4"></nav>
+            </aside>
+        </div>
+        <aside class="w-64 bg-white shadow-lg p-4 flex-shrink-0 hidden md:flex flex-col">
             <div class="sidebar-header">
-                <img src="https://placehold.co/100x100/e67e22/FFFFFF?text=WC" alt="Logo de Wing Chun"
-                    class="sidebar-logo">
-                <h1 id="app-title" class="sidebar-title">Wing Chun App</h1>
-                <!-- Mobile close button -->
-                <button id="close-menu-btn" class="icon-button close" aria-label="Fechar menu">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                <svg class="w-8 h-8 sidebar-logo"><use href="#icon-app-logo"></use></svg>
+                <h1 class="font-playfair font-bold">Guia de MTC</h1>
             </div>
-            <nav id="navigation-hub" class="sidebar-nav"></nav>
+            <div class="relative my-4">
+                <input type="search" id="desktop-search-input" placeholder="Pesquisa global..." class="w-full p-2 pl-8 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-transparent transition">
+                <svg class="w-4 h-4 absolute top-1/2 left-2.5 -translate-y-1/2 text-gray-400"><use href="#icon-search"></use></svg>
+            </div>
+            <nav id="desktop-navigation-hub" class="space-y-1 overflow-y-auto flex-grow"></nav>
         </aside>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Mobile Header -->
-            <header id="mobile-header" class="mobile-header">
-                <button id="open-menu-btn" class="icon-button" aria-label="Abrir menu">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-                <h2 id="current-section-title" class="mobile-header-title">Perfil</h2>
+        <!-- Área de Conteúdo Principal -->
+        <div class="flex-1 flex flex-col h-screen">
+            <header class="md:hidden bg-white shadow-md p-4 flex items-center justify-between sticky top-0 z-30">
+                <h2 id="current-section-title" class="text-lg font-playfair font-bold text-primary">Início</h2>
+                <div>
+                    <button id="open-search-btn-mobile" class="p-1 mr-2"><svg class="w-6 h-6 text-gray-600"><use href="#icon-search"></use></svg><span class="sr-only">Abrir Pesquisa</span></button>
+                    <button id="open-menu-btn" class="p-1"><svg class="w-6 h-6 text-gray-600"><use href="#icon-menu"></use></svg><span class="sr-only">Abrir Menu</span></button>
+                </div>
             </header>
 
-            <!-- User Status Bar -->
-            <div id="user-status-display" style="display: none;">
-                <img id="user-status-avatar" src="https://placehold.co/100x100/2c2c2c/ecf0f1?text=U" alt="Avatar do Utilizador">
-                <div class="user-info">
-                    <span id="user-status-name">Praticante</span>
-                    <span id="user-status-belt">Cinturão Branco</span>
-                </div>
-                <div class="progress-bar-wrapper">
-                    <div id="user-progress-bar-text" class="progress-bar-text">0 / 250 XP</div>
-                    <div class="progress-bar-container">
-                        <div id="user-progress-bar-fill" class="progress-bar-fill"></div>
-                    </div>
-                </div>
-                <div class="progress-bar-wrapper">
-                    <div id="stamina-bar-text" class="progress-bar-text">⚡ 100 / 100</div>
-                    <div class="progress-bar-container">
-                        <div id="stamina-bar-fill" class="progress-bar-fill"></div>
-                    </div>
-                </div>
-            </div>
+            <div id="main-content-area" class="flex-grow p-4 md:p-12 overflow-y-auto">
+                <main id="main-content">
+                    
+                    <section id="inicio" class="content-section">
+                        <div class="floating-card">
+                            <div class="card-header"><h3>Bem-vindo ao Guia de MTC</h3></div>
+                            <div class="card-content card-prose">
+                                <p>Este guia interativo foi concebido para ser uma referência rápida e completa sobre os conceitos fundamentais da Medicina Tradicional Chinesa (MTC). Utilize o menu lateral para navegar pelas diferentes secções.</p>
+                                <h4>Como Utilizar:</h4>
+                                <ul class="list-disc list-inside">
+                                    <li><strong>Navegação:</strong> Clique nos itens do menu para explorar os fundamentos, meridianos, diagnóstico e muito mais.</li>
+                                    <li><strong>Pesquisa Global:</strong> Utilize a barra de pesquisa para encontrar rapidamente informações sobre pontos de acupuntura, alimentos, padrões de desarmonia ou termos do glossário.</li>
+                                    <li><strong>Interatividade:</strong> Muitas secções contêm elementos interativos, como diagramas e abas, para facilitar a aprendizagem.</li>
+                                </ul>
+                                <p>Explore, aprenda e encontre o caminho para uma vida em harmonia.</p>
+                            </div>
+                        </div>
+                    </section>
 
-            <!-- Scrollable Content Area -->
-            <main id="main-content-area" class="main-content-area">
-                <div class="main-content-wrapper">
-                    <section id="seccao-perfil" class="seccao visivel">
-                        <!-- Profile creation view -->
-                        <div id="perfil-form-view">
-                           <div class="floating-card">
-                                <div class="card-header">
-                                    <h1 class="titulo-seccao">Cria o Teu Perfil</h1>
-                                </div>
-                                <div class="card-content">
-                                    <div class="perfil-form-layout">
-                                        <div class="form-fields">
-                                            <label for="perfil-nome">Nome:</label>
-                                            <input type="text" id="perfil-nome" placeholder="O teu nome de praticante">
-                                            <div class="form-row">
-                                                <div>
-                                                    <label for="perfil-altura">Altura (cm):</label>
-                                                    <input type="number" id="perfil-altura" placeholder="Ex: 175">
-                                                </div>
-                                                <div>
-                                                    <label for="perfil-peso">Peso (kg):</label>
-                                                    <input type="number" id="perfil-peso" step="0.1" placeholder="Ex: 70.5">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-avatar-selection">
-                                            <h3>Escolhe o teu Avatar:</h3>
-                                            <img id="form-avatar-preview" src="https://placehold.co/150x150/2c2c2c/ecf0f1?text=?" alt="Pré-visualização do Avatar">
-                                            <div id="avatar-choices-grid" class="avatar-choices-grid"></div>
-                                        </div>
-                                    </div>
-                                    <button id="guardarPerfilBtn" class="action-button perfil-action-button">Guardar e Começar</button>
+                    <section id="yin-yang" class="content-section"><div id="yin-yang-container" class="visual-card"></div></section>
+
+                    <section id="substancias-fundamentais" class="content-section">
+                        <div class="floating-card">
+                            <div class="card-header"><h3>As 5 Substâncias Fundamentais</h3></div>
+                            <div class="card-content card-prose">
+                                <p>As cinco substâncias vitais são os alicerces da vida do ponto de vista da MTC. São as matérias-primas essenciais que formam o corpo, a mente e o espírito. O seu equilíbrio e livre circulação são cruciais para a saúde.</p>
+                                <div class="space-y-4">
+                                    <div><h4>Qi (氣) - Energia Vital</h4><p>A força da vida que anima todas as funções do corpo.</p></div>
+                                    <div><h4>Xue (血) - Sangue</h4><p>Nutre, humedece e serve como veículo para o Shen (Mente).</p></div>
+                                    <div><h4>Jing (精) - Essência</h4><p>A nossa reserva de energia mais profunda que governa o crescimento e reprodução.</p></div>
+                                    <div><h4>Shen (神) - Espírito/Mente</h4><p>Abrange a consciência, o pensamento e a estabilidade emocional.</p></div>
+                                    <div><h4>Jin Ye (津液) - Fluidos Corporais</h4><p>Todos os fluidos do corpo que humedecem e lubrificam.</p></div>
                                 </div>
                             </div>
                         </div>
+                    </section>
 
-                        <!-- Profile dashboard view -->
-                        <div id="perfil-dashboard-view" style="display: none;">
-                            <div class="profile-tabs">
-                                <button class="profile-tab-btn active" data-tab="passaporte">Passaporte</button>
-                                <button class="profile-tab-btn" data-tab="estatisticas">Estatísticas</button>
-                                <button class="profile-tab-btn" data-tab="desafio">Desafio Diário</button>
+                    <section id="tipos-de-qi" class="content-section">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Os Diferentes Tipos de Qi</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num cartão para ver a descrição.</p>
+                        </div>
+                        <div id="qi-cards-container" class="flip-grid"></div>
+                    </section>
+
+                    <section id="cinco-elementos" class="content-section">
+                         <div class="floating-card mb-6">
+                            <div class="card-header"><h3>A Teoria dos Cinco Elementos</h3></div>
+                            <div class="card-content">
+                               <div id="cycle-info-box"></div>
+                               <div class="flex justify-center gap-4 mb-6">
+                                  <button id="btn-geracao" class="tab-button">Geração (Sheng)</button>
+                                  <button id="btn-controlo" class="tab-button">Controlo (Ke)</button>
+                               </div>
+                               <div class="grid md:grid-cols-2 gap-8 items-center">
+                                  <div id="five-elements-svg-container" class="relative w-full max-w-sm mx-auto aspect-square">
+                                      <!-- SVG dos 5 Elementos foi movido para cá -->
+                                      <svg id="five-elements-svg" viewBox="0 0 400 400">
+                                          <defs>
+                                              <marker id="arrow-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                                  <path d="M 0 0 L 10 5 L 0 10 z" />
+                                              </marker>
+                                               <filter id="glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+                                                  <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                                                  <feMerge>
+                                                      <feMergeNode in="coloredBlur"/>
+                                                      <feMergeNode in="SourceGraphic"/>
+                                                  </feMerge>
+                                              </filter>
+                                          </defs>
+                                          
+                                          <!-- Linha de Relação Dinâmica -->
+                                          <g id="relationship-lines">
+                                              <path id="relationship-line" class="relationship-line" marker-end="url(#arrow-head)" />
+                                          </g>
+
+                                          <g class="element-nodes">
+                                              <g class="element-node-svg" data-id="madeira" transform="translate(70 150)">
+                                                  <circle r="35" fill="var(--el-wood)"/>
+                                                  <text y="5">Madeira</text>
+                                              </g>
+                                              <g class="element-node-svg" data-id="fogo" transform="translate(200 60)">
+                                                  <circle r="35" fill="var(--el-fire)"/>
+                                                  <text y="5">Fogo</text>
+                                              </g>
+                                              <g class="element-node-svg" data-id="terra" transform="translate(330 150)">
+                                                  <circle r="35" fill="var(--el-earth)"/>
+                                                  <text y="5">Terra</text>
+                                              </g>
+                                              <g class="element-node-svg" data-id="metal" transform="translate(250 270)">
+                                                  <circle r="35" fill="var(--el-metal)"/>
+                                                  <text y="5">Metal</text>
+                                              </g>
+                                              <g class="element-node-svg" data-id="agua" transform="translate(110 270)">
+                                                  <circle r="35" fill="var(--el-water)"/>
+                                                  <text y="5">Água</text>
+                                              </g>
+                                          </g>
+                                      </svg>
+                                  </div>
+                                  <div id="element-details-container"></div>
+                               </div>
                             </div>
-                            <div id="profile-tab-content">
-                                <div id="tab-pane-passaporte" class="profile-tab-pane active">
-                                    <div class="floating-card">
-                                         <div class="card-header">
-                                            <h1 class="titulo-seccao">O Teu Passaporte</h1>
-                                        </div>
-                                        <div class="card-content">
-                                            <div class="passaporte-layout">
-                                                <img id="passaporte-avatar-display" src="https://placehold.co/150x150/2c2c2c/ecf0f1?text=U" alt="Avatar">
-                                                <div class="passaporte-info">
-                                                    <p><strong>Nome:</strong> <span id="passaporte-nome"></span></p>
-                                                    <p><strong>Nível:</strong> <span id="passaporte-belt"></span></p>
-                                                    <p><strong>XP Total:</strong> <span id="passaporte-pontos"></span></p>
-                                                    <p><strong>ID de Aluno:</strong> <span id="student-id-display"></span></p>
-                                                    <p><strong>Altura:</strong> <span id="passaporte-altura"></span> cm</p>
-                                                    <p><strong>Peso:</strong> <span id="passaporte-peso"></span> kg</p>
-                                                    <p><strong>IMC:</strong> <span id="passaporte-imc"></span></p>
-                                                    <p><strong>Sequência:</strong> <span id="passaporte-streak"></span> 🔥</p>
-                                                    <p><strong>Conquistas:</strong> <span id="passaporte-achievements"></span> 🏆</p>
-                                                </div>
-                                            </div>
-                                            <div class="profile-action-buttons">
-                                                <button id="editarPerfilBtn" class="action-button">Editar Perfil</button>
-                                                <button id="exportProfileBtn" class="action-button">Exportar Dados</button>
-                                                <button id="importProfileBtn" class="action-button">Importar Dados</button>
-                                            </div>
-                                            <div id="theme-picker-container" class="theme-picker">
-                                                <h4>Mudar Tema</h4>
-                                                <div class="theme-options"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                         </div>
+                    </section>
+
+                    <section id="ciclos-de-vida" class="content-section">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="floating-card">
+                                <div class="card-header"><h3>Ciclos Femininos (7 Anos)</h3></div>
+                                <div id="female-cycles-timeline" class="card-content timeline-container"></div>
+                            </div>
+                            <div class="floating-card">
+                                <div class="card-header"><h3>Ciclos Masculinos (8 Anos)</h3></div>
+                                <div id="male-cycles-timeline" class="card-content timeline-container"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="meridianos" class="content-section">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Os 12 Meridianos Principais</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num meridiano para ver os seus pontos e funções.</p>
+                        </div>
+                        <div id="meridian-grid-container" class="zoom-grid"></div>
+                    </section>
+
+                    <section id="anatomia-energetica" class="content-section">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Anatomia Energética</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num sistema para explorar a sua visão na MTC.</p>
+                        </div>
+                        <div id="anatomy-grid-container" class="zoom-grid"></div>
+                    </section>
+
+                    <section id="padroes-zang-fu" class="content-section">
+                         <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Padrões de Desarmonia Zang-Fu</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num órgão para ver os seus padrões de desarmonia comuns.</p>
+                        </div>
+                        <div id="zangfu-grid-container" class="zoom-grid"></div>
+                    </section>
+
+                    <section id="diagnostico" class="content-section">
+                        <div class="floating-card mb-8">
+                            <div class="card-header"><h3>Diagnóstico da Língua</h3></div>
+                            <div class="card-content grid md:grid-cols-2 gap-8 items-center diagnosis-grid">
+                                <div id="lingua-diagram-container" class="relative max-w-xs mx-auto">
+                                   <svg id="lingua-diagram-svg" viewBox="0 0 2048 2048" class="w-full h-auto">
+                                        <!-- Base Visual da Língua (do SVG fornecido) -->
+                                        <g class="tongue-body">
+                                            <path style="fill:#e69a9a;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" d="m 1024,2028.2289 c -162.242,-125.131 -311.087,-275.952 -430.34,-441.59 -119.253,-165.638 -204.42,-346.095 -247.164,-536.378 -42.744,-190.283 -41.332,-388.943 -14.688,-581.479 25.29,-182.729 74.072,-356.126 142.125,-514.805 C 551.98, -115.7031 690.814,-211.3931 848.06,-280.9311 c 50.893,-22.52 103.992,-40.091 158.438,-52.344 14.73,-3.31 29.69,-6.2 44.75,-8.625 29.5,-4.75 59.4,-7.125 89.5,-7.125 91.5,0 181.4,11.25 266.5,32.5 85.1,21.25 164.1,51.25 234.5,88.75 122.5,65.1 228.4,152.1 311.1,255.4 53.3,67 96.6,141.1 128.6,220.3 32,79.2 52.1,163.4 59.6,249.9 7.5,86.5 2.1,174.4 -16.1,259.1 -18.2,84.7 -50.1,165.7 -93.8,239.5 -43.7,73.8 -98.1,139.1 -161.3,193.5 -63.2,54.4 -134.1,97.5 -210.5,127.8 -50.5,20 -102.7,35.6 -156.1,46.5 -26.7,5.5 -53.8,9.2 -81.2,11.2 z" />
+                                        </g>
+                                        <!-- Áreas Interativas (Invisíveis) -->
+                                        <g class="interactive-areas">
+                                            <ellipse class="diagram-area-svg" data-area="ponta" cx="1024" cy="1700" rx="190" ry="180" />
+                                            <ellipse class="diagram-area-svg" data-area="pre-ponta" cx="1024" cy="1400" rx="280" ry="150" />
+                                            <ellipse class="diagram-area-svg" data-area="centro" cx="1024" cy="1050" rx="350" ry="200" />
+                                            <ellipse class="diagram-area-svg" data-area="raiz" cx="1024" cy="650" rx="400" ry="180" />
+                                            <path class="diagram-area-svg" data-area="laterais" d="M 650,1400 C 450,1300 400,900 650,600 L 650,1400 Z" />
+                                            <path class="diagram-area-svg" data-area="laterais" d="M 1400,1400 C 1600,1300 1650,900 1400,600 L 1400,1400 Z" />
+                                        </g>
+                                    </svg>
                                 </div>
-                                <div id="tab-pane-estatisticas" class="profile-tab-pane">
-                                    <div class="stats-grid">
-                                        <div class="stat-card">
-                                            <div id="stat-total-xp" class="stat-value">0</div>
-                                            <div class="stat-label">XP Total</div>
-                                        </div>
-                                        <div class="stat-card">
-                                            <div id="stat-total-time" class="stat-value">0m</div>
-                                            <div class="stat-label">Tempo de Treino</div>
-                                        </div>
-                                        <div class="stat-card">
-                                            <div id="stat-fav-exercise" class="stat-value">-</div>
-                                            <div class="stat-label">Exercício Favorito</div>
-                                        </div>
-                                    </div>
-                                    <div id="xp-chart-container" class="floating-card">
-                                        <canvas id="xp-chart"></canvas>
-                                    </div>
+                                <div id="lingua-info-box" class="diagnosis-info-panel flex items-center justify-center">
+                                    <p class="text-center text-gray-500">Clique numa área da língua para ver a informação correspondente.</p>
                                 </div>
-                                <div id="tab-pane-desafio" class="profile-tab-pane">
-                                     <div id="daily-challenge-card"></div>
+                            </div>
+                        </div>
+                        <div class="floating-card mb-8">
+                            <div class="card-header"><h3>Diagnóstico do Pulso</h3></div>
+                            <div class="card-content grid md:grid-cols-2 gap-8 items-center diagnosis-grid">
+                                <div id="pulso-diagram-container" class="relative w-64 mx-auto">
+                                     <svg id="pulso-diagram-svg" viewBox="0 0 150 200">
+                                        <defs>
+                                            <linearGradient id="wrist-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="#F0D4B3"/>
+                                                <stop offset="100%" stop-color="#E6BE99"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <!-- Braço -->
+                                        <path d="M 55,200 L 55,80 Q 50,70 60,70 L 90,70 Q 100,70 95,80 L 95,200 Z" fill="url(#wrist-grad)" stroke="#D1A377" stroke-width="1.5"/>
+                                        <!-- Mão -->
+                                        <path d="M 90,70 C 120,70 145,40 125,10 C 105,-20 45,-20 25,10 C 5,40 30,70 60,70 Z" fill="url(#wrist-grad)" stroke="#D1A377" stroke-width="1.5"/>
+                                        <!-- Posições do Pulso -->
+                                        <g>
+                                            <circle data-pos="chi" class="pulse-pos-circle" cx="75" cy="115" r="12"/>
+                                            <circle data-pos="guan" class="pulse-pos-circle" cx="75" cy="85" r="12"/>
+                                            <circle data-pos="cun" class="pulse-pos-circle" cx="75" cy="55" r="12"/>
+                                            <text x="98" y="120" class="pulse-pos-label font-bold">Chi</text>
+                                            <text x="98" y="90" class="pulse-pos-label font-bold">Guan</text>
+                                            <text x="98" y="60" class="pulse-pos-label font-bold">Cun</text>
+                                        </g>
+                                     </svg>
                                 </div>
+                                <div id="pulso-info-box" class="diagnosis-info-panel flex items-center justify-center">
+                                    <p class="text-center text-gray-500">Clique numa posição do pulso para ver os órgãos correspondentes.</p>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="floating-card">
+                             <div class="card-header"><h3>Outros Métodos de Diagnóstico</h3></div>
+                             <div class="card-content">
+                                <div id="diagnosis-accordion-container" class="accordion-container"></div>
+                             </div>
+                        </div>
+                    </section>
+
+                    <section id="dietetica" class="content-section">
+                        <div class="floating-card">
+                            <div class="card-header"><h3>Dietética Energética</h3></div>
+                            <div class="card-content">
+                                <input type="search" id="food-search-input" placeholder="Pesquisar alimento..." class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent">
+                                <div id="food-alpha-nav"></div>
+                                <div id="food-results-container"></div>
                             </div>
                         </div>
                     </section>
                     
-                    <section id="seccao-planos" class="seccao">
-                        <h1 class="titulo-seccao">Planos de Treino</h1>
-                        <div class="profile-tabs">
-                            <button class="profile-tab-btn active" data-tab="recomendado">Recomendados</button>
-                            <button class="profile-tab-btn" data-tab="manual">Manuais</button>
+                    <section id="terapias" class="content-section">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Terapêuticas da MTC</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num cartão para explorar os seus detalhes.</p>
                         </div>
-                        <div id="planos-tab-content">
-                            <div id="tab-pane-recomendado" class="profile-tab-pane active">
-                                <div class="profile-tabs" id="recommended-plan-categories">
-                                    <button class="profile-tab-btn active" data-category="conditioning">Condicionamento</button>
-                                    <button class="profile-tab-btn" data-category="skill">Skill</button>
-                                    <button class="profile-tab-btn" data-category="mix">Mix</button>
-                                </div>
-                                <div id="recommended-plans-container"></div>
-                            </div>
-                            <div id="tab-pane-manual" class="profile-tab-pane">
-                                <div class="floating-card">
-                                    <div class="card-header"><h2 class="subtitulo-seccao" style="margin:0; border:0;">Criador de Planos Manuais</h2></div>
-                                    <div class="card-content plan-creator-form">
-                                        <div class="form-row">
-                                            <div style="flex-grow: 2;">
-                                                <label for="plan-name-input">Nome do Plano:</label>
-                                                <input type="text" id="plan-name-input" placeholder="Ex: Treino Matinal">
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label>Selecionar Exercícios e Duração (em segundos):</label>
-                                            <div id="plan-exercise-selection" class="exercise-selection-grid"></div>
-                                        </div>
-                                        <button id="save-plan-btn" class="action-button">Guardar Plano</button>
-                                    </div>
-                                </div>
-                                <h2 class="subtitulo-seccao">Os Teus Planos Manuais</h2>
-                                <div id="saved-plans-container" class="card-grid"></div>
-                            </div>
+                        <div id="therapies-grid-container" class="zoom-grid"></div>
+                    </section>
+                    
+                    <section id="grandes-mestres" class="content-section">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Grandes Mestres</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num mestre para saber mais sobre as suas contribuições.</p>
                         </div>
+                        <div id="masters-grid-container" class="flip-grid"></div>
                     </section>
 
-                    <section id="seccao-mestres" class="seccao">
-                        <h1 class="titulo-seccao">Mestres Lendários</h1>
-                        <div id="container-mestres" class="card-grid"></div>
-                    </section>
-
-                    <section id="seccao-teoria" class="seccao">
-                        <h1 class="titulo-seccao">Teoria e Filosofia</h1>
-                        <div id="container-teoria" class="card-prose"></div>
-                    </section>
-
-                    <section id="seccao-cinturoes" class="seccao">
-                        <h1 class="titulo-seccao">Progressão de Cinturões</h1>
-                        <div id="belt-progression-container" class="belt-accordion"></div>
-                    </section>
-
-                    <section id="seccao-skill" class="seccao">
-                        <h1 class="titulo-seccao">Biblioteca de Skill</h1>
-                        <div id="container-skill"></div>
-                    </section>
-
-                    <section id="seccao-condicionamento" class="seccao">
-                        <h1 class="titulo-seccao">Biblioteca de Condicionamento</h1>
-                        <div id="container-condicionamento"></div>
-                    </section>
-
-                    <section id="seccao-glossario" class="seccao">
-                        <h1 class="titulo-seccao">Glossário</h1>
-                        <div class="profile-tabs">
-                            <button class="profile-tab-btn active" data-tab="cinto">Glossário do Cinto</button>
-                            <button class="profile-tab-btn" data-tab="global">Glossário Global</button>
-                        </div>
-                        <div id="glossario-tab-content">
-                            <div id="tab-pane-cinto" class="profile-tab-pane active">
-                                <div id="container-glossario-cinto"></div>
-                            </div>
-                            <div id="tab-pane-global" class="profile-tab-pane">
-                                <div id="container-glossario-global"></div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section id="seccao-achievements" class="seccao">
-                        <h1 class="titulo-seccao">Conquistas</h1>
-                        <div id="achievements-grid" class="card-grid"></div>
-                    </section>
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <!-- Modals -->
-    <div id="video-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">×</span>
-            <h3 id="modal-title"></h3>
-            <div id="modal-video-container" class="modal-video-wrapper"></div>
-        </div>
-    </div>
-    
-    <div id="plan-execution-modal" class="modal">
-        <div class="modal-content" style="max-width: 90vw; width: 600px; text-align: center;">
-            <h3 id="plan-execution-title"></h3>
-            <div id="plan-execution-timer-display" style="font-family: var(--font-destaque); font-size: 3rem; margin: 1rem 0;">20:00</div>
-            <div class="progress-bar-container" style="height: 20px; margin-bottom: 1rem;">
-                <div id="plan-execution-progress-bar" class="progress-bar-fill" style="background: var(--cor-descanso);"></div>
-            </div>
-            <div id="plan-execution-phase-info" style="margin-bottom: 1rem; color: var(--cor-texto-secundario); font-weight: bold;"></div>
-            <div id="plan-execution-current-exercise"></div>
-            <button id="stop-plan-btn" class="action-button" style="margin-top: 1.5rem; background: #c0392b; border-color: #c0392b;">Terminar Sessão</button>
-        </div>
-    </div>
-
-    <div id="onboarding-modal" class="modal">
-        <div class="onboarding-content">
-            <h2 id="onboarding-title">Bem-vindo!</h2>
-            <p id="onboarding-text">Este é um pequeno guia para te ajudar a começar.</p>
-            <div class="onboarding-nav">
-                <button id="onboarding-prev-btn" class="action-button" style="visibility: hidden;">Anterior</button>
-                <div id="onboarding-dots"></div>
-                <button id="onboarding-next-btn" class="action-button">Próximo</button>
+                    <section id="glossario" class="content-section"><div id="glossary-container"></div></section>
+                </main>
             </div>
         </div>
     </div>
 
-    <!-- Notification -->
-    <div id="notification" class="hidden">
-        <span id="notification-icon"></span>
-        <span id="notification-text"></span>
+    <!-- Modal de Pesquisa Global -->
+    <div id="search-modal-container" class="fixed inset-0 z-50 p-4 hidden">
+        <div id="search-overlay" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
+        <div class="relative bg-white w-full max-w-2xl mx-auto mt-[10vh] rounded-xl shadow-2xl flex flex-col max-h-[80vh]">
+            <div class="p-4 border-b flex items-center">
+                <svg class="w-5 h-5 text-gray-400 mr-3"><use href="#icon-search"></use></svg>
+                <input type="search" id="global-search-input" placeholder="Escreva um sintoma, ponto, alimento..." class="w-full text-lg focus:outline-none bg-transparent">
+                <button id="close-search-btn" class="p-1 ml-3"><svg class="w-6 h-6 text-gray-500"><use href="#icon-close"></use></svg><span class="sr-only">Fechar Pesquisa</span></button>
+            </div>
+            <div id="search-results-container" class="overflow-y-auto p-4">
+                <p class="text-center text-gray-500">Comece a escrever para ver os resultados.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Conteúdo (Zoom) -->
+    <div id="content-modal">
+        <div id="content-modal-overlay"></div>
+        <div id="content-modal-container">
+            <button id="content-modal-close-btn">
+                <svg class="w-6 h-6 text-gray-700"><use href="#icon-close"></use></svg>
+                <span class="sr-only">Fechar</span>
+            </button>
+            <div id="content-modal-content">
+                <!-- Conteúdo será injetado aqui pelo JS -->
+            </div>
+        </div>
     </div>
     
-    <!-- Hidden file input for import -->
-    <input type="file" id="import-file-input" style="display: none;" accept=".json,text/plain">
-
-    <!-- Main Application Script -->
+    <!-- Fuse.js for fuzzy searching -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
     <script type="module" src="app.js"></script>
 </body>
-
 </html>
