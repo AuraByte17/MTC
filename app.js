@@ -49,6 +49,10 @@ const contentModalContent = document.getElementById('content-modal-content');
 const contentModalCloseBtn = document.getElementById('content-modal-close-btn');
 const contentModalOverlay = document.getElementById('content-modal-overlay');
 
+// Elementos do Corpo Interativo
+const meridianGridContainer = document.getElementById('meridian-grid-container');
+
+
 // --- LÓGICA DE NAVEGAÇÃO RESPONSIVA E PESQUISA ---
 function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
 function closeMobileMenu() { document.body.classList.remove('mobile-menu-open'); }
@@ -137,7 +141,7 @@ function createSearchIndex() {
     const options = {
         includeScore: true,
         keys: ['title', 'content'],
-        threshold: 0.4 
+        threshold: 0.4 // Adjust threshold for more/less fuzzy matching
     };
     fuse = new Fuse(rawIndex, options);
 }
@@ -231,11 +235,25 @@ function createAccordionHTML(data, containerIdPrefix = '') {
 function setupYinYangSection() {
     const container = document.getElementById('yin-yang-container');
     if (!container) return;
+    // SVG animado do ecrã de carregamento
+    const animatedSvg = `
+        <svg viewBox="0 0 200 200" class="w-full max-w-xs mx-auto yin-yang-svg">
+             <defs>
+                <linearGradient id="yin-grad-main" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#4a5568" /><stop offset="100%" stop-color="#1a202c" /></linearGradient>
+                <linearGradient id="yang-grad-main" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ffffff" /><stop offset="100%" stop-color="#e2e8f0" /></linearGradient>
+            </defs>
+            <g>
+                <circle cx="100" cy="100" r="98" fill="url(#yang-grad-main)" stroke="#e2e8f0" stroke-width="2"/>
+                <path fill="url(#yin-grad-main)" d="M100,2 a98,98 0 0,0 0,196 a49,49 0 0,1 0,-98 a49,49 0 0,0 0,-98 Z"/>
+                <circle fill="url(#yin-grad-main)" cx="100" cy="149" r="18"/><circle fill="url(#yang-grad-main)" cx="100" cy="51" r="18"/>
+            </g>
+        </svg>
+    `;
     container.innerHTML = `
         <div class="card-header"><h3>${yinYangData.title}</h3></div>
         <div class="card-content">
             <div class="grid lg:grid-cols-2 gap-8 items-center">
-                <div class="p-4">${yinYangData.svg}</div>
+                <div class="p-4">${animatedSvg}</div>
                 <div class="card-prose">${yinYangData.content}</div>
             </div>
             <div class="mt-8">${yinYangData.table}</div>
@@ -273,30 +291,6 @@ function setupZoomGrid(containerId, data, cardRenderer, modalContentRenderer) {
         }
     });
 }
-
-function setupFlipGrid(containerId, data, cardRenderer) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    container.innerHTML = data.map(item => cardRenderer(item)).join('');
-
-    container.addEventListener('click', (e) => {
-        const card = e.target.closest('.flip-card');
-        if (!card) return;
-        
-        if (e.target.closest('.details-btn')) {
-            const masterId = e.target.closest('.details-btn').dataset.id;
-            const masterInfo = greatMastersData.find(m => m.id === masterId);
-            if (masterInfo) {
-                openContentModal(renderMasterModalContent(masterInfo));
-            }
-            return;
-        }
-        
-        card.classList.toggle('flipped');
-    });
-}
-
 
 // --- RENDERERS PARA O SISTEMA DE GRELHAS ---
 
@@ -406,22 +400,6 @@ const renderQiFlipCard = (item) => `
         </div>
     </div>`;
 
-const renderMasterFlipCard = (item) => `
-    <div class="flip-card">
-        <div class="flip-card-inner">
-            <div class="flip-card-front" style="background-image: url('${item.image_placeholder}')">
-                <div class="master-card-overlay">
-                    <h4 class="font-playfair font-bold text-lg text-white">${item.name}</h4>
-                    <p class="text-xs text-gray-200">${item.dynasty}</p>
-                </div>
-            </div>
-            <div class="flip-card-back">
-                <p class="text-sm">${item.content.replace(/<[^>]*>/g, ' ').substring(0, 250)}...</p>
-                <button class="details-btn" data-id="${item.id}">Ver Detalhes</button>
-            </div>
-        </div>
-    </div>`;
-
 const renderMasterModalContent = (item) => `
     <div class="card-header"><h3 class="text-2xl font-playfair font-bold">${item.name}</h3></div>
     <div class="card-content card-prose">
@@ -524,11 +502,11 @@ function initializeFiveElements() {
     let currentElement = 'madeira';
 
     const positions = {
-        madeira: { x: 86, y: 143 },
+        madeira: { x: 70, y: 150 },
         fogo: { x: 200, y: 60 },
-        terra: { x: 314, y: 143 },
-        metal: { x: 270, y: 277 },
-        agua: { x: 130, y: 277 },
+        terra: { x: 330, y: 150 },
+        metal: { x: 250, y: 270 },
+        agua: { x: 110, y: 270 },
     };
 
     const cycleInfo = {
@@ -540,6 +518,7 @@ function initializeFiveElements() {
         currentElement = elementId;
         const elData = fiveElementsData[elementId];
         
+        // Update text details
         elementDetailsContainer.innerHTML = `<div class="text-left p-6 rounded-lg border-2" style="border-color: var(--el-${elData.color}); background-color: #fafcff;">
             <h3 class="text-2xl font-playfair font-bold mb-4" style="color: var(--el-${elData.color});">${elData.name}</h3>
             <div class="card-prose">
@@ -549,17 +528,19 @@ function initializeFiveElements() {
             </div>
         </div>`;
         
+        // Update active element style
         svg.querySelectorAll('.element-node-svg').forEach(node => {
             node.classList.toggle('active', node.dataset.id === elementId);
         });
 
+        // Update and animate the relationship line
         const targetElementId = elData.target[currentCycle];
         const startPos = positions[elementId];
         const endPos = positions[targetElementId];
         
         relationshipLine.setAttribute('d', `M ${startPos.x} ${startPos.y} L ${endPos.x} ${endPos.y}`);
         relationshipLine.classList.remove('geracao', 'controlo', 'active');
-        relationshipLine.getBoundingClientRect();
+        relationshipLine.getBoundingClientRect(); // Trigger reflow
         relationshipLine.classList.add(currentCycle, 'active');
     }
 
@@ -582,39 +563,70 @@ function initializeFiveElements() {
         node.addEventListener('click', () => updateDetails(node.dataset.id));
     });
 
+    // Initial setup
     switchCycle('geracao');
     updateDetails('madeira');
 }
 
 
-function setupGlossary() { const glossaryContainer = document.getElementById('glossary-container'); if (!glossaryContainer) return; const categories = Object.values(glossaryData).reduce((acc, item) => { (acc[item.category] = acc[item.category] || []).push(item); return acc; }, {}); const sortedCategories = Object.keys(categories).sort(); glossaryContainer.innerHTML = sortedCategories.map(category => `<div class="floating-card mb-8"><div class="card-header"><h3 class="text-gray-700 font-bold">${category}</h3></div><div class="card-content grid md:grid-cols-2 gap-x-8 gap-y-6">${categories[category].sort((a, b) => a.term.localeCompare(b.term)).map(item => `<div><h4 class="font-bold text-lg">${item.term}</h4><p class="text-gray-600">${item.definition}</p></div>`).join('')}</div></div>`).join(''); }
+function setupGlossary() { 
+    const glossaryContainer = document.getElementById('glossary-container'); 
+    if (!glossaryContainer) return; 
+    const categories = Object.values(glossaryData).reduce((acc, item) => { 
+        (acc[item.category] = acc[item.category] || []).push(item); 
+        return acc; 
+    }, {}); 
+    const sortedCategories = Object.keys(categories).sort(); 
+    glossaryContainer.innerHTML = sortedCategories.map(category => 
+        `<div class="floating-card mb-8">
+            <div class="card-header"><h3 class="text-gray-700">${category}</h3></div>
+            <div class="card-content grid md:grid-cols-2 gap-x-8 gap-y-6">
+                ${categories[category].sort((a, b) => a.term.localeCompare(b.term)).map(item => 
+                    `<div><h4 class="font-bold text-lg text-primary-dark">${item.term}</h4><p class="text-gray-600">${item.definition}</p></div>`
+                ).join('')}
+            </div>
+        </div>`
+    ).join(''); 
+}
 
 function setupDietetics() { const foodSearchInput = document.getElementById('food-search-input'); const foodResultsContainer = document.getElementById('food-results-container'); const foodAlphaNav = document.getElementById('food-alpha-nav'); function renderFoodList(foods) { const groupedFoods = foods.reduce((acc, food) => { const firstLetter = food.name.charAt(0).toUpperCase(); if (!acc[firstLetter]) acc[firstLetter] = []; acc[firstLetter].push(food); return acc; }, {}); const letters = Object.keys(groupedFoods).sort(); if (foodAlphaNav) foodAlphaNav.innerHTML = letters.map(letter => `<a href="#food-letter-${letter}">${letter}</a>`).join(''); if (foodResultsContainer) { foodResultsContainer.innerHTML = letters.map(letter => `<h3 id="food-letter-${letter}" class="food-group-header" tabindex="-1">${letter}</h3><div class="food-group-items">${groupedFoods[letter].map(food => `<div class="food-item floating-card p-4 mb-3"><h4 class="font-bold text-lg text-green-800">${food.name}</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mt-2"><div><strong>Temp:</strong> <span class="font-semibold">${food.temp}</span></div><div><strong>Sabor:</strong> <span class="font-semibold">${food.flavor}</span></div><div class="col-span-2"><strong>Órgãos:</strong> <span class="font-semibold">${food.organs}</span></div></div><p class="text-sm mt-2"><strong>Ações:</strong> ${food.actions}</p></div>`).join('')}</div>`).join(''); } } if (foodSearchInput) { renderFoodList(foodData); foodSearchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase().trim(); const headers = foodResultsContainer.querySelectorAll('.food-group-header'); headers.forEach(header => { const groupWrapper = header.nextElementSibling; if (!groupWrapper) return; const items = groupWrapper.querySelectorAll('.food-item'); let groupHasVisibleItems = false; items.forEach(item => { const foodName = item.querySelector('h4').textContent.toLowerCase(); const isVisible = foodName.includes(searchTerm); item.classList.toggle('hidden', !isVisible); if (isVisible) groupHasVisibleItems = true; }); header.style.display = groupHasVisibleItems ? 'block' : 'none'; groupWrapper.style.display = groupHasVisibleItems ? 'block' : 'none'; }); }); } }
 
-function setupMastersTimeline() {
-    const container = document.getElementById('masters-timeline-container');
+function renderMeridianGrid(data) {
+    if (!meridianGridContainer) return;
+    meridianGridContainer.innerHTML = data.map(item => renderMeridianCard(item)).join('');
+}
+
+// --- SECÇÃO GRANDES MESTRES (NOVO LAYOUT) ---
+function renderMasterTimelineItem(item, index) {
+    return `
+    <div class="master-timeline-item">
+        <div class="master-timeline-content">
+            <h3 class="font-playfair font-bold text-xl text-primary">${item.name}</h3>
+            <p class="text-sm text-gray-500 mb-4">${item.dynasty}</p>
+            <div class="card-prose text-sm">
+                ${item.content.replace(/<[^>]*>/g, ' ').substring(0, 250)}...
+            </div>
+            <button class="details-btn mt-4" data-id="${item.id}">Ver Detalhes</button>
+        </div>
+    </div>
+    `;
+}
+
+function setupMastersTimeline(containerId, data) {
+    const container = document.getElementById(containerId);
     if (!container) return;
 
-    container.innerHTML = greatMastersData.map(master => `
-        <div class="master-timeline-item">
-            ${renderMasterFlipCard(master)}
-        </div>
-    `).join('');
+    container.innerHTML = `<div class="master-timeline">${data.map((item, index) => renderMasterTimelineItem(item, index)).join('')}</div>`;
 
     container.addEventListener('click', (e) => {
-        const card = e.target.closest('.flip-card');
-        if (!card) return;
-        
-        if (e.target.closest('.details-btn')) {
-            const masterId = e.target.closest('.details-btn').dataset.id;
+        const detailsButton = e.target.closest('.details-btn');
+        if (detailsButton) {
+            const masterId = detailsButton.dataset.id;
             const masterInfo = greatMastersData.find(m => m.id === masterId);
             if (masterInfo) {
                 openContentModal(renderMasterModalContent(masterInfo));
             }
-            return;
         }
-        
-        card.classList.toggle('flipped');
     });
 }
 
@@ -643,7 +655,7 @@ function generateNavLinks() {
 
     const generateHtml = (item) => {
         if (item.links) {
-            return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${link.icon}"></use></svg><span>${link.title}</span></a>`).join('')}</div></div>`;
+            return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span>${link.title}</span></a>`).join('')}</div></div>`;
         } else {
             return `<a href="#${item.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span>${item.title}</span></a>`;
         }
@@ -670,8 +682,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setupZoomGrid('anatomy-grid-container', anatomyData, renderAnatomyCard, renderAnatomyModalContent);
     setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent);
 
-    // Setup da timeline dos Mestres
-    setupMastersTimeline();
+
+    // Setup da timeline para os Mestres
+    setupMastersTimeline('masters-timeline-container', greatMastersData);
     
     // Setup do diagnóstico
     setupDiagnosisAccordion();
