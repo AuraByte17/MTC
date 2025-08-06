@@ -40,14 +40,6 @@
         <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></symbol>
         <symbol id="icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
         
-        <!-- Logótipo Yin Yang Estático -->
-        <symbol id="icon-app-logo" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" fill="white" stroke="currentColor" stroke-width="1"/>
-            <path d="M12 2 A10 10 0 0 0 12 22 A5 5 0 0 1 12 12 A5 5 0 0 0 12 2 Z" fill="currentColor"/>
-            <circle cx="12" cy="7" r="1.5" fill="white"/>
-            <circle cx="12" cy="17" r="1.5" fill="currentColor"/>
-        </symbol>
-
         <!-- Ícones da Aplicação -->
         <symbol id="icon-yin-yang" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a7.5 7.5 0 0 1 0 15v5A10 10 0 0 1 12 2Z"></path></symbol>
         <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></symbol>
@@ -72,8 +64,7 @@
             <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50"></div>
             <aside id="sidebar" class="w-64 bg-white shadow-lg p-4 flex-shrink-0 flex flex-col h-full transition-transform duration-300 -translate-x-full">
                 <div class="sidebar-header">
-                    <svg class="w-8 h-8 sidebar-logo"><use href="#icon-app-logo"></use></svg>
-                    <h1 class="font-playfair font-bold">Guia de MTC</h1>
+                    <h1 class="font-playfair font-bold text-2xl">Guia de MTC</h1>
                 </div>
                 <button id="close-menu-btn" class="absolute top-4 right-4 p-1"><svg class="w-6 h-6 text-gray-600"><use href="#icon-close"></use></svg><span class="sr-only">Fechar Menu</span></button>
                 <nav id="navigation-hub" class="space-y-1 overflow-y-auto flex-grow mt-4"></nav>
@@ -81,8 +72,7 @@
         </div>
         <aside class="w-64 bg-white shadow-lg p-4 flex-shrink-0 hidden md:flex flex-col">
             <div class="sidebar-header">
-                <svg class="w-8 h-8 sidebar-logo"><use href="#icon-app-logo"></use></svg>
-                <h1 class="font-playfair font-bold">Guia de MTC</h1>
+                 <h1 class="font-playfair font-bold text-2xl">Guia de MTC</h1>
             </div>
             <div class="relative my-4">
                 <input type="search" id="desktop-search-input" placeholder="Pesquisa global..." class="w-full p-2 pl-8 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-transparent transition">
@@ -157,8 +147,7 @@
                                </div>
                                <div class="grid md:grid-cols-2 gap-8 items-center">
                                   <div id="five-elements-svg-container" class="relative w-full max-w-sm mx-auto aspect-square">
-                                      <!-- SVG dos 5 Elementos foi movido para cá -->
-                                      <svg id="five-elements-svg" viewBox="0 0 400 400">
+                                      <svg id="five-elements-svg" viewBox="0 0 400 360">
                                           <defs>
                                               <marker id="arrow-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                                   <path d="M 0 0 L 10 5 L 0 10 z" />
@@ -171,14 +160,11 @@
                                                   </feMerge>
                                               </filter>
                                           </defs>
-                                          
-                                          <!-- Linha de Relação Dinâmica -->
                                           <g id="relationship-lines">
                                               <path id="relationship-line" class="relationship-line" marker-end="url(#arrow-head)" />
                                           </g>
-
                                           <g class="element-nodes">
-                                              <g class="element-node-svg" data-id="madeira" transform="translate(70 150)">
+                                              <g class="element-node-svg" data-id="madeira" transform="translate(86 143)">
                                                   <circle r="35" fill="var(--el-wood)"/>
                                                   <text y="5">Madeira</text>
                                               </g>
@@ -186,15 +172,15 @@
                                                   <circle r="35" fill="var(--el-fire)"/>
                                                   <text y="5">Fogo</text>
                                               </g>
-                                              <g class="element-node-svg" data-id="terra" transform="translate(330 150)">
+                                              <g class="element-node-svg" data-id="terra" transform="translate(314 143)">
                                                   <circle r="35" fill="var(--el-earth)"/>
                                                   <text y="5">Terra</text>
                                               </g>
-                                              <g class="element-node-svg" data-id="metal" transform="translate(250 270)">
+                                              <g class="element-node-svg" data-id="metal" transform="translate(270 277)">
                                                   <circle r="35" fill="var(--el-metal)"/>
                                                   <text y="5">Metal</text>
                                               </g>
-                                              <g class="element-node-svg" data-id="agua" transform="translate(110 270)">
+                                              <g class="element-node-svg" data-id="agua" transform="translate(130 277)">
                                                   <circle r="35" fill="var(--el-water)"/>
                                                   <text y="5">Água</text>
                                               </g>
@@ -249,9 +235,7 @@
                             <div class="card-header"><h3>Diagnóstico da Língua</h3></div>
                             <div class="card-content grid md:grid-cols-2 gap-8 items-center diagnosis-grid">
                                 <div id="lingua-diagram-container" class="relative max-w-xs mx-auto">
-                                    <!-- Imagem JPG como base -->
                                     <img src="assets/tongue.jpg" alt="Diagrama da Língua" class="w-full h-auto">
-                                    <!-- SVG transparente por cima para as áreas interativas -->
                                     <svg id="lingua-diagram-svg" viewBox="0 0 2048 2048" class="absolute top-0 left-0 w-full h-full">
                                         <g class="interactive-areas">
                                             <ellipse class="diagram-area-svg" data-area="ponta" cx="1024" cy="1700" rx="190" ry="180" />
@@ -272,17 +256,13 @@
                             <div class="card-header"><h3>Diagnóstico do Pulso</h3></div>
                             <div class="card-content grid md:grid-cols-2 gap-8 items-center diagnosis-grid">
                                 <div id="pulso-diagram-container" class="relative w-full max-w-md mx-auto">
-                                     <!-- Imagem JPG como base -->
                                      <img src="assets/pulse.jpg" alt="Diagrama do Pulso" class="w-full h-auto">
-                                     <!-- SVG transparente por cima para as áreas interativas -->
                                      <svg id="pulso-diagram-svg" viewBox="0 0 164 205" class="absolute top-0 left-0 w-full h-full">
-                                        <!-- Pontos do Pulso Esquerdo (Direita na imagem) -->
                                         <g class="pulse-group-left">
                                             <circle data-pos="l-cun" class="pulse-pos-circle" cx="40" cy="140" r="3.5" style="fill: var(--el-fire);"/>
                                             <circle data-pos="l-guan" class="pulse-pos-circle" cx="40" cy="150" r="3.5" style="fill: var(--el-wood);"/>
                                             <circle data-pos="l-chi" class="pulse-pos-circle" cx="40" cy="160" r="3.5" style="fill: var(--el-water);"/>
                                         </g>
-                                        <!-- Pontos do Pulso Direito (Esquerda na imagem) -->
                                         <g class="pulse-group-right">
                                             <circle data-pos="r-cun" class="pulse-pos-circle" cx="125" cy="140" r="3.5" style="fill: var(--el-metal);"/>
                                             <circle data-pos="r-guan" class="pulse-pos-circle" cx="125" cy="150" r="3.5" style="fill: var(--el-earth);"/>
@@ -324,10 +304,10 @@
                     
                     <section id="grandes-mestres" class="content-section">
                         <div class="text-center mb-12">
-                            <h2 class="text-3xl font-playfair font-bold text-primary">Grandes Mestres</h2>
-                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Clique num mestre para saber mais sobre as suas contribuições.</p>
+                            <h2 class="text-3xl font-playfair font-bold text-primary">Grandes Mestres Através do Tempo</h2>
+                            <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Viaje pela história da MTC e clique num mestre para saber mais.</p>
                         </div>
-                        <div id="masters-grid-container" class="flip-grid"></div>
+                        <div id="masters-timeline-container"></div>
                     </section>
 
                     <section id="glossario" class="content-section"><div id="glossary-container"></div></section>
