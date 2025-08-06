@@ -1,932 +1,697 @@
-/**
- * app.js
- * * This is the main "brain" of the application. It orchestrates everything.
- * It holds the application state, manages the core logic (like calculating XP,
- * saving profiles), and handles all user events. It imports data from config.js
- * and uses functions from ui.js to update the display, keeping the logic
- * separate from the presentation.
- */
+// --- Importa todos os dados de data.js ---
+import { 
+    yinYangData,
+    qiData, 
+    meridianData, 
+    lifeCyclesFemaleData, 
+    lifeCyclesMaleData, 
+    anatomyData, 
+    fiveElementsData, 
+    glossaryData, 
+    foodData, 
+    zangFuPatternsData, 
+    dezPerguntasData, 
+    greatMastersData,
+    therapiesData,
+    linguaData,
+    pulsePositionData,
+    pulseTypeData
+} from './data.js';
 
-import { appData } from './config.js';
-import * as ui from './ui.js';
+// --- Seleção de Elementos DOM ---
+const loadingScreen = document.getElementById('loading-screen');
+const openMenuBtn = document.getElementById('open-menu-btn');
+const closeMenuBtn = document.getElementById('close-menu-btn');
+const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+const mobileNavHub = document.getElementById('navigation-hub');
+const desktopNavHub = document.getElementById('desktop-navigation-hub');
+const currentSectionTitle = document.getElementById('current-section-title');
+const contentArea = document.getElementById('main-content-area');
+const mainContent = document.getElementById('main-content');
+let contentSections = [];
 
-const App = {
-    // --- APPLICATION STATE ---
-    state: {
-        userProfile: null,
-        selectedAvatar: null,
-        activeSection: 'seccao-perfil',
-        timers: {},
-        xpChart: null,
-        audioSynth: null, 
-        onboardingStep: 0,
-        currentPlan: null, 
-        staminaInterval: null,
-    },
+const allNavHubs = [mobileNavHub, desktopNavHub];
+
+// Elementos da Pesquisa Global
+const openSearchMobileBtn = document.getElementById('open-search-btn-mobile');
+const desktopSearchInput = document.getElementById('desktop-search-input');
+const searchModalContainer = document.getElementById('search-modal-container');
+const searchOverlay = document.getElementById('search-overlay');
+const closeSearchBtn = document.getElementById('close-search-btn');
+const globalSearchInput = document.getElementById('global-search-input');
+const searchResultsContainer = document.getElementById('search-results-container');
+let searchIndex = [];
+let fuse; // Fuse.js instance
+
+// Elementos do Modal de Conteúdo
+const contentModal = document.getElementById('content-modal');
+const contentModalContent = document.getElementById('content-modal-content');
+const contentModalCloseBtn = document.getElementById('content-modal-close-btn');
+const contentModalOverlay = document.getElementById('content-modal-overlay');
+
+// Elementos do Corpo Interativo
+const meridianGridContainer = document.getElementById('meridian-grid-container');
+
+
+// --- LÓGICA DE NAVEGAÇÃO RESPONSIVA E PESQUISA ---
+function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
+function closeMobileMenu() { document.body.classList.remove('mobile-menu-open'); }
+openMenuBtn.addEventListener('click', openMobileMenu);
+closeMenuBtn.addEventListener('click', closeMobileMenu);
+mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+function openSearchModal() {
+    document.body.classList.add('search-modal-open');
+    searchModalContainer.classList.remove('hidden');
+    setTimeout(() => globalSearchInput.focus(), 50); 
+}
+function closeSearchModal() {
+    document.body.classList.remove('search-modal-open');
+    searchModalContainer.classList.add('hidden');
+    globalSearchInput.value = ''; 
+    searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Comece a escrever para ver os resultados.</p>';
+}
+openSearchMobileBtn.addEventListener('click', openSearchModal);
+desktopSearchInput.addEventListener('focus', openSearchModal);
+closeSearchBtn.addEventListener('click', closeSearchModal);
+searchOverlay.addEventListener('click', closeSearchModal);
+
+// --- LÓGICA DO MODAL DE CONTEÚDO ---
+function openContentModal(htmlContent) {
+    contentModalContent.innerHTML = htmlContent;
+    document.body.classList.add('content-modal-open');
     
-    onboardingData: [
-        { title: "Navegação Principal", text: "Usa este menu à esquerda para navegar entre as diferentes secções da aplicação, como os teus Planos de Treino, os treinos de Skill e a progressão de Cinturões." },
-        { title: "O Teu Perfil", text: "A secção 'Perfil' é o teu centro de comando. Usa as abas para ver o teu Passaporte, as tuas Estatísticas de treino e o teu Desafio Diário." },
-        { title: "Planos de Treino", text: "É aqui que ganhas XP! Escolhe um plano recomendado por categoria e dificuldade, ou cria um manual. Cada plano recomendado é uma sessão de 20 minutos." }
-    ],
+    const modalAccordions = contentModalContent.querySelectorAll('.accordion-container');
+    modalAccordions.forEach(accordion => initializeAccordion(accordion));
+}
+function closeContentModal() {
+    document.body.classList.remove('content-modal-open');
+}
+contentModalCloseBtn.addEventListener('click', closeContentModal);
+contentModalOverlay.addEventListener('click', closeContentModal);
 
-    // --- DOM ELEMENTS CACHE ---
-    elements: {},
 
-    // --- INITIALIZATION ---
-    init() {
-        this.elements = ui.queryElements();
-        this.state.selectedAvatar = appData.AVATAR_LIST[0].id;
+// --- LÓGICA DE NAVEGAÇÃO PRINCIPAL ---
+function showSection(targetId, linkText) {
+    contentSections.forEach(section => {
+        section.classList.toggle('active', section.id === targetId);
+    });
+    if (contentArea) contentArea.scrollTop = 0;
+    if (currentSectionTitle && linkText) currentSectionTitle.textContent = linkText;
+}
+function updateActiveLink(targetId) {
+    allNavHubs.forEach(hub => {
+        hub.querySelectorAll('.sidebar-link').forEach(link => {
+            const href = link.getAttribute('href');
+            const isActive = href === `#${targetId}`;
+            link.classList.toggle('active', isActive);
+            link.setAttribute('aria-current', isActive ? 'page' : 'false');
+        });
+    });
+}
+allNavHubs.forEach(hub => {
+    hub.addEventListener('click', (e) => {
+        const link = e.target.closest('a.sidebar-link');
+        const groupHeader = e.target.closest('.nav-group-header');
+        if (link) {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            const linkText = link.querySelector('span').textContent;
+            showSection(targetId, linkText);
+            updateActiveLink(targetId);
+            closeMobileMenu();
+        }
+        if (groupHeader) {
+            groupHeader.classList.toggle('open');
+            groupHeader.setAttribute('aria-expanded', groupHeader.classList.contains('open'));
+        }
+    });
+});
 
-        this.initAudio();
-        this.addEventListeners();
-        
-        ui.renderStaticContent(this.elements);
-        this.initMasterCardAnimations();
-
-        this.loadProfile();
-    },
+// --- LÓGICA DE PESQUISA (COM FUSE.JS) ---
+function createSearchIndex() {
+    const rawIndex = [];
+    meridianData.forEach(m => m.points.forEach(p => rawIndex.push({ title: `${p.id} - ${p.name}`, content: p.functions, type: 'Ponto', color: m.element, sectionId: 'meridianos' })));
+    Object.values(glossaryData).forEach(i => rawIndex.push({ title: i.term, content: i.definition, type: 'Glossário', color: 'primary', sectionId: 'glossario' }));
+    foodData.forEach(f => rawIndex.push({ title: f.name, content: `Ações: ${f.actions}`, type: 'Alimento', color: 'earth', sectionId: 'dietetica' }));
+    zangFuPatternsData.forEach(o => o.patterns.forEach(p => rawIndex.push({ title: p.name, content: p.symptoms, type: 'Padrão Zang-Fu', color: o.color, sectionId: 'padroes-zang-fu' })));
+    therapiesData.forEach(t => rawIndex.push({ title: t.title, content: t.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Terapia', color: 'secondary', sectionId: 'terapias' }));
+    greatMastersData.forEach(m => rawIndex.push({ title: m.name, content: m.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Mestre', color: 'water', sectionId: 'grandes-mestres' }));
     
-    initAudio() {
-        const startAudio = () => {
-            if (typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
-                Tone.start();
-            }
-            if (!this.state.audioSynth) {
-                this.state.audioSynth = new Tone.Synth().toDestination();
-                console.log("Audio context started.");
-            }
-            document.body.removeEventListener('click', startAudio);
-            document.body.removeEventListener('touchend', startAudio);
-        };
-        document.body.addEventListener('click', startAudio);
-        document.body.addEventListener('touchend', startAudio);
-    },
+    const options = {
+        includeScore: true,
+        keys: ['title', 'content'],
+        threshold: 0.4 // Adjust threshold for more/less fuzzy matching
+    };
+    fuse = new Fuse(rawIndex, options);
+}
 
-    // --- EVENT LISTENERS ---
-    addEventListeners() {
-        const els = this.elements;
-        // Profile actions
-        els.perfilFormView.querySelector('#guardarPerfilBtn').addEventListener('click', () => this.handleSaveProfile());
-        els.perfilDashboardView.querySelector('#editarPerfilBtn').addEventListener('click', () => this.handleEditProfile());
-        els.perfilDashboardView.querySelector('#exportProfileBtn').addEventListener('click', () => this.handleExportProfile());
-        const importBtn = els.perfilDashboardView.querySelector('#importProfileBtn');
-        const importInput = document.getElementById('import-file-input');
-        importBtn.addEventListener('click', () => importInput.click());
-        importInput.addEventListener('change', (e) => this.handleImportFile(e));
-        
-        els.studentIdDisplay.addEventListener('click', () => this.copyStudentId());
+function performSearch(query) {
+    if (query.length < 2) {
+        searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Escreva pelo menos 2 letras para pesquisar.</p>';
+        return;
+    }
+    const results = fuse.search(query);
+    renderSearchResults(results);
+}
 
-        // Plan actions
-        document.getElementById('save-plan-btn').addEventListener('click', () => this.handleSaveCustomPlan());
+function renderSearchResults(results) {
+    if (results.length === 0) {
+        searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Nenhum resultado encontrado.</p>';
+        return;
+    }
+    searchResultsContainer.innerHTML = results.map(result => {
+        const item = result.item;
+        return `
+        <div class="search-result-item" data-section-id="${item.sectionId}">
+            <h4>${item.title}</h4>
+            <p>${item.content}</p>
+            <span class="result-type-badge" style="background-color: var(--el-${item.color}, var(--color-primary))">${item.type}</span>
+        </div>
+    `}).join('');
+}
 
-        // Modal actions
-        els.modal.querySelector('.close-modal').addEventListener('click', () => ui.closeModal(els));
-        els.modal.addEventListener('click', (event) => {
-            if (event.target === els.modal) ui.closeModal(els);
-        });
-        
-        // Mobile menu
-        els.openMenuBtn.addEventListener('click', () => ui.toggleMobileMenu(els, true));
-        els.closeMenuBtn.addEventListener('click', () => ui.toggleMobileMenu(els, false));
-        els.mobileMenuOverlay.addEventListener('click', () => ui.toggleMobileMenu(els, false));
-        
-        // Onboarding
-        els.onboardingNextBtn.addEventListener('click', () => this.handleOnboardingNext());
-        els.onboardingPrevBtn.addEventListener('click', () => this.handleOnboardingPrev());
-        
-        // Tabbed navigation
-        els.profileTabBtns.forEach(btn => btn.addEventListener('click', () => this.handleProfileTabClick(btn.dataset.tab)));
-        els.planosTabBtns.forEach(btn => btn.addEventListener('click', () => this.handlePlanosTabClick(btn.dataset.tab)));
-        els.recommendedPlanCategories.addEventListener('click', (e) => {
-            if (e.target.matches('.profile-tab-btn')) this.handleRecommendedCategoryClick(e.target.dataset.category);
-        });
-        els.glossarioTabBtns.forEach(btn => btn.addEventListener('click', () => this.handleGlossarioTabClick(btn.dataset.tab)));
-
-        // Plan execution
-        document.getElementById('stop-plan-btn').addEventListener('click', () => this.stopTrainingPlan(true));
-    },
-
-    // --- PROFILE MANAGEMENT ---
-    loadProfile() {
-        const profileData = localStorage.getItem('wingChunProfile');
-        let isNewUser = false;
-        if (profileData) {
-            try {
-                this.state.userProfile = JSON.parse(profileData);
-                isNewUser = this.state.userProfile.isNew || false;
-                this.ensureProfileIntegrity();
-            } catch (e) {
-                console.error("Error loading profile, data corrupted:", e);
-                localStorage.removeItem('wingChunProfile');
-                this.state.userProfile = null;
-            }
-        } else {
-            this.state.userProfile = null;
+globalSearchInput.addEventListener('input', (e) => performSearch(e.target.value));
+searchResultsContainer.addEventListener('click', (e) => {
+    const resultItem = e.target.closest('.search-result-item');
+    if (resultItem) {
+        const sectionId = resultItem.dataset.sectionId;
+        const link = document.querySelector(`#desktop-navigation-hub a[href="#${sectionId}"]`);
+        if (link) {
+            const linkText = link.querySelector('span').textContent;
+            showSection(sectionId, linkText);
+            updateActiveLink(sectionId);
+            closeSearchModal();
         }
+    }
+});
+
+
+// --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO ---
+
+function initializeAccordion(container) {
+    if (!container) return;
+    container.addEventListener('click', (e) => {
+        const button = e.target.closest('.accordion-button');
+        if (!button) return;
+
+        const item = button.closest('.accordion-item');
+        if (!item || item.parentElement !== container) return;
         
-        this.fullUIUpdate();
-        
-        if (isNewUser) {
-            this.startOnboarding();
-            this.state.userProfile.isNew = false;
-            this.saveProfile();
-        }
-    },
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
 
-    saveProfile() {
-        if (!this.state.userProfile) return;
-        localStorage.setItem('wingChunProfile', JSON.stringify(this.state.userProfile));
-        this.fullUIUpdate();
-    },
-
-    ensureProfileIntegrity() {
-        const p = this.state.userProfile;
-        if (!p.unlockedBeltLevel) p.unlockedBeltLevel = 0;
-        if (!p.achievements) p.achievements = [];
-        if (!p.daily) p.daily = {};
-        if (!p.streak) p.streak = 0;
-        if (!p.history) p.history = [];
-        if (!p.trainingStats) p.trainingStats = {};
-        if (!p.customPlans) p.customPlans = [];
-        if (!p.studentId) p.studentId = `WC-${new Date(p.createdAt).getTime().toString(36).toUpperCase()}`;
-        if (!p.newContent) p.newContent = { skill: false, belts: false };
-        if (!p.theme) p.theme = 'default';
-        if (typeof p.stamina === 'undefined') p.stamina = 100;
-        if (!p.maxStamina) p.maxStamina = 100;
-        if (!p.lastStaminaUpdate) p.lastStaminaUpdate = new Date().toISOString();
-    },
-
-    handleSaveProfile() {
-        const nome = this.elements.perfilNomeInput.value.trim();
-        const altura = parseFloat(this.elements.perfilAlturaInput.value);
-        const peso = parseFloat(this.elements.perfilPesoInput.value);
-
-        if (!nome) return ui.showNotification(this.elements, "Por favor, insere o teu nome.", "⚠️");
-        if (!altura || altura < 100 || altura > 250) return ui.showNotification(this.elements, "Por favor, insere uma altura realista (100-250 cm).", "📏");
-        if (!peso || peso < 30 || peso > 250) return ui.showNotification(this.elements, "Por favor, insere um peso realista (30-250 kg).", "⚖️");
-
-        const imc = (peso / ((altura / 100) ** 2)).toFixed(1);
-
-        if (!this.state.userProfile) {
-            const createdAt = new Date().toISOString();
-            this.state.userProfile = {
-                name: nome, altura, peso, imc,
-                avatar: this.state.selectedAvatar,
-                xp: 0,
-                unlockedBeltLevel: 0,
-                achievements: [], streak: 0, daily: {}, history: [],
-                trainingStats: {}, customPlans: [],
-                createdAt,
-                studentId: `WC-${new Date(createdAt).getTime().toString(36).toUpperCase()}`,
-                isNew: true,
-                newContent: { skill: false, belts: false },
-                theme: 'default',
-                stamina: 100, maxStamina: 100,
-                lastStaminaUpdate: createdAt,
-            };
-        } else {
-            this.state.userProfile.name = nome;
-            this.state.userProfile.altura = altura;
-            this.state.userProfile.peso = peso;
-            this.state.userProfile.imc = imc;
-            this.state.userProfile.avatar = this.state.selectedAvatar;
-        }
-
-        this.checkAchievements();
-        this.saveProfile();
-        ui.showNotification(this.elements, `Perfil de ${nome} guardado!`, "✅");
-        
-        if (this.state.userProfile.isNew) {
-            this.loadProfile(); // Reload to trigger onboarding
-        }
-    },
-
-    handleEditProfile() {
-        this.elements.perfilNomeInput.value = this.state.userProfile.name;
-        this.elements.perfilAlturaInput.value = this.state.userProfile.altura;
-        this.elements.perfilPesoInput.value = this.state.userProfile.peso;
-        this.state.selectedAvatar = this.state.userProfile.avatar;
-        ui.renderAvatarChoices(this.elements, this.state.userProfile, this.state.selectedAvatar, this.handleAvatarSelect.bind(this));
-        this.elements.perfilFormView.style.display = 'block';
-        this.elements.perfilDashboardView.style.display = 'none';
-    },
-
-    handleExportProfile() {
-        if (!this.state.userProfile) return ui.showNotification(this.elements, "Nenhum perfil para exportar.", "⚠️");
-        
-        const profileJson = JSON.stringify(this.state.userProfile, null, 2);
-        const blob = new Blob([profileJson], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'wingchun_profile.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        ui.showNotification(this.elements, "Ficheiro de perfil descarregado!", "📥");
-    },
-
-    handleImportFile(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const newProfile = JSON.parse(e.target.result);
-                if (newProfile && typeof newProfile.xp === 'number' && newProfile.name) {
-                    this.state.userProfile = newProfile;
-                    this.ensureProfileIntegrity();
-                    this.saveProfile();
-                    this.loadProfile();
-                    ui.showNotification(this.elements, "Perfil importado com sucesso!", "📤");
-                } else {
-                    ui.showNotification(this.elements, "Ficheiro de perfil inválido.", "❌");
-                }
-            } catch (err) {
-                ui.showNotification(this.elements, "Erro ao ler o ficheiro.", "❌");
-                console.error("Error parsing imported JSON: ", err);
-            }
-        };
-        reader.readAsText(file);
-        event.target.value = ''; // Reset input
-    },
-
-    copyStudentId() {
-        navigator.clipboard.writeText(this.state.userProfile.studentId).then(() => {
-            ui.showNotification(this.elements, "ID de Aluno copiado!", "📋");
-        });
-    },
-
-    // --- UI & NAVIGATION HANDLERS ---
-    
-    fullUIUpdate() {
-        if (this.state.userProfile) {
-            this.updateStamina();
-            if (!this.state.staminaInterval) {
-                this.state.staminaInterval = setInterval(() => this.updateStamina(), 60000);
-            }
-            this.checkDailyChallenge();
-        } else {
-            if (this.state.staminaInterval) clearInterval(this.state.staminaInterval);
-        }
-
-        ui.updateUserUI(this.elements, this.state.userProfile, this.getBeltByLevel.bind(this));
-        ui.renderNavigation(this.elements, this.state.userProfile, this.handleNavClick.bind(this));
-        ui.showSection(this.elements, this.state.activeSection);
-        this.renderAllDynamicContent();
-    },
-
-    handleNavClick(sectionId) {
-        this.state.activeSection = sectionId;
-        ui.showSection(this.elements, sectionId);
-
-        if (sectionId === 'seccao-planos') {
-            this.renderPlanCreator();
-            this.handleRecommendedCategoryClick('conditioning');
-        }
-        if (sectionId === 'seccao-glossario') this.renderGlossary();
-        
-        if (this.state.userProfile && this.state.userProfile.newContent) {
-            let needsSave = false;
-            if (sectionId === 'seccao-skill' && this.state.userProfile.newContent.skill) {
-                this.state.userProfile.newContent.skill = false;
-                needsSave = true;
-            }
-            if (sectionId === 'seccao-cinturoes' && this.state.userProfile.newContent.belts) {
-                this.state.userProfile.newContent.belts = false;
-                needsSave = true;
-            }
-            if (needsSave) this.saveProfile();
-        }
-    },
-    
-    handleAvatarSelect(avatarId) {
-        this.state.selectedAvatar = avatarId;
-        ui.renderAvatarChoices(this.elements, this.state.userProfile, avatarId, this.handleAvatarSelect.bind(this));
-    },
-
-    handleProfileTabClick(tabId) {
-        this.elements.profileTabPanes.forEach(pane => pane.classList.toggle('active', pane.id === `tab-pane-${tabId}`));
-        this.elements.profileTabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
-        if (tabId === 'estatisticas') this.renderStatistics();
-    },
-
-    handlePlanosTabClick(tabId) {
-        this.elements.planosTabPanes.forEach(pane => pane.classList.toggle('active', pane.id === `tab-pane-${tabId}`));
-        this.elements.planosTabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
-    },
-
-    handleRecommendedCategoryClick(category) {
-        this.elements.recommendedPlanCategories.querySelectorAll('.profile-tab-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.category === category);
-        });
-        this.renderRecommendedPlans(category);
-    },
-
-    handleGlossarioTabClick(tabId) {
-        this.elements.glossarioTabPanes.forEach(pane => pane.classList.toggle('active', pane.id === `tab-pane-${tabId}`));
-        this.elements.glossarioTabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
-    },
-
-    // --- DYNAMIC CONTENT RENDERING ---
-
-    renderAllDynamicContent() {
-        if (!this.state.userProfile) {
-            ui.renderAvatarChoices(this.elements, null, this.state.selectedAvatar, this.handleAvatarSelect.bind(this));
-            return;
-        };
-        
-        ui.renderAvatarChoices(this.elements, this.state.userProfile, this.state.selectedAvatar, this.handleAvatarSelect.bind(this));
-        this.renderLibraryList(appData.WING_CHUN_TRAINING, this.elements.skillContainer);
-        this.renderLibraryList(appData.CONDITIONING_TRAINING, this.elements.conditioningContainer, true);
-        ui.renderBeltProgression(this.elements, this.state.userProfile, this.getBeltByLevel.bind(this), this.handlePromotion.bind(this));
-        this.renderAchievements();
-        this.renderSavedPlans();
-        this.renderDailyChallenge();
-        ui.renderThemePicker(this.elements, this.state.userProfile.theme, this.handleThemeSelect.bind(this));
-        this.updateAllInteractiveElements();
-    },
-
-    renderLibraryList(data, container, isAccordion = false) {
-        container.innerHTML = '';
-        if (!this.state.userProfile) { 
-            container.innerHTML = `<p>Cria um perfil para ver os exercícios.</p>`;
-            return;
-        }
-
-        const createCard = (item) => {
-            const cardEl = document.createElement('div');
-            cardEl.className = 'floating-card library-card zoom-on-hover';
-            let buttonHTML = item.videoUrl ? `<button class="action-button watch-video-btn">Ver Vídeo</button>` : '';
-            cardEl.innerHTML = `<h4>${item.title}</h4><p>${item.description}</p>${buttonHTML}`;
-            if (item.videoUrl) {
-                cardEl.querySelector('.watch-video-btn').addEventListener('click', () => ui.openModal(this.elements, item.title, item.videoUrl));
-            }
-            return cardEl;
-        };
-
-        for (const categoryName in data) {
-            const categoryData = data[categoryName];
-            let items = categoryData.items || categoryData;
-
-            if (items.length === 0) continue;
-
-            const gridEl = document.createElement('div');
-            gridEl.className = 'card-grid';
-            items.forEach(item => gridEl.appendChild(createCard(item)));
-            
-            if (isAccordion) {
-                const accordionItem = document.createElement('div');
-                accordionItem.className = 'conditioning-accordion-item';
-                const header = document.createElement('div');
-                header.className = 'conditioning-accordion-header';
-                header.innerHTML = `<h2 class="subtitulo-seccao" style="border-color: ${categoryData.color};">${categoryName}</h2><span class="accordion-arrow">▶</span>`;
-                header.addEventListener('click', () => accordionItem.classList.toggle('active'));
-                const content = document.createElement('div');
-                content.className = 'conditioning-accordion-content';
-                content.appendChild(gridEl);
-                accordionItem.append(header, content);
-                container.appendChild(accordionItem);
-            } else {
-                const categoryEl = document.createElement('div');
-                categoryEl.className = 'training-category';
-                const subtitle = document.createElement('h2');
-                subtitle.className = 'subtitulo-seccao';
-                subtitle.textContent = categoryName;
-                categoryEl.append(subtitle, gridEl);
-                container.appendChild(categoryEl);
-            }
-        }
-    },
-
-    renderPlanCreator() {
-        const container = this.elements.planExerciseSelection;
-        container.innerHTML = '';
-        if (!this.state.userProfile) return;
-        const unlockedItems = appData.ALL_TRAINING_ITEMS.filter(item => item.requiredBelt <= this.state.userProfile.unlockedBeltLevel);
-        
-        unlockedItems.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'exercise-selection-item';
-            div.innerHTML = `
-                <input type="checkbox" id="check-${item.id}" value="${item.id}">
-                <label for="check-${item.id}">${item.title}</label>
-                <input type="number" class="plan-duration-input" placeholder="secs" value="${item.duration}" data-id="${item.id}">
-            `;
-            container.appendChild(div);
-        });
-    },
-
-    renderSavedPlans() {
-        const container = this.elements.plansContainer;
-        container.innerHTML = '';
-        if (!this.state.userProfile || this.state.userProfile.customPlans.length === 0) {
-            container.innerHTML = "<p>Ainda não criaste nenhum plano de treino manual.</p>";
-            return;
-        }
-
-        this.state.userProfile.customPlans.forEach(plan => {
-            const cardEl = this.createPlanCard(plan, true);
-            container.appendChild(cardEl);
-        });
-    },
-
-    renderRecommendedPlans(category = 'conditioning') {
-        const container = this.elements.recommendedPlansContainer;
-        container.innerHTML = '';
-        if (!this.state.userProfile) return;
-
-        const plansByDifficulty = appData.RECOMMENDED_PLANS[category];
-        if (!plansByDifficulty) {
-            container.innerHTML = "<p>Nenhuma plano disponível nesta categoria.</p>";
-            return;
-        }
-
-        const difficultyLevels = ['beginner', 'intermediate', 'advanced'];
-        const difficultyLabels = { beginner: 'Iniciante', intermediate: 'Intermédio', advanced: 'Avançado' };
-
-        difficultyLevels.forEach(level => {
-            const plans = plansByDifficulty[level];
-            if (plans && plans.length > 0) {
-                const levelContainer = document.createElement('div');
-                levelContainer.innerHTML = `<h2 class="subtitulo-seccao">${difficultyLabels[level]}</h2>`;
-                const gridEl = document.createElement('div');
-                gridEl.className = 'card-grid';
-
-                plans.forEach(plan => {
-                    const cardEl = this.createPlanCard(plan);
-                    gridEl.appendChild(cardEl);
-                });
-                levelContainer.appendChild(gridEl);
-                container.appendChild(levelContainer);
+        const siblingItems = Array.from(container.children).filter(child => child.classList.contains('accordion-item'));
+        siblingItems.forEach(otherItem => {
+            if (otherItem !== item) {
+                const otherButton = otherItem.querySelector('.accordion-button');
+                if (otherButton) otherButton.setAttribute('aria-expanded', 'false');
             }
         });
-    },
+        
+        button.setAttribute('aria-expanded', !isExpanded);
+    });
+}
 
-    createPlanCard(plan, isCustom = false) {
-        const cardEl = document.createElement('div');
-        cardEl.className = 'floating-card saved-plan-card zoom-on-hover';
 
-        let exercisesHTML = '<div class="plan-details">';
-        let totalDuration = 0;
-        let totalStaminaCost = 0;
-
-        if (isCustom) {
-            exercisesHTML += '<ul class="plan-exercises-list">';
-            plan.exercises.forEach(ex => {
-                const exercise = appData.ALL_TRAINING_ITEMS.find(e => e.id === ex.id);
-                if (exercise) {
-                    exercisesHTML += `<li>${exercise.title} (${ex.duration}s)</li>`;
-                    totalDuration += ex.duration;
-                    totalStaminaCost += exercise.staminaCost || 0;
-                }
-            });
-            exercisesHTML += '</ul>';
-        } else {
-            exercisesHTML += '<div class="plan-phases">';
-            const phases = { warmup: { label: 'Aquecimento', icon: '🔥' }, main: { label: 'Treino Principal', icon: '💪' }, cooldown: { label: 'Alongamento', icon: '🧘' } };
-            
-            Object.keys(phases).forEach(phaseKey => {
-                if (plan.phases[phaseKey] && plan.phases[phaseKey].length > 0) {
-                    exercisesHTML += `<h4>${phases[phaseKey].icon} ${phases[phaseKey].label}</h4>`;
-                    exercisesHTML += '<ul class="plan-exercises-list">';
-                    plan.phases[phaseKey].forEach(ex => {
-                        const exercise = appData.ALL_TRAINING_ITEMS.find(e => e.id === ex.id);
-                        if (exercise) exercisesHTML += `<li>${exercise.title} (${ex.duration}s)</li>`;
-                    });
-                    exercisesHTML += '</ul>';
-                }
-            });
-            exercisesHTML += '</div>';
-            totalDuration = plan.totalDuration;
-            totalStaminaCost = plan.staminaCost;
-        }
-        exercisesHTML += '</div>';
-
-        const durationMinutes = Math.round(totalDuration / 60);
-        const buttonText = `Iniciar (${durationMinutes} min)`;
-        const isEnabled = this.state.userProfile.stamina >= totalStaminaCost;
-
-        cardEl.innerHTML = `
-            <div class="card-header"><h3 class="subtitulo-seccao" style="margin:0; border:0; font-size: 1.5rem;">${plan.name}</h3></div>
-            <div class="card-content">
-                ${exercisesHTML}
-                <div class="plan-cost"><span>⭐ ${plan.xpAwarded || 'Variável'} XP</span> | <span>⚡ ${totalStaminaCost} Energia</span></div>
-                <div class="plan-card-footer"><button class="action-button start-plan-btn" data-stamina-cost="${totalStaminaCost}" ${!isEnabled ? 'disabled' : ''}>${buttonText}</button></div>
+function createAccordionHTML(data, containerIdPrefix = '') {
+    return data.map((item, index) => {
+        const uniqueId = `${containerIdPrefix}-item-${index}`;
+        return `
+        <div class="accordion-item" data-id="${item.id || ''}">
+            <button class="accordion-button" aria-expanded="false" aria-controls="${uniqueId}-content" id="${uniqueId}-button">
+                <span class="accordion-title-content">
+                    ${item.color ? `<span class="w-3 h-3 rounded-full mr-3 shrink-0" style="background-color: var(--el-${item.color});"></span>` : ''}
+                    <span class="text-left">${item.title}</span>
+                </span>
+                <svg class="w-5 h-5 shrink-0 text-gray-400 chevron transition-transform duration-300"><use href="#icon-chevron-down"></use></svg>
+            </button>
+            <div class="accordion-content" id="${uniqueId}-content" role="region" aria-labelledby="${uniqueId}-button">
+                <div class="accordion-content-inner">${item.content || item.functions}</div>
             </div>
-        `;
-        cardEl.querySelector('.start-plan-btn').addEventListener('click', () => this.startTrainingPlan(plan));
-        return cardEl;
-    },
+        </div>`;
+    }).join('');
+}
 
-    renderDailyChallenge() {
-        const container = this.elements.dailyChallengeCard;
-        if (!this.state.userProfile || !this.state.userProfile.daily || !this.state.userProfile.daily.challenge) {
-            container.innerHTML = `<p>Nenhum desafio disponível. Aumenta de nível para desbloquear mais treinos!</p>`;
+function setupYinYangSection() {
+    const container = document.getElementById('yin-yang-container');
+    if (!container) return;
+    const svg = document.getElementById('yin-yang-loader-svg').innerHTML;
+    container.innerHTML = `
+        <div class="card-header"><h3>${yinYangData.title}</h3></div>
+        <div class="card-content">
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="p-4"><svg viewBox="0 0 200 200" class="w-full max-w-xs mx-auto yin-yang-svg">${svg}</svg></div>
+                <div class="card-prose">${yinYangData.content}</div>
+            </div>
+            <div class="mt-8 grid md:grid-cols-2 gap-6">
+                <div class="yin-card"><h4 class="font-bold text-xl mb-3 text-center text-gray-100">YIN (阴)</h4><ul class="list-disc list-inside space-y-2 text-gray-300"><li>Noite, Lua, Escuro, Frio</li><li>Repouso, Passivo, Interior, Baixo</li><li>Substância, Matéria, Estrutura</li></ul></div>
+                <div class="yang-card"><h4 class="font-bold text-xl mb-3 text-center text-gray-800">YANG (阳)</h4><ul class="list-disc list-inside space-y-2 text-gray-600"><li>Dia, Sol, Luz, Calor</li><li>Atividade, Ativo, Exterior, Cima</li><li>Função, Energia, Movimento</li></ul></div>
+            </div>
+        </div>`;
+}
+
+function createLifeCycleTimeline(containerId, data, colorClass) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = data.map(item => `
+        <div class="timeline-item">
+            <div class="timeline-marker"><div class="w-8 h-8 rounded-full ${colorClass} text-white flex items-center justify-center font-bold text-sm shadow-md">${item.age}</div></div>
+            <div class="pt-1"><p class="font-semibold text-gray-800">Idade ${item.age}</p><p class="text-sm text-gray-600">${item.content}</p></div>
+        </div>`).join('');
+}
+
+// --- SISTEMA DE GRELHAS GENÉRICO ---
+
+function setupZoomGrid(containerId, data, cardRenderer, modalContentRenderer) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = data.map(item => cardRenderer(item)).join('');
+
+    container.addEventListener('click', (e) => {
+        const card = e.target.closest('[data-id]');
+        if (!card) return;
+
+        const itemId = card.dataset.id;
+        const itemInfo = data.find(d => d.id === itemId);
+
+        if (itemInfo) {
+            const contentHTML = modalContentRenderer(itemInfo);
+            openContentModal(contentHTML);
+        }
+    });
+}
+
+function setupFlipGrid(containerId, data, cardRenderer) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = data.map(item => cardRenderer(item)).join('');
+
+    container.addEventListener('click', (e) => {
+        const card = e.target.closest('.flip-card');
+        if (!card) return;
+        
+        if (e.target.closest('.details-btn')) {
+            const masterId = e.target.closest('.details-btn').dataset.id;
+            const masterInfo = greatMastersData.find(m => m.id === masterId);
+            if (masterInfo) {
+                openContentModal(renderMasterModalContent(masterInfo));
+            }
             return;
         }
-        const { challenge, completed } = this.state.userProfile.daily;
         
-        if(completed){
-            container.innerHTML = `<div class="streak-counter">🔥 ${this.state.userProfile.streak} Dias de Sequência</div><h3>Desafio Concluído!</h3><p>Já completaste o desafio de hoje. Volta amanhã para um novo!</p>`;
-            return;
-        }
-        
-        const cardEl = ui.createTimerCard(challenge, this.startTimer.bind(this), this.stopTimer.bind(this), (title, url) => ui.openModal(this.elements, title, url));
-        container.innerHTML = '';
-        container.appendChild(cardEl);
-    },
+        card.classList.toggle('flipped');
+    });
+}
 
-    renderAchievements() {
-        const grid = this.elements.achievementsGrid;
-        grid.innerHTML = '';
-        if (!this.state.userProfile) return;
-        
-        const unlockedAchievements = this.state.userProfile.achievements;
 
-        if (unlockedAchievements.length === 0) {
-            grid.innerHTML = `<p>Ainda não desbloqueaste nenhuma conquista. Continua a treinar!</p>`;
-            return;
-        }
+// --- RENDERERS PARA O SISTEMA DE GRELHAS ---
 
-        unlockedAchievements.forEach(key => {
-            const ach = appData.ACHIEVEMENTS[key];
-            if (ach) {
-                const badgeEl = document.createElement('div');
-                badgeEl.className = `achievement-badge unlocked zoom-on-hover`;
-                badgeEl.innerHTML = `<div class="icon">${ach.icon}</div><h4>${ach.title}</h4><p>${ach.desc}</p>`;
-                grid.appendChild(badgeEl);
-            }
-        });
-    },
+const renderMeridianCard = (item) => `
+    <div class="meridian-card" data-id="${item.id}">
+        <span class="meridian-card-color-bar" style="background-color: var(--el-${item.color});"></span>
+        <div class="p-4">
+            <h4 class="font-playfair font-bold text-lg text-primary">${item.name}</h4>
+            <p class="text-xs text-gray-500">${item.element} / ${item.time}</p>
+        </div>
+    </div>`;
 
-    renderStatistics() {
-        if (!this.state.userProfile) return;
+const renderMeridianModalContent = (item) => `
+    <div class="card-header">
+        <span class="w-4 h-4 rounded-full mr-3 shrink-0" style="background-color: var(--el-${item.color});"></span>
+        <h3>${item.name}</h3>
+    </div>
+    <div class="card-content card-prose text-sm">
+        <div class="grid md:grid-cols-2 gap-x-8">
+            <div><h4 class="font-bold !text-base !mb-2 !mt-0">Funções Principais</h4><p class="text-gray-600">${item.functions}</p></div>
+            <div><h4 class="font-bold !text-base !mb-2 !mt-0">Sinais de Desequilíbrio</h4><p class="text-gray-600">${item.imbalances}</p></div>
+        </div>
+        <h4 class="font-bold !text-base !mb-2">Pontos Especiais</h4>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 text-xs p-3 bg-gray-50 rounded-md">
+            <div><strong>Fonte (Yuan):</strong> ${item.yuan_source}</div>
+            <div><strong>Conexão (Luo):</strong> ${item.luo_connecting}</div>
+            <div><strong>Fenda (Xi):</strong> ${item.xi_cleft}</div>
+        </div>
+        <h4 class="font-bold !text-base !mb-2">Pontos Shu Antigos</h4>
+        <div class="overflow-x-auto"><table class="w-full text-left !text-xs"><thead class="bg-gray-100"><tr><th class="p-2 font-semibold">Tipo</th><th class="p-2 font-semibold">Elemento</th><th class="p-2 font-semibold">Ponto</th><th class="p-2 font-semibold">Funções</th></tr></thead><tbody>${item.five_shu.map(p => `<tr class="border-b"><td class="p-2">${p.type}</td><td class="p-2">${p.element}</td><td class="p-2 font-bold">${p.point}</td><td class="p-2">${p.functions}</td></tr>`).join('')}</tbody></table></div>
+        <h4 class="font-bold !text-base !mb-2">Lista Completa de Pontos</h4>
+        <div class="space-y-3 max-h-80 overflow-y-auto pr-2">${item.points.map(p => `<div class="p-2 border-l-2 border-gray-200 hover:bg-gray-50"><strong class="text-primary-dark">${p.id} - ${p.name} (${p.character}) - ${p.pt_name}</strong><p class="text-gray-600 !mb-0">${p.functions}</p></div>`).join('')}</div>
+    </div>`;
 
-        this.elements.statTotalXp.textContent = this.state.userProfile.xp;
-        
-        const totalSeconds = Object.values(this.state.userProfile.trainingStats).reduce((acc, val) => acc + val.totalDuration, 0);
-        this.elements.statTotalTime.textContent = `${Math.round(totalSeconds / 60)}m`;
-
-        const trainingKeys = Object.keys(this.state.userProfile.trainingStats);
-        let favExerciseId = null;
-        if (trainingKeys.length > 0) {
-            favExerciseId = trainingKeys.reduce((a, b) => this.state.userProfile.trainingStats[a].count > this.state.userProfile.trainingStats[b].count ? a : b);
-        }
-        const favExercise = favExerciseId ? appData.ALL_TRAINING_ITEMS.find(e => e.id === favExerciseId) : null;
-        this.elements.statFavExercise.textContent = favExercise ? favExercise.title : '-';
-
-        const labels = [];
-        const data = [];
-        for (let i = 6; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            const dateString = date.toISOString().split('T')[0];
-            labels.push(date.toLocaleDateString('pt-PT', { weekday: 'short' }));
-            const historyEntry = this.state.userProfile.history.find(h => h.date === dateString);
-            data.push(historyEntry ? historyEntry.xpGained : 0);
-        }
-
-        if (this.state.xpChart) this.state.xpChart.destroy();
-
-        this.state.xpChart = new Chart(this.elements.xpChartCanvas, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'XP Ganhos por Dia',
-                    data: data,
-                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--cor-primaria'),
-                    borderColor: getComputedStyle(document.documentElement).getPropertyValue('--cor-secundaria'),
-                    borderWidth: 2,
-                    borderRadius: 5,
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false }, title: { display: true, text: 'Progresso nos Últimos 7 Dias', color: '#f0f0f0', font: { size: 16 } } },
-                scales: { y: { beginAtZero: true, grid: { color: '#444' }, ticks: { color: '#a0a0a0' } }, x: { grid: { display: false }, ticks: { color: '#a0a0a0' } } }
-            }
-        });
-    },
-
-    renderGlossary() {
-        if (!this.state.userProfile) return;
-        const currentBeltLevel = this.state.userProfile.unlockedBeltLevel;
-        
-        const renderContent = (container, showAll) => {
-            container.innerHTML = '';
-            for (const category in appData.GLOSSARY_DATA) {
-                const unlockedTerms = appData.GLOSSARY_DATA[category].filter(term => term.requiredBelt <= currentBeltLevel);
-                
-                if (unlockedTerms.length > 0) {
-                    const termsToShow = showAll ? unlockedTerms : unlockedTerms.filter(term => term.requiredBelt === currentBeltLevel);
-                    if (termsToShow.length > 0) {
-                        const categoryTitle = document.createElement('h2');
-                        categoryTitle.className = 'subtitulo-seccao';
-                        categoryTitle.textContent = category;
-                        container.appendChild(categoryTitle);
-
-                        termsToShow.forEach(item => {
-                            const entryEl = document.createElement('div');
-                            entryEl.className = 'guide-entry';
-                            let headerHTML = `<h3>${item.term}</h3>`;
-                            if (showAll) {
-                                const beltColor = this.getBeltByLevel(item.requiredBelt).color;
-                                headerHTML = `<div class="term-header"><span class="belt-dot" style="background-color: ${beltColor};"></span><h3>${item.term}</h3></div>`;
-                            }
-                            entryEl.innerHTML = `${headerHTML}<p>${item.definition}</p>`;
-                            container.appendChild(entryEl);
-                        });
-                    }
-                }
-            }
-        };
-
-        renderContent(this.elements.glossaryContainerCinto, false);
-        renderContent(this.elements.glossaryContainerGlobal, true);
-    },
-
-    renderThemePicker() {
-        ui.renderThemePicker(this.elements, this.state.userProfile.theme, this.handleThemeSelect.bind(this));
-    },
-
-    // --- GAME LOGIC (XP, STAMINA, ACHIEVEMENTS, PLANS) ---
-    
-    addXp(xpToAdd, trainingId = 'misc') {
-        if(!this.state.userProfile || xpToAdd <= 0) return;
-        this.state.userProfile.xp += xpToAdd;
-        ui.showNotification(this.elements, `+${xpToAdd} XP!`, "⭐");
-        this.updateHistory(xpToAdd, trainingId);
-        this.checkAchievements();
-        this.saveProfile();
-    },
-    
-    updateHistory(xpGained, trainingId) {
-        const today = new Date().toISOString().split('T')[0];
-        let todayHistory = this.state.userProfile.history.find(h => h.date === today);
-        if (todayHistory) {
-            todayHistory.xpGained += xpGained;
-        } else {
-            this.state.userProfile.history.push({ date: today, xpGained });
-        }
-
-        if (trainingId) {
-            if (!this.state.userProfile.trainingStats[trainingId]) {
-                this.state.userProfile.trainingStats[trainingId] = { count: 0, totalDuration: 0 };
-            }
-            this.state.userProfile.trainingStats[trainingId].count++;
-        }
-    },
-    
-    updateStamina() {
-        if (!this.state.userProfile) return;
-
-        const now = new Date();
-        const lastUpdate = new Date(this.state.userProfile.lastStaminaUpdate);
-        const diffMins = Math.floor((now - lastUpdate) / 60000);
-
-        const REGEN_RATE = 1;
-        const REGEN_INTERVAL_MINS = 5;
-
-        if (diffMins >= REGEN_INTERVAL_MINS) {
-            const staminaToRegen = Math.floor(diffMins / REGEN_INTERVAL_MINS) * REGEN_RATE;
-            this.state.userProfile.stamina = Math.min(this.state.userProfile.maxStamina, this.state.userProfile.stamina + staminaToRegen);
-            this.state.userProfile.lastStaminaUpdate = new Date().toISOString();
-            this.saveProfile();
-        } else {
-            ui.updateStaminaUI(this.elements, this.state.userProfile.stamina, this.state.userProfile.maxStamina);
-            this.updateAllInteractiveElements();
-        }
-    },
-
-    updateAllInteractiveElements() {
-        document.querySelectorAll('.start-plan-btn, .start-timer-btn').forEach(btn => {
-            const cost = parseInt(btn.dataset.staminaCost, 10);
-            if (!isNaN(cost)) {
-                btn.disabled = this.state.userProfile.stamina < cost;
-            }
-        });
-    },
-
-    checkAchievements() {
-        if (!this.state.userProfile) return false;
-        // This is a placeholder for the actual achievement logic from the original file
-        return false;
-    },
-
-    checkDailyChallenge() {
-        if (!this.state.userProfile) return;
-        const today = new Date().toISOString().split('T')[0];
-        let needsSave = false;
-
-        if (!this.state.userProfile.daily || this.state.userProfile.daily.date !== today) {
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-            if (this.state.userProfile.daily && this.state.userProfile.daily.date === yesterdayStr && !this.state.userProfile.daily.completed) {
-                this.state.userProfile.streak = 0;
-            }
-
-            const currentBeltLevel = this.state.userProfile.unlockedBeltLevel;
-            const availableChallenges = appData.ALL_TRAINING_ITEMS.filter(item => item.requiredBelt <= currentBeltLevel && item.xp > 0);
-            const randomChallenge = availableChallenges.length > 0 ? availableChallenges[Math.floor(Math.random() * availableChallenges.length)] : null;
-
-            this.state.userProfile.daily = {
-                date: today,
-                challenge: randomChallenge,
-                completed: false
-            };
-            needsSave = true;
-        }
-        if (needsSave) this.saveProfile();
-    },
-
-    handleSaveCustomPlan() {
-        const name = this.elements.planNameInput.value.trim();
-        if (!name) return ui.showNotification(this.elements, "Por favor, dá um nome ao teu plano.", "⚠️");
-        
-        const selectedExercises = [];
-        this.elements.planExerciseSelection.querySelectorAll('input[type="checkbox"]:checked').forEach(input => {
-            const id = input.value;
-            const durationInput = this.elements.planExerciseSelection.querySelector(`.plan-duration-input[data-id="${id}"]`);
-            const duration = parseInt(durationInput.value, 10) || appData.ALL_TRAINING_ITEMS.find(ex => ex.id === id).duration;
-            selectedExercises.push({ id, duration });
-        });
-
-        if (selectedExercises.length === 0) return ui.showNotification(this.elements, "Seleciona pelo menos um exercício.", "⚠️");
-
-        this.state.userProfile.customPlans.push({ id: `plan_${Date.now()}`, name, exercises: selectedExercises });
-        this.saveProfile();
-        this.elements.planNameInput.value = '';
-        this.elements.planExerciseSelection.querySelectorAll('input:checked').forEach(input => input.checked = false);
-        ui.showNotification(this.elements, "Plano guardado!", "✅");
-    },
-    
-    async handlePromotion(beltLevel, code) {
-        const belt = this.getBeltByLevel(beltLevel);
-        if (!belt) return;
-
-        const correctCode = await this.generateCode(this.state.userProfile.studentId, beltLevel);
-        
-        if (code.trim().toUpperCase() === correctCode.toUpperCase()) {
-            this.state.userProfile.unlockedBeltLevel = beltLevel;
-            this.state.userProfile.newContent = { skill: true, belts: true };
-            ui.showNotification(this.elements, `Promovido a ${belt.name}!`, '🎉');
-            this.saveProfile();
-        } else {
-            ui.showNotification(this.elements, "Código incorreto.", "❌");
-        }
-    },
-    
-    async generateCode(studentId, beltLevel) {
-        const data = `${studentId.toUpperCase()}-${beltLevel}-${appData.MASTER_SECRET_KEY}`;
-        const encoder = new TextEncoder();
-        const dataBuffer = encoder.encode(data);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 8).toUpperCase();
-    },
-
-    handleThemeSelect(themeKey) {
-        this.state.userProfile.theme = themeKey;
-        this.saveProfile();
-    },
-
-    // --- TIMERS & TRAINING PLANS ---
-
-    startTimer(item, duration) {
-        if (this.state.userProfile.stamina < item.staminaCost) return ui.showNotification(this.elements, "Energia insuficiente!", "⚡");
-        
-        const timerId = item.id;
-        if (this.state.timers[timerId] || !this.state.audioSynth) return;
-        
-        this.state.userProfile.stamina -= item.staminaCost;
-        this.saveProfile();
-        this.state.audioSynth.triggerAttackRelease('C5', '8n', Tone.now());
-
-        const cardEl = document.getElementById(`timer-card-${timerId}`);
-        cardEl.querySelector('.start-timer-btn').style.display = 'none';
-        cardEl.querySelector('.stop-timer-btn').style.display = 'inline-block';
-        ui.setTimerProgress(cardEl, 0);
-
-        let secondsElapsed = 0;
-        const interval = setInterval(() => {
-            secondsElapsed++;
-            const minutes = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
-            const remainingSeconds = (secondsElapsed % 60).toString().padStart(2, '0');
-            cardEl.querySelector('.timer-display').textContent = `${minutes}:${remainingSeconds}`;
-            ui.setTimerProgress(cardEl, (secondsElapsed / duration) * 100);
-
-            if (secondsElapsed >= duration) {
-                this.addXp(item.xp, item.id);
-                if(this.state.audioSynth) this.state.audioSynth.triggerAttackRelease('G5', '4n', Tone.now());
-                this.stopTimer(item, false, duration);
-            }
-        }, 1000);
-
-        this.state.timers[timerId] = { interval, startTime: Date.now() };
-    },
-
-    stopTimer(item, userCancelled = true, duration) {
-        const timerId = item.id;
-        const timer = this.state.timers[timerId];
-        if (!timer) return;
-
-        if(this.state.audioSynth && userCancelled) this.state.audioSynth.triggerAttackRelease('C4', '8n', Tone.now());
-        clearInterval(timer.interval);
-        
-        const durationSeconds = Math.round((Date.now() - timer.startTime) / 1000);
-        
-        if (userCancelled) {
-            this.addXp(Math.round(item.xp * (durationSeconds / duration) * 0.5), item.id); // Prorated XP on cancel
-        }
-        
-        if (!this.state.userProfile.trainingStats[item.id]) {
-            this.state.userProfile.trainingStats[item.id] = { count: 0, totalDuration: 0 };
-        }
-        this.state.userProfile.trainingStats[item.id].totalDuration += durationSeconds;
-        this.saveProfile();
-
-        delete this.state.timers[timerId];
-        ui.resetTimerCard(timerId);
-        if (userCancelled) ui.showNotification(this.elements, "Treino interrompido.", "❌");
-    },
-
-    startTrainingPlan(plan) {
-        // Implementation for starting a full training plan
-    },
-
-    stopTrainingPlan(userCancelled = false) {
-        // Implementation for stopping a full training plan
-    },
-    
-    // --- UTILITY ---
-    getBeltByLevel(level) {
-        return appData.BELT_SYSTEM.find(b => b.level === level) || appData.BELT_SYSTEM[0];
-    },
-
-    initMasterCardAnimations() {
-        document.querySelectorAll('.master-flip-card').forEach(card => {
-            const innerCard = card.querySelector('.master-flip-card-inner');
-            gsap.set(innerCard, { rotationY: 0 }); 
-
-            card.addEventListener('mouseenter', () => {
-                gsap.to(innerCard, { rotationY: 180, duration: 0.7, ease: 'power3.out' });
-            });
-
-            card.addEventListener('mouseleave', () => {
-                gsap.to(innerCard, { rotationY: 0, duration: 0.7, ease: 'power3.out' });
-            });
-        });
-    },
-
-    // --- ONBOARDING ---
-    startOnboarding() {
-        this.state.onboardingStep = 0;
-        this.elements.onboardingModal.style.display = 'flex';
-        this.renderOnboardingStep();
-    },
-
-    renderOnboardingStep() {
-        const stepData = this.onboardingData[this.state.onboardingStep];
-        this.elements.onboardingTitle.textContent = stepData.title;
-        this.elements.onboardingText.textContent = stepData.text;
-
-        this.elements.onboardingPrevBtn.style.visibility = this.state.onboardingStep === 0 ? 'hidden' : 'visible';
-        this.elements.onboardingNextBtn.textContent = this.state.onboardingStep === this.onboardingData.length - 1 ? 'Terminar' : 'Próximo';
-        
-        this.elements.onboardingDots.innerHTML = '';
-        for (let i = 0; i < this.onboardingData.length; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'onboarding-dot';
-            if (i === this.state.onboardingStep) dot.classList.add('active');
-            this.elements.onboardingDots.appendChild(dot);
-        }
-    },
-
-    handleOnboardingNext() {
-        if (this.state.onboardingStep < this.onboardingData.length - 1) {
-            this.state.onboardingStep++;
-            this.renderOnboardingStep();
-        } else {
-            this.elements.onboardingModal.style.display = 'none';
-        }
-    },
-
-    handleOnboardingPrev() {
-        if (this.state.onboardingStep > 0) {
-            this.state.onboardingStep--;
-            this.renderOnboardingStep();
-        }
-    },
+const renderTherapyCard = (item) => {
+    const regex = /(.+?)\s\((.+?)(?:\s-\s(.+?))?\)/;
+    const match = item.title.match(regex);
+    let titleHTML, pinyinHTML = '';
+    if (match) {
+        const [, pt, ch, pinyin] = match;
+        titleHTML = `<div class="text-2xl font-chinese">${ch}</div><div class="text-xl font-playfair my-1">${pt}</div>`;
+        if (pinyin) pinyinHTML = `<div class="text-sm text-gray-500 font-mono">(${pinyin})</div>`;
+        else if (ch === '气功' || ch === '太极拳') pinyinHTML = `<div class="text-sm text-gray-500 font-mono">(${ch === '气功' ? 'Qìgōng' : 'Tàijí quán'})</div>`;
+    } else {
+        titleHTML = `<div class="text-xl font-playfair my-1">${item.title}</div>`;
+    }
+    return `
+    <div class="meridian-card text-center p-4 flex flex-col justify-center items-center h-full" data-id="${item.id}">
+        ${titleHTML}
+        ${pinyinHTML}
+    </div>`;
 };
 
-// --- APP ENTRY POINT ---
+const renderTherapyModalContent = (item) => `
+    <div class="card-header"><h3>${item.title}</h3></div>
+    <div class="card-content card-prose">${item.content}</div>`;
+
+const renderZangFuCard = (item) => `
+    <div class="meridian-card" data-id="${item.id}">
+        <span class="meridian-card-color-bar" style="background-color: var(--el-${item.color});"></span>
+        <div class="p-4">
+            <h4 class="font-playfair font-bold text-lg" style="color: var(--el-${item.color});">Padrões de ${item.name}</h4>
+        </div>
+    </div>`;
+
+const renderZangFuModalContent = (item) => {
+    const patternsWithContent = item.patterns.map(p => ({
+        title: p.name,
+        content: `
+            <div class="space-y-3 text-sm">
+                <div><strong class="text-primary-dark">Sintomas Chave:</strong><p class="text-gray-600 !mb-0">${p.symptoms}</p></div>
+                <div><strong class="text-primary-dark">Língua:</strong><p class="text-gray-600 !mb-0">${p.tongue}</p></div>
+                <div><strong class="text-primary-dark">Pulso:</strong><p class="text-gray-600 !mb-0">${p.pulse}</p></div>
+                <div><strong class="text-primary-dark">Princípio de Tratamento:</strong><p class="text-gray-600 !mb-0">${p.treatmentPrinciple}</p></div>
+            </div>
+        `
+    }));
+
+    return `
+    <div class="card-header">
+        <span class="w-4 h-4 rounded-full mr-3 shrink-0" style="background-color: var(--el-${item.color});"></span>
+        <h3>Padrões de ${item.name}</h3>
+    </div>
+    <div class="card-content">
+        <div class="accordion-container">${createAccordionHTML(patternsWithContent, `modal-zangfu-${item.id}`)}</div>
+    </div>`;
+};
+
+const renderAnatomyCard = (item) => `
+    <div class="meridian-card p-4 flex items-center justify-center text-center h-full" data-id="${item.id}">
+        <h4 class="font-playfair font-bold text-lg text-primary">${item.title}</h4>
+    </div>`;
+
+const renderAnatomyModalContent = (item) => `
+    <div class="card-header"><h3>${item.title}</h3></div>
+    <div class="card-content card-prose">${item.content}</div>`;
+
+const renderQiFlipCard = (item) => `
+    <div class="flip-card">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <h4 class="font-playfair font-bold text-lg text-primary">${item.title}</h4>
+            </div>
+            <div class="flip-card-back">
+                <p class="text-sm">${item.content}</p>
+            </div>
+        </div>
+    </div>`;
+
+const renderMasterFlipCard = (item) => `
+    <div class="flip-card">
+        <div class="flip-card-inner">
+            <div class="flip-card-front" style="background-image: url('${item.image_placeholder}')">
+                <div class="master-card-overlay">
+                    <h4 class="font-playfair font-bold text-lg text-white">${item.name}</h4>
+                    <p class="text-xs text-gray-200">${item.dynasty}</p>
+                </div>
+            </div>
+            <div class="flip-card-back">
+                <p class="text-sm">${item.content.replace(/<[^>]*>/g, ' ').substring(0, 250)}...</p>
+                <button class="details-btn" data-id="${item.id}">Ver Detalhes</button>
+            </div>
+        </div>
+    </div>`;
+
+const renderMasterModalContent = (item) => `
+    <div class="card-header"><h3 class="text-2xl font-playfair font-bold">${item.name}</h3></div>
+    <div class="card-content card-prose">
+        <img src="${item.image_placeholder}" alt="Retrato de ${item.name}" class="w-full h-48 object-cover rounded-lg mb-4 shadow-md">
+        <p class="font-semibold text-gray-500 text-sm !-mt-2 !mb-4">${item.dynasty}</p>
+        ${item.content}
+    </div>`;
+
+
+// --- LÓGICA DE DIAGNÓSTICO (SVG MELHORADO) ---
+function setupDiagnosisDiagrams() {
+    const tongueSVG = document.getElementById('lingua-diagram-svg');
+    const tongueInfoBox = document.getElementById('lingua-info-box');
+    if (tongueSVG && tongueInfoBox) {
+        const areas = tongueSVG.querySelectorAll('.diagram-area-svg');
+        areas.forEach(area => {
+            area.addEventListener('click', () => {
+                areas.forEach(a => a.classList.remove('active'));
+                const currentAreaId = area.dataset.area;
+                tongueSVG.querySelectorAll(`[data-area="${currentAreaId}"]`).forEach(part => part.classList.add('active'));
+                
+                const info = linguaData[currentAreaId];
+                if (info) {
+                    tongueInfoBox.innerHTML = `
+                        <div class="text-left">
+                            <h4 class="font-playfair font-bold text-lg text-primary mb-2">${info.title}</h4>
+                            <p class="text-sm text-gray-600">${info.info}</p>
+                        </div>`;
+                }
+            });
+        });
+    }
+
+    const pulseSVG = document.getElementById('pulso-diagram-svg');
+    const pulseInfoBox = document.getElementById('pulso-info-box');
+    if (pulseSVG && pulseInfoBox) {
+        const positions = pulseSVG.querySelectorAll('.pulse-pos-circle');
+        positions.forEach(pos => {
+            pos.addEventListener('click', () => {
+                positions.forEach(p => p.classList.remove('active'));
+                pos.classList.add('active');
+                const positionId = pos.dataset.pos;
+                const info = pulsePositionData[positionId];
+                 if (info) {
+                    pulseInfoBox.innerHTML = `
+                        <div class="text-left w-full">
+                            <h4 class="font-playfair font-bold text-lg text-primary mb-3">${info.title}</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <strong class="font-semibold text-gray-700">Pulso Esquerdo:</strong>
+                                    <p class="text-gray-600">${info.left}</p>
+                                </div>
+                                <div>
+                                    <strong class="font-semibold text-gray-700">Pulso Direito:</strong>
+                                    <p class="text-gray-600">${info.right}</p>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+            });
+        });
+    }
+}
+
+function setupDiagnosisAccordion() {
+    const container = document.getElementById('diagnosis-accordion-container');
+    if(!container) return;
+    
+    const perguntasContent = `<div id="perguntas-accordion-inner" class="accordion-container"></div>`;
+    const pulseTypesContent = `<div id="pulse-list-container-inner" class="accordion-container"></div>`;
+    
+    const diagnosisData = [ 
+        { title: 'As 10+1 Perguntas', content: perguntasContent }, 
+        { title: 'Tipos de Pulso Comuns', content: pulseTypesContent } 
+    ];
+    
+    container.innerHTML = createAccordionHTML(diagnosisData, 'diagnosis-sub');
+    initializeAccordion(container);
+
+    const perguntasContainer = document.getElementById('perguntas-accordion-inner');
+    if(perguntasContainer) {
+        perguntasContainer.innerHTML = createAccordionHTML(dezPerguntasData, 'perguntas');
+        initializeAccordion(perguntasContainer);
+    }
+    
+    const pulsoContainer = document.getElementById('pulse-list-container-inner');
+    if(pulsoContainer) {
+        const pulseTypes = pulseTypeData;
+        pulsoContainer.innerHTML = createAccordionHTML(pulseTypes, 'pulse-list');
+        initializeAccordion(pulsoContainer);
+    }
+}
+
+// --- LÓGICA DOS 5 ELEMENTOS (SVG Interativo Profissional) ---
+function initializeFiveElements() {
+    const svg = document.getElementById('five-elements-svg');
+    if (!svg) return;
+
+    const elementDetailsContainer = document.getElementById('element-details-container');
+    const cycleInfoBox = document.getElementById('cycle-info-box');
+    const btnGeracao = document.getElementById('btn-geracao');
+    const btnControlo = document.getElementById('btn-controlo');
+    const relationshipLine = document.getElementById('relationship-line');
+    
+    let currentCycle = 'geracao';
+    let currentElement = 'madeira';
+
+    const positions = {
+        madeira: { x: 70, y: 150 },
+        fogo: { x: 200, y: 60 },
+        terra: { x: 330, y: 150 },
+        metal: { x: 250, y: 270 },
+        agua: { x: 110, y: 270 },
+    };
+
+    const cycleInfo = {
+        geracao: { title: 'Ciclo de Geração (Sheng)', description: 'Este ciclo representa a nutrição e o apoio. Cada elemento é a "mãe" do seguinte.', color: 'bg-green-100', textColor: 'text-green-800' },
+        controlo: { title: 'Ciclo de Controlo (Ke)', description: 'Este ciclo representa o controlo e a restrição, mantendo o equilíbrio do sistema.', color: 'bg-red-100', textColor: 'text-red-800' }
+    };
+    
+    function updateDetails(elementId) {
+        currentElement = elementId;
+        const elData = fiveElementsData[elementId];
+        
+        // Update text details
+        elementDetailsContainer.innerHTML = `<div class="text-left p-6 rounded-lg border-2" style="border-color: var(--el-${elData.color}); background-color: #fafcff;">
+            <h3 class="text-2xl font-playfair font-bold mb-4" style="color: var(--el-${elData.color});">${elData.name}</h3>
+            <div class="card-prose">
+                <p class="font-semibold text-gray-600 mb-2">Relações no Ciclo de ${currentCycle.charAt(0).toUpperCase() + currentCycle.slice(1)}:</p>
+                <p class="text-sm">${elData.relations[currentCycle]}</p>
+                <table class="w-full text-sm mt-4"><tbody>${elData.table}</tbody></table>
+            </div>
+        </div>`;
+        
+        // Update active element style
+        svg.querySelectorAll('.element-node-svg').forEach(node => {
+            node.classList.toggle('active', node.dataset.id === elementId);
+        });
+
+        // Update and animate the relationship line
+        const targetElementId = elData.target[currentCycle];
+        const startPos = positions[elementId];
+        const endPos = positions[targetElementId];
+        
+        relationshipLine.setAttribute('d', `M ${startPos.x} ${startPos.y} L ${endPos.x} ${endPos.y}`);
+        relationshipLine.classList.remove('geracao', 'controlo', 'active');
+        relationshipLine.getBoundingClientRect(); // Trigger reflow
+        relationshipLine.classList.add(currentCycle, 'active');
+    }
+
+    function switchCycle(newCycle) {
+        currentCycle = newCycle;
+        btnGeracao.classList.toggle('active', newCycle === 'geracao');
+        btnControlo.classList.toggle('active', newCycle === 'controlo');
+        
+        const info = cycleInfo[newCycle];
+        cycleInfoBox.className = `mb-6 p-4 rounded-lg text-center transition-colors duration-500 ${info.color} ${info.textColor}`;
+        cycleInfoBox.innerHTML = `<h4 class="font-bold">${info.title}</h4><p class="text-sm">${info.description}</p>`;
+        
+        updateDetails(currentElement);
+    }
+
+    btnGeracao.addEventListener('click', () => switchCycle('geracao'));
+    btnControlo.addEventListener('click', () => switchCycle('controlo'));
+
+    svg.querySelectorAll('.element-node-svg').forEach(node => {
+        node.addEventListener('click', () => updateDetails(node.dataset.id));
+    });
+
+    // Initial setup
+    switchCycle('geracao');
+    updateDetails('madeira');
+}
+
+
+function setupGlossary() { const glossaryContainer = document.getElementById('glossary-container'); if (!glossaryContainer) return; const categories = Object.values(glossaryData).reduce((acc, item) => { (acc[item.category] = acc[item.category] || []).push(item); return acc; }, {}); const sortedCategories = Object.keys(categories).sort(); glossaryContainer.innerHTML = sortedCategories.map(category => `<div class="floating-card mb-8"><div class="card-header"><h3 class="text-gray-700">${category}</h3></div><div class="card-content grid md:grid-cols-2 gap-x-8 gap-y-6">${categories[category].sort((a, b) => a.term.localeCompare(b.term)).map(item => `<div><h4 class="font-bold text-lg">${item.term}</h4><p class="text-gray-600">${item.definition}</p></div>`).join('')}</div></div>`).join(''); }
+
+function setupDietetics() { const foodSearchInput = document.getElementById('food-search-input'); const foodResultsContainer = document.getElementById('food-results-container'); const foodAlphaNav = document.getElementById('food-alpha-nav'); function renderFoodList(foods) { const groupedFoods = foods.reduce((acc, food) => { const firstLetter = food.name.charAt(0).toUpperCase(); if (!acc[firstLetter]) acc[firstLetter] = []; acc[firstLetter].push(food); return acc; }, {}); const letters = Object.keys(groupedFoods).sort(); if (foodAlphaNav) foodAlphaNav.innerHTML = letters.map(letter => `<a href="#food-letter-${letter}">${letter}</a>`).join(''); if (foodResultsContainer) { foodResultsContainer.innerHTML = letters.map(letter => `<h3 id="food-letter-${letter}" class="food-group-header" tabindex="-1">${letter}</h3><div class="food-group-items">${groupedFoods[letter].map(food => `<div class="food-item floating-card p-4 mb-3"><h4 class="font-bold text-lg text-green-800">${food.name}</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mt-2"><div><strong>Temp:</strong> <span class="font-semibold">${food.temp}</span></div><div><strong>Sabor:</strong> <span class="font-semibold">${food.flavor}</span></div><div class="col-span-2"><strong>Órgãos:</strong> <span class="font-semibold">${food.organs}</span></div></div><p class="text-sm mt-2"><strong>Ações:</strong> ${food.actions}</p></div>`).join('')}</div>`).join(''); } } if (foodSearchInput) { renderFoodList(foodData); foodSearchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase().trim(); const headers = foodResultsContainer.querySelectorAll('.food-group-header'); headers.forEach(header => { const groupWrapper = header.nextElementSibling; if (!groupWrapper) return; const items = groupWrapper.querySelectorAll('.food-item'); let groupHasVisibleItems = false; items.forEach(item => { const foodName = item.querySelector('h4').textContent.toLowerCase(); const isVisible = foodName.includes(searchTerm); item.classList.toggle('hidden', !isVisible); if (isVisible) groupHasVisibleItems = true; }); header.style.display = groupHasVisibleItems ? 'block' : 'none'; groupWrapper.style.display = groupHasVisibleItems ? 'block' : 'none'; }); }); } }
+
+function renderMeridianGrid(data) {
+    if (!meridianGridContainer) return;
+    meridianGridContainer.innerHTML = data.map(item => renderMeridianCard(item)).join('');
+}
+
+
+function generateNavLinks() {
+    const navStructure = [
+        { id: 'inicio', title: 'Início', icon: 'icon-home' },
+        {
+            title: 'Fundamentos', icon: 'icon-book-open',
+            links: [
+                { id: 'yin-yang', title: 'Teoria Yin-Yang', icon: 'icon-yin-yang' },
+                { id: 'substancias-fundamentais', title: 'Substâncias Fundamentais', icon: 'icon-atom' },
+                { id: 'tipos-de-qi', title: 'Tipos de Qi', icon: 'icon-wind' },
+                { id: 'cinco-elementos', title: 'Os 5 Elementos', icon: 'icon-star' },
+                { id: 'ciclos-de-vida', title: 'Ciclos de Vida', icon: 'icon-refresh-cw' },
+                { id: 'meridianos', title: 'Meridianos e Pontos', icon: 'icon-git-branch' },
+                { id: 'anatomia-energetica', title: 'Anatomia Energética', icon: 'icon-body' },
+                { id: 'padroes-zang-fu', title: 'Padrões Zang-Fu', icon: 'icon-clipboard-heart' },
+            ]
+        },
+        { title: 'Diagnóstico', icon: 'icon-stethoscope', links: [ { id: 'diagnostico', title: 'Métodos de Diagnóstico', icon: 'icon-stethoscope' } ] },
+        { title: 'Terapêuticas', icon: 'icon-lotus', links: [ { id: 'terapias', title: 'Visão Geral', icon: 'icon-lotus' }, { id: 'dietetica', title: 'Dietética', icon: 'icon-soup' } ] },
+        { title: 'Sabedoria', icon: 'icon-users', links: [ { id: 'grandes-mestres', title: 'Grandes Mestres', icon: 'icon-scroll' } ] },
+        { id: 'glossario', title: 'Glossário', icon: 'icon-book-open' },
+    ];
+
+    const generateHtml = (item) => {
+        if (item.links) {
+            return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${link.icon}"></use></svg><span>${link.title}</span></a>`).join('')}</div></div>`;
+        } else {
+            return `<a href="#${item.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span>${item.title}</span></a>`;
+        }
+    };
+    const navHtml = navStructure.map(generateHtml).join('');
+    allNavHubs.forEach(hub => hub.innerHTML = navHtml);
+}
+
+// --- PONTO DE ENTRADA DA APLICAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
-    App.init();
+    generateNavLinks(); 
+    
+    // Setup das secções
+    setupYinYangSection();
+    setupFlipGrid('qi-cards-container', qiData, renderQiFlipCard);
+    createLifeCycleTimeline('female-cycles-timeline', lifeCyclesFemaleData, 'bg-pink-500');
+    createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
+    setupGlossary();
+    setupDietetics();
+    
+    // Setup das grelhas com zoom
+    setupZoomGrid('therapies-grid-container', therapiesData, renderTherapyCard, renderTherapyModalContent);
+    setupZoomGrid('zangfu-grid-container', zangFuPatternsData, renderZangFuCard, renderZangFuModalContent);
+    setupZoomGrid('anatomy-grid-container', anatomyData, renderAnatomyCard, renderAnatomyModalContent);
+    setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent);
+
+
+    // Setup da grelha com flip para os Mestres
+    setupFlipGrid('masters-grid-container', greatMastersData, renderMasterFlipCard);
+    
+    // Setup do diagnóstico
+    setupDiagnosisAccordion();
+    setupDiagnosisDiagrams();
+    
+    // Setup dos 5 Elementos
+    if (document.getElementById('cinco-elementos')) {
+        initializeFiveElements();
+    }
+
+    // Animações e inicialização
+    document.querySelectorAll('aside .sidebar-link, aside .nav-group').forEach((el, index) => {
+        el.style.animationDelay = `${index * 0.07}s`;
+    });
+
+    createSearchIndex();
+    contentSections = mainContent.querySelectorAll('.content-section');
+    showSection('inicio', 'Início');
+    updateActiveLink('inicio');
+    
+    if(loadingScreen) {
+        setTimeout(() => {
+            loadingScreen.classList.add('hidden');
+        }, 1500);
+    }
 });
