@@ -48,6 +48,65 @@ const contentModal = document.getElementById('content-modal');
 const contentModalContent = document.getElementById('content-modal-content');
 const contentModalCloseBtn = document.getElementById('content-modal-close-btn');
 const contentModalOverlay = document.getElementById('content-modal-overlay');
+const contentModalFavoriteBtn = document.getElementById('content-modal-favorite-btn');
+
+// --- LÓGICA DE FAVORITOS ---
+let favorites = [];
+
+function saveFavorites() {
+    localStorage.setItem('mtcAppFavorites', JSON.stringify(favorites));
+}
+
+function loadFavorites() {
+    const favs = localStorage.getItem('mtcAppFavorites');
+    favorites = favs ? JSON.parse(favs) : [];
+}
+
+function isFavorite(itemId) {
+    return favorites.some(fav => fav.id === itemId);
+}
+
+function toggleFavorite(itemData) {
+    if (!itemData || !itemData.id) return;
+    const index = favorites.findIndex(fav => fav.id === itemData.id);
+
+    if (index > -1) {
+        favorites.splice(index, 1); // Remove
+    } else {
+        favorites.push(itemData); // Adiciona
+    }
+
+    saveFavorites();
+    renderFavoritesSection();
+
+    // Atualiza o botão no modal se estiver aberto e for o mesmo item
+    const currentModalItem = contentModalFavoriteBtn.dataset.item;
+    if (currentModalItem) {
+        if (JSON.parse(currentModalItem).id === itemData.id) {
+            updateFavoriteButton(itemData.id);
+        }
+    }
+    
+    // Atualiza os botões na vista principal (pontos e alimentos)
+    document.querySelectorAll(`.favorite-toggle-btn[data-id="${itemData.id}"]`).forEach(btn => {
+        updateFavoriteIcon(btn, isFavorite(itemData.id));
+    });
+}
+
+function updateFavoriteButton(itemId) {
+    updateFavoriteIcon(contentModalFavoriteBtn, isFavorite(itemId));
+    contentModalFavoriteBtn.title = isFavorite(itemId) ? "Remover dos Favoritos" : "Adicionar aos Favoritos";
+}
+
+function updateFavoriteIcon(buttonElement, isFav) {
+    if (!buttonElement) return;
+    const starIcon = buttonElement.querySelector('svg use');
+    if (starIcon) {
+        starIcon.setAttribute('href', isFav ? '#icon-star-filled' : '#icon-star-outline');
+    }
+    buttonElement.classList.toggle('active', isFav);
+}
+
 
 // --- LÓGICA DE NAVEGAÇÃO RESPONSIVA E PESQUISA ---
 function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
@@ -73,8 +132,17 @@ closeSearchBtn.addEventListener('click', closeSearchModal);
 searchOverlay.addEventListener('click', closeSearchModal);
 
 // --- LÓGICA DO MODAL DE CONTEÚDO ---
-function openContentModal(htmlContent) {
+function openContentModal(htmlContent, itemData) {
     contentModalContent.innerHTML = htmlContent;
+    
+    if (itemData) {
+        contentModalFavoriteBtn.dataset.item = JSON.stringify(itemData);
+        updateFavoriteButton(itemData.id);
+        contentModalFavoriteBtn.style.display = 'block';
+    } else {
+        contentModalFavoriteBtn.style.display = 'none';
+    }
+
     document.body.classList.add('content-modal-open');
     
     const modalAccordions = contentModalContent.querySelectorAll('.accordion-container');
@@ -85,6 +153,12 @@ function closeContentModal() {
 }
 contentModalCloseBtn.addEventListener('click', closeContentModal);
 contentModalOverlay.addEventListener('click', closeContentModal);
+contentModalFavoriteBtn.addEventListener('click', () => {
+    const itemDataString = contentModalFavoriteBtn.dataset.item;
+    if (itemDataString) {
+        toggleFavorite(JSON.parse(itemDataString));
+    }
+});
 
 
 // --- LÓGICA DE NAVEGAÇÃO PRINCIPAL ---
@@ -158,11 +232,12 @@ function renderSearchResults(results) {
     }
     searchResultsContainer.innerHTML = results.map(result => {
         const item = result.item;
+        const badgeClass = item.type === 'Ponto' ? 'ponto-badge' : '';
         return `
         <div class="search-result-item" data-section-id="${item.sectionId}">
             <h4>${item.title}</h4>
             <p>${item.content}</p>
-            <span class="result-type-badge" style="background-color: var(--el-${item.color}, var(--color-primary))">${item.type}</span>
+            <span class="result-type-badge ${badgeClass}" style="background-color: var(--el-${item.color}, var(--color-primary))">${item.type}</span>
         </div>
     `}).join('');
 }
@@ -268,7 +343,7 @@ function createLifeCycleTimeline(containerId, data, colorClass) {
 
 // --- SISTEMA DE GRELHAS GENÉRICO ---
 
-function setupZoomGrid(containerId, data, cardRenderer, modalContentRenderer) {
+function setupZoomGrid(containerId, data, cardRenderer, modalContentRenderer, itemType) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -283,12 +358,19 @@ function setupZoomGrid(containerId, data, cardRenderer, modalContentRenderer) {
 
         if (itemInfo) {
             const contentHTML = modalContentRenderer(itemInfo);
-            openContentModal(contentHTML);
+            const itemDataForFavorite = {
+                id: `${itemType}-${itemInfo.id}`,
+                title: itemInfo.name || itemInfo.title,
+                type: itemType,
+                color: itemInfo.color || 'primary',
+                sectionId: container.closest('.content-section').id
+            };
+            openContentModal(contentHTML, itemDataForFavorite);
         }
     });
 }
 
-function setupFlipGrid(containerId, data, cardRenderer, modalContentRenderer) {
+function setupFlipGrid(containerId, data, cardRenderer, modalContentRenderer, itemType) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -302,7 +384,14 @@ function setupFlipGrid(containerId, data, cardRenderer, modalContentRenderer) {
             const masterId = detailsButton.dataset.id;
             const masterInfo = data.find(m => m.id === masterId);
             if (masterInfo) {
-                openContentModal(modalContentRenderer(masterInfo));
+                const itemDataForFavorite = {
+                    id: `${itemType}-${masterInfo.id}`,
+                    title: masterInfo.name,
+                    type: itemType,
+                    color: 'water',
+                    sectionId: container.closest('.content-section').id
+                };
+                openContentModal(modalContentRenderer(masterInfo), itemDataForFavorite);
             }
             return; 
         }
@@ -325,7 +414,31 @@ const renderMeridianCard = (item) => `
         </div>
     </div>`;
 
-const renderMeridianModalContent = (item) => `
+const renderMeridianModalContent = (item) => {
+    const pointsHTML = item.points.map(p => {
+        const itemData = {
+            id: `point-${p.id}`,
+            title: `${p.id} - ${p.name} (${p.pt_name})`,
+            type: 'Ponto',
+            color: item.color,
+            parentId: item.id,
+            parentTitle: item.name,
+            sectionId: 'meridianos'
+        };
+        const isFav = isFavorite(itemData.id);
+        return `
+        <div class="point-item">
+            <div class="point-info">
+                <strong class="text-primary-dark">${p.id} - ${p.name} (${p.character}) - ${p.pt_name}</strong>
+                <p class="!mb-0">${p.functions}</p>
+            </div>
+            <button class="favorite-toggle-btn ${isFav ? 'active' : ''}" title="Adicionar Ponto aos Favoritos" data-item='${JSON.stringify(itemData)}' data-id="${itemData.id}">
+                <svg class="w-5 h-5"><use href="${isFav ? '#icon-star-filled' : '#icon-star-outline'}"></use></svg>
+            </button>
+        </div>`;
+    }).join('');
+
+    return `
     <div class="card-header">
         <span class="w-4 h-4 rounded-full mr-3 shrink-0" style="background-color: var(--el-${item.color});"></span>
         <h3>${item.name}</h3>
@@ -344,25 +457,26 @@ const renderMeridianModalContent = (item) => `
         <h4>Pontos Shu Antigos</h4>
         <div class="overflow-x-auto"><table class="w-full text-left !text-xs"><thead class="bg-gray-100"><tr><th class="p-2 font-semibold">Tipo</th><th class="p-2 font-semibold">Elemento</th><th class="p-2 font-semibold">Ponto</th><th class="p-2 font-semibold">Funções</th></tr></thead><tbody>${item.five_shu.map(p => `<tr class="border-b"><td class="p-2">${p.type}</td><td class="p-2">${p.element}</td><td class="p-2 font-bold">${p.point}</td><td class="p-2">${p.functions}</td></tr>`).join('')}</tbody></table></div>
         <h4>Lista Completa de Pontos</h4>
-        <div class="space-y-3 max-h-80 overflow-y-auto pr-2">${item.points.map(p => `<div class="p-2 border-l-2 border-gray-200 hover:bg-gray-50"><strong class="text-primary-dark">${p.id} - ${p.name} (${p.character}) - ${p.pt_name}</strong><p class="!mb-0">${p.functions}</p></div>`).join('')}</div>
+        <div class="space-y-1 max-h-80 overflow-y-auto pr-2">${pointsHTML}</div>
     </div>`;
+};
 
 const renderTherapyCard = (item) => {
     const regex = /(.+?)\s\((.+?)(?:\s-\s(.+?))?\)/;
     const match = item.title.match(regex);
-    let titleHTML, pinyinHTML = '';
+    let ptName = item.title, chName = '', pinyin = '';
+
     if (match) {
-        const [, pt, ch, pinyin] = match;
-        titleHTML = `<div class="text-2xl font-chinese">${ch}</div><div class="text-xl font-playfair my-1">${pt}</div>`;
-        if (pinyin) pinyinHTML = `<div class="text-sm text-gray-500 font-mono">(${pinyin})</div>`;
-        else if (ch === '气功' || ch === '太极拳') pinyinHTML = `<div class="text-sm text-gray-500 font-mono">(${ch === '气功' ? 'Qìgōng' : 'Tàijí quán'})</div>`;
-    } else {
-        titleHTML = `<div class="text-xl font-playfair my-1">${item.title}</div>`;
+        ptName = match[1];
+        chName = match[2];
+        pinyin = match[3] || '';
     }
+
     return `
     <div class="meridian-card text-center p-4 flex flex-col justify-center items-center h-full" data-id="${item.id}">
-        ${titleHTML}
-        ${pinyinHTML}
+        <h4 class="text-xl font-playfair my-1 text-primary">${ptName}</h4>
+        ${chName ? `<p class="text-2xl font-chinese text-gray-600">${chName}</p>` : ''}
+        ${pinyin ? `<p class="text-sm text-gray-500 font-mono">(${pinyin})</p>` : ''}
     </div>`;
 };
 
@@ -617,7 +731,79 @@ function setupGlossary() {
     ).join(''); 
 }
 
-function setupDietetics() { const foodSearchInput = document.getElementById('food-search-input'); const foodResultsContainer = document.getElementById('food-results-container'); const foodAlphaNav = document.getElementById('food-alpha-nav'); function renderFoodList(foods) { const groupedFoods = foods.reduce((acc, food) => { const firstLetter = food.name.charAt(0).toUpperCase(); if (!acc[firstLetter]) acc[firstLetter] = []; acc[firstLetter].push(food); return acc; }, {}); const letters = Object.keys(groupedFoods).sort(); if (foodAlphaNav) foodAlphaNav.innerHTML = letters.map(letter => `<a href="#food-letter-${letter}">${letter}</a>`).join(''); if (foodResultsContainer) { foodResultsContainer.innerHTML = letters.map(letter => `<h3 id="food-letter-${letter}" class="food-group-header" tabindex="-1">${letter}</h3><div class="food-group-items">${groupedFoods[letter].map(food => `<div class="food-item floating-card p-4 mb-3"><h4 class="font-bold text-lg text-green-800">${food.name}</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mt-2"><div><strong>Temp:</strong> <span class="font-semibold">${food.temp}</span></div><div><strong>Sabor:</strong> <span class="font-semibold">${food.flavor}</span></div><div class="col-span-2"><strong>Órgãos:</strong> <span class="font-semibold">${food.organs}</span></div></div><p class="text-sm mt-2"><strong>Ações:</strong> ${food.actions}</p></div>`).join('')}</div>`).join(''); } } if (foodSearchInput) { renderFoodList(foodData); foodSearchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase().trim(); const headers = foodResultsContainer.querySelectorAll('.food-group-header'); headers.forEach(header => { const groupWrapper = header.nextElementSibling; if (!groupWrapper) return; const items = groupWrapper.querySelectorAll('.food-item'); let groupHasVisibleItems = false; items.forEach(item => { const foodName = item.querySelector('h4').textContent.toLowerCase(); const isVisible = foodName.includes(searchTerm); item.classList.toggle('hidden', !isVisible); if (isVisible) groupHasVisibleItems = true; }); header.style.display = groupHasVisibleItems ? 'block' : 'none'; groupWrapper.style.display = groupHasVisibleItems ? 'block' : 'none'; }); }); } }
+function setupDietetics() {
+    const foodResultsContainer = document.getElementById('food-results-container');
+    const foodAlphaNav = document.getElementById('food-alpha-nav');
+    const foodSearchInput = document.getElementById('food-search-input');
+
+    function renderFoodList(foods) {
+        const groupedFoods = foods.reduce((acc, food) => {
+            const firstLetter = food.name.charAt(0).toUpperCase();
+            if (!acc[firstLetter]) acc[firstLetter] = [];
+            acc[firstLetter].push(food);
+            return acc;
+        }, {});
+        const letters = Object.keys(groupedFoods).sort();
+
+        if (foodAlphaNav) {
+            foodAlphaNav.innerHTML = letters.map(letter => `<a href="#food-letter-${letter}">${letter}</a>`).join('');
+        }
+
+        if (foodResultsContainer) {
+            foodResultsContainer.innerHTML = letters.map(letter => `
+                <h3 id="food-letter-${letter}" class="food-group-header" tabindex="-1">${letter}</h3>
+                <div class="food-group-items">
+                    ${groupedFoods[letter].map(food => {
+                        const itemData = {
+                            id: `food-${food.name.replace(/\s+/g, '-')}`,
+                            title: food.name,
+                            type: 'Alimento',
+                            sectionId: 'dietetica'
+                        };
+                        const isFav = isFavorite(itemData.id);
+                        return `
+                        <div class="food-item" id="${itemData.id}">
+                            <div class="food-item-content">
+                                <h4 class="font-bold text-lg text-green-800">${food.name}</h4>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mt-2">
+                                    <div><strong>Temp:</strong> <span class="font-semibold">${food.temp}</span></div>
+                                    <div><strong>Sabor:</strong> <span class="font-semibold">${food.flavor}</span></div>
+                                    <div class="col-span-2"><strong>Órgãos:</strong> <span class="font-semibold">${food.organs}</span></div>
+                                </div>
+                                <p class="text-sm mt-2"><strong>Ações:</strong> ${food.actions}</p>
+                            </div>
+                            <button class="favorite-toggle-btn ${isFav ? 'active' : ''}" title="Adicionar Alimento aos Favoritos" data-item='${JSON.stringify(itemData)}' data-id="${itemData.id}">
+                                <svg class="w-5 h-5"><use href="${isFav ? '#icon-star-filled' : '#icon-star-outline'}"></use></svg>
+                            </button>
+                        </div>`;
+                    }).join('')}
+                </div>
+            `).join('');
+        }
+    }
+
+    if (foodSearchInput) {
+        renderFoodList(foodData);
+        foodSearchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const headers = foodResultsContainer.querySelectorAll('.food-group-header');
+            headers.forEach(header => {
+                const groupWrapper = header.nextElementSibling;
+                if (!groupWrapper) return;
+                const items = groupWrapper.querySelectorAll('.food-item');
+                let groupHasVisibleItems = false;
+                items.forEach(item => {
+                    const foodName = item.querySelector('h4').textContent.toLowerCase();
+                    const isVisible = foodName.includes(searchTerm);
+                    item.classList.toggle('hidden', !isVisible);
+                    if (isVisible) groupHasVisibleItems = true;
+                });
+                header.style.display = groupHasVisibleItems ? 'block' : 'none';
+                groupWrapper.style.display = groupHasVisibleItems ? 'block' : 'none';
+            });
+        });
+    }
+}
 
 function setupTabs() {
     const tabContainer = document.querySelector('#diagnostico .floating-card');
@@ -643,6 +829,7 @@ function setupTabs() {
 function generateNavLinks() {
     const navStructure = [
         { id: 'inicio', title: 'Início' },
+        { id: 'favoritos', title: 'Favoritos', isBold: true },
         {
             title: 'Fundamentos',
             links: [
@@ -674,8 +861,35 @@ function generateNavLinks() {
     allNavHubs.forEach(hub => hub.innerHTML = navHtml);
 }
 
+function renderFavoritesSection() {
+    const container = document.getElementById('favorites-container');
+    if (!container) return;
+
+    if (favorites.length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-500">Ainda não adicionou itens aos favoritos. Clique na estrela nos detalhes de um item para o guardar aqui.</p>';
+        return;
+    }
+
+    container.innerHTML = favorites.map(item => `
+        <div class="favorite-item" data-id="${item.id}" data-section-id="${item.sectionId}" data-parent-id="${item.parentId || ''}" data-type="${item.type}">
+            <h4>${item.title}</h4>
+            <span class="result-type-badge ${item.type === 'Ponto' ? 'ponto-badge' : ''}" style="background-color: var(--el-${item.color}, var(--color-primary))">${item.type}</span>
+        </div>
+    `).join('');
+}
+
+const itemTypeMap = {
+    'Meridiano': { data: meridianData, renderer: renderMeridianModalContent },
+    'Terapia': { data: therapiesData, renderer: renderTherapyModalContent },
+    'Anatomia': { data: anatomyData, renderer: renderAnatomyModalContent },
+    'Mestre': { data: greatMastersData, renderer: renderMasterModalContent },
+    'Padrão Zang-Fu': { data: zangFuPatternsData, renderer: renderZangFuModalContent }
+};
+
+
 // --- PONTO DE ENTRADA DA APLICAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
+    loadFavorites();
     generateNavLinks(); 
     
     // Setup das secções
@@ -685,15 +899,16 @@ document.addEventListener('DOMContentLoaded', () => {
     createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
     setupGlossary();
     setupDietetics();
+    renderFavoritesSection();
     
     // Setup das grelhas com zoom
-    setupZoomGrid('therapies-grid-container', therapiesData, renderTherapyCard, renderTherapyModalContent);
-    setupZoomGrid('zangfu-grid-container', zangFuPatternsData, renderZangFuCard, renderZangFuModalContent);
-    setupZoomGrid('anatomy-grid-container', anatomyData, renderAnatomyCard, renderAnatomyModalContent);
-    setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent);
+    setupZoomGrid('therapies-grid-container', therapiesData, renderTherapyCard, renderTherapyModalContent, 'Terapia');
+    setupZoomGrid('zangfu-grid-container', zangFuPatternsData, renderZangFuCard, renderZangFuModalContent, 'Padrão Zang-Fu');
+    setupZoomGrid('anatomy-grid-container', anatomyData, renderAnatomyCard, renderAnatomyModalContent, 'Anatomia');
+    setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent, 'Meridiano');
 
     // Setup da grelha com flip para os Mestres
-    setupFlipGrid('masters-grid-container', greatMastersData, renderMasterFlipCard, renderMasterModalContent);
+    setupFlipGrid('masters-grid-container', greatMastersData, renderMasterFlipCard, renderMasterModalContent, 'Mestre');
     
     // Setup do diagnóstico
     setupTabs();
@@ -719,5 +934,65 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             loadingScreen.classList.add('hidden');
         }, 1500);
+    }
+
+    // --- EVENT LISTENERS GLOBAIS PARA FAVORITOS ---
+    document.body.addEventListener('click', (e) => {
+        const favButton = e.target.closest('.favorite-toggle-btn');
+        if (favButton) {
+            const itemData = JSON.parse(favButton.dataset.item);
+            toggleFavorite(itemData);
+        }
+    });
+
+    const favoritesContainer = document.getElementById('favorites-container');
+    if(favoritesContainer) {
+        favoritesContainer.addEventListener('click', (e) => {
+            const favItemElement = e.target.closest('.favorite-item');
+            if (!favItemElement) return;
+
+            const favItemData = favorites.find(fav => fav.id === favItemElement.dataset.id);
+            if (!favItemData) return;
+
+            const { id, sectionId, parentId, type } = favItemData;
+            
+            showSection(sectionId, document.querySelector(`a[href="#${sectionId}"] span`).textContent);
+            updateActiveLink(sectionId);
+            closeMobileMenu();
+
+            if (type === 'Alimento') {
+                setTimeout(() => {
+                    const foodElement = document.getElementById(id);
+                    if (foodElement) {
+                        foodElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        foodElement.classList.add('highlight');
+                        setTimeout(() => foodElement.classList.remove('highlight'), 2000);
+                    }
+                }, 100);
+            } else if (type === 'Ponto') {
+                const parentMeridian = meridianData.find(m => m.id === parentId);
+                if (parentMeridian) {
+                    const contentHTML = renderMeridianModalContent(parentMeridian);
+                    const parentItemDataForFavorite = {
+                        id: `Meridiano-${parentMeridian.id}`,
+                        title: parentMeridian.name,
+                        type: 'Meridiano',
+                        color: parentMeridian.color,
+                        sectionId: 'meridianos'
+                    };
+                    openContentModal(contentHTML, parentItemDataForFavorite);
+                }
+            } else {
+                const mapping = itemTypeMap[type];
+                if (mapping) {
+                    const realId = id.split('-').slice(1).join('-');
+                    const itemInfo = mapping.data.find(d => d.id === realId);
+                    if (itemInfo) {
+                        const contentHTML = mapping.renderer(itemInfo);
+                        openContentModal(contentHTML, favItemData);
+                    }
+                }
+            }
+        });
     }
 });

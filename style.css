@@ -368,8 +368,23 @@ aside {
 #food-alpha-nav a { padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 600; color: var(--color-primary); background-color: var(--color-accent-light); text-decoration: none; transition: all 0.2s ease; }
 #food-alpha-nav a:hover { background-color: var(--color-accent); color: var(--color-primary-dark); }
 .food-group-header { font-size: 1.5rem; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--color-secondary); margin-top: 1.5rem; margin-bottom: 1rem; }
-.food-item { transition: opacity 0.4s ease-out, transform 0.4s ease-out, max-height 0.4s ease-out; transform-origin: top; border-left: 4px solid var(--color-secondary); }
-.food-item.hidden { opacity: 0; transform: scale(0.95); max-height: 0 !important; padding: 0; margin: 0; overflow: hidden; }
+.food-item { 
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    border: 1px solid var(--color-subtle-gray);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out, max-height 0.4s ease-out; 
+    transform-origin: top; 
+}
+.food-item.hidden { opacity: 0; transform: scale(0.95); max-height: 0 !important; padding: 0; margin: 0; overflow: hidden; border: none; }
+.food-item.highlight {
+    box-shadow: 0 0 0 3px var(--color-accent);
+    border-color: var(--color-accent);
+}
 
 /* --- Grelha com Zoom --- */
 .zoom-grid {
@@ -510,18 +525,30 @@ body.content-modal-open #content-modal {
 body.content-modal-open #content-modal-container {
     transform: scale(1);
 }
-#content-modal-close-btn {
+.modal-header-controls {
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
     z-index: 10;
+    display: flex;
+    gap: 0.5rem;
+}
+#content-modal-close-btn, #content-modal-favorite-btn {
     padding: 0.5rem;
     background-color: rgba(255,255,255,0.5);
     border-radius: 99px;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
 }
-#content-modal-close-btn:hover {
+#content-modal-close-btn:hover, #content-modal-favorite-btn:hover {
     background-color: rgba(255,255,255,0.8);
+}
+#content-modal-favorite-btn {
+    color: var(--color-text-muted);
+}
+#content-modal-favorite-btn.active {
+    color: var(--color-accent);
 }
 #content-modal-content {
     overflow-y: auto;
@@ -542,7 +569,8 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
 .search-result-item:hover { background-color: var(--color-accent-light); }
 .search-result-item h4 { font-weight: 600; color: var(--color-primary); margin-bottom: 0.25rem; }
 .search-result-item p { font-size: 0.8rem; color: var(--color-text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.search-result-item .result-type-badge { display: inline-block; padding: 0.1rem 0.5rem; font-size: 0.7rem; font-weight: 700; border-radius: 9999px; color: white; margin-top: 0.5rem; }
+.result-type-badge { display: inline-block; padding: 0.1rem 0.5rem; font-size: 0.7rem; font-weight: 700; border-radius: 9999px; color: white; margin-top: 0.5rem; }
+.result-type-badge.ponto-badge { color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.3); background-color: var(--color-primary-dark) !important; }
 
 /* --- NOVO: Estilos para Abas (Tabs) --- */
 .tab-nav {
@@ -589,6 +617,48 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
 .tab-content-panel.active {
     display: block;
 }
+
+/* --- NOVO: Estilos para Favoritos --- */
+.favorite-item {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    border-bottom: 1px solid var(--color-subtle-gray);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.favorite-item:last-child { border-bottom: none; }
+.favorite-item:hover { background-color: var(--color-accent-light); }
+.favorite-item h4 { font-weight: 600; color: var(--color-primary); }
+
+.favorite-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    margin-left: 1rem;
+    color: var(--color-text-muted);
+    transition: color 0.2s;
+}
+.favorite-toggle-btn:hover {
+    color: var(--color-accent);
+}
+.favorite-toggle-btn.active {
+    color: var(--color-accent);
+}
+.point-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--color-subtle-gray);
+}
+.point-item:last-child {
+    border-bottom: none;
+}
+
 
 /* --- MELHORIAS PARA ECRÃS PEQUENOS --- */
 @media (max-width: 767px) {
