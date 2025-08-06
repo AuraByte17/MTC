@@ -295,19 +295,20 @@ aside {
 
 /* --- DIAGRAMAS DE DIAGNÓSTICO (ESTILO PROFISSIONAL SVG) --- */
 #lingua-diagram-svg .interactive-areas .diagram-area-svg {
-    fill: transparent;
+    fill: var(--color-subtle-gray); /* Cor de preenchimento por defeito */
+    opacity: 0.4; /* Opacidade por defeito para ser visível mas subtil */
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 }
 #lingua-diagram-svg .diagram-area-svg:hover {
     fill: var(--color-secondary);
-    opacity: 0.3;
+    opacity: 0.6; /* Aumenta a opacidade ao passar o rato */
 }
 #lingua-diagram-svg .diagram-area-svg.active {
     fill: var(--color-accent);
-    opacity: 0.5;
+    opacity: 0.7; /* Opacidade máxima quando ativo */
     stroke: var(--color-primary-dark);
-    stroke-width: 20px; /* Aumentado para ser visível no novo viewBox */
+    stroke-width: 20px;
 }
 
 .pulse-pos-circle { 
@@ -321,13 +322,13 @@ aside {
 .pulse-pos-circle:hover { 
     fill: var(--color-accent-light); 
     stroke: var(--color-accent); 
-    transform: scale(1.1);
+    /* transform: scale(1.1); <-- REMOVIDO PARA NÃO SAIR DO SÍTIO */
 }
 .pulse-pos-circle.active { 
     fill: var(--color-accent); 
     stroke: var(--color-primary-dark);
     stroke-width: 2.5;
-    transform: scale(1.2); 
+    /* transform: scale(1.2);  <-- REMOVIDO PARA NÃO SAIR DO SÍTIO */
     filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
 }
 .pulse-pos-label { 

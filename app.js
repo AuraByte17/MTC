@@ -235,18 +235,14 @@ function createAccordionHTML(data, containerIdPrefix = '') {
 function setupYinYangSection() {
     const container = document.getElementById('yin-yang-container');
     if (!container) return;
-    const svg = document.getElementById('yin-yang-loader-svg').innerHTML;
     container.innerHTML = `
         <div class="card-header"><h3>${yinYangData.title}</h3></div>
         <div class="card-content">
             <div class="grid lg:grid-cols-2 gap-8 items-center">
-                <div class="p-4"><svg viewBox="0 0 200 200" class="w-full max-w-xs mx-auto yin-yang-svg">${svg}</svg></div>
+                <div class="p-4">${yinYangData.svg}</div>
                 <div class="card-prose">${yinYangData.content}</div>
             </div>
-            <div class="mt-8 grid md:grid-cols-2 gap-6">
-                <div class="yin-card"><h4 class="font-bold text-xl mb-3 text-center text-gray-100">YIN (阴)</h4><ul class="list-disc list-inside space-y-2 text-gray-300"><li>Noite, Lua, Escuro, Frio</li><li>Repouso, Passivo, Interior, Baixo</li><li>Substância, Matéria, Estrutura</li></ul></div>
-                <div class="yang-card"><h4 class="font-bold text-xl mb-3 text-center text-gray-800">YANG (阳)</h4><ul class="list-disc list-inside space-y-2 text-gray-600"><li>Dia, Sol, Luz, Calor</li><li>Atividade, Ativo, Exterior, Cima</li><li>Função, Energia, Movimento</li></ul></div>
-            </div>
+            <div class="mt-8">${yinYangData.table}</div>
         </div>`;
 }
 
@@ -477,15 +473,9 @@ function setupDiagnosisDiagrams() {
                     pulseInfoBox.innerHTML = `
                         <div class="text-left w-full">
                             <h4 class="font-playfair font-bold text-lg text-primary mb-3">${info.title}</h4>
-                            <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <strong class="font-semibold text-gray-700">Pulso Esquerdo:</strong>
-                                    <p class="text-gray-600">${info.left}</p>
-                                </div>
-                                <div>
-                                    <strong class="font-semibold text-gray-700">Pulso Direito:</strong>
-                                    <p class="text-gray-600">${info.right}</p>
-                                </div>
+                            <div class="text-sm">
+                                <strong class="font-semibold text-gray-700">Órgãos:</strong>
+                                <p class="text-gray-600">${info.organs}</p>
                             </div>
                         </div>`;
                 }
@@ -639,7 +629,7 @@ function generateNavLinks() {
 
     const generateHtml = (item) => {
         if (item.links) {
-            return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${link.icon}"></use></svg><span>${link.title}</span></a>`).join('')}</div></div>`;
+            return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span>${link.title}</span></a>`).join('')}</div></div>`;
         } else {
             return `<a href="#${item.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span>${item.title}</span></a>`;
         }

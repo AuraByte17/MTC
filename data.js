@@ -722,11 +722,31 @@ export const dezPerguntasData = [
     { title: '+1. Ginecologia (para mulheres)', content: 'Ciclo menstrual, cor e quantidade do fluxo, e sintomas associados (TPM) dão informações vitais sobre o estado do Qi, Sangue, e dos Vasos Maravilhosos (Ren Mai, Chong Mai).' }
 ];
 
-// Exporta os dados sobre as posições do pulso (formato corrigido para o diagrama)
 export const pulsePositionData = {
-    cun: { title: 'Posição Cun (Polegada)', left: 'Coração, Pericárdio', right: 'Pulmão' },
-    guan: { title: 'Posição Guan (Barreira)', left: 'Fígado, Vesícula Biliar', right: 'Baço, Estômago' },
-    chi: { title: 'Posição Chi (Pé)', left: 'Rim Yin', right: 'Rim Yang, Bexiga' }
+    'l-cun': {
+        title: 'Cun (Esquerda)',
+        organs: 'Coração'
+    },
+    'l-guan': {
+        title: 'Guan (Esquerda)',
+        organs: 'Fígado'
+    },
+    'l-chi': {
+        title: 'Chi (Esquerda)',
+        organs: 'Rim (Yin)'
+    },
+    'r-cun': {
+        title: 'Cun (Direita)',
+        organs: 'Pulmão'
+    },
+    'r-guan': {
+        title: 'Guan (Direita)',
+        organs: 'Baço'
+    },
+    'r-chi': {
+        title: 'Chi (Direita)',
+        organs: 'Rim (Yang) / Ming Men'
+}
 };
 
 // Exporta os dados sobre os tipos de pulso (para a lista no acordeão)

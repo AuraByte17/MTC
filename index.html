@@ -258,8 +258,8 @@
                                             <ellipse class="diagram-area-svg" data-area="pre-ponta" cx="1024" cy="1400" rx="280" ry="150" />
                                             <ellipse class="diagram-area-svg" data-area="centro" cx="1024" cy="1050" rx="350" ry="200" />
                                             <ellipse class="diagram-area-svg" data-area="raiz" cx="1024" cy="650" rx="400" ry="180" />
-                                            <path class="diagram-area-svg" data-area="laterais" d="M 650,1400 C 450,1300 400,900 650,600 L 650,1400 Z" />
-                                            <path class="diagram-area-svg" data-area="laterais" d="M 1400,1400 C 1600,1300 1650,900 1400,600 L 1400,1400 Z" />
+                                            <path class="diagram-area-svg" data-area="laterais" d="M 650,1400 C 350,1300 300,900 650,600 L 650,1400 Z" />
+                                            <path class="diagram-area-svg" data-area="laterais" d="M 1400,1400 C 1700,1300 1750,900 1400,600 L 1400,1400 Z" />
                                         </g>
                                     </svg>
                                 </div>
@@ -271,15 +271,22 @@
                         <div class="floating-card mb-8">
                             <div class="card-header"><h3>Diagnóstico do Pulso</h3></div>
                             <div class="card-content grid md:grid-cols-2 gap-8 items-center diagnosis-grid">
-                                <div id="pulso-diagram-container" class="relative w-64 mx-auto">
+                                <div id="pulso-diagram-container" class="relative w-full max-w-md mx-auto">
                                      <!-- Imagem JPG como base -->
                                      <img src="assets/pulse.jpg" alt="Diagrama do Pulso" class="w-full h-auto">
                                      <!-- SVG transparente por cima para as áreas interativas -->
-                                     <svg id="pulso-diagram-svg" viewBox="0 0 100 100" class="absolute top-0 left-0 w-full h-full">
-                                        <g>
-                                            <circle data-pos="cun" class="pulse-pos-circle" cx="35" cy="60" r="5"/>
-                                            <circle data-pos="guan" class="pulse-pos-circle" cx="35" cy="68" r="5"/>
-                                            <circle data-pos="chi" class="pulse-pos-circle" cx="35" cy="76" r="5"/>
+                                     <svg id="pulso-diagram-svg" viewBox="0 0 164 205" class="absolute top-0 left-0 w-full h-full">
+                                        <!-- Pontos do Pulso Esquerdo (Direita na imagem) -->
+                                        <g class="pulse-group-left">
+                                            <circle data-pos="l-cun" class="pulse-pos-circle" cx="40" cy="140" r="3.5" style="fill: var(--el-fire);"/>
+                                            <circle data-pos="l-guan" class="pulse-pos-circle" cx="40" cy="150" r="3.5" style="fill: var(--el-wood);"/>
+                                            <circle data-pos="l-chi" class="pulse-pos-circle" cx="40" cy="160" r="3.5" style="fill: var(--el-water);"/>
+                                        </g>
+                                        <!-- Pontos do Pulso Direito (Esquerda na imagem) -->
+                                        <g class="pulse-group-right">
+                                            <circle data-pos="r-cun" class="pulse-pos-circle" cx="125" cy="140" r="3.5" style="fill: var(--el-metal);"/>
+                                            <circle data-pos="r-guan" class="pulse-pos-circle" cx="125" cy="150" r="3.5" style="fill: var(--el-earth);"/>
+                                            <circle data-pos="r-chi" class="pulse-pos-circle" cx="125" cy="160" r="3.5" style="fill: var(--el-water);"/>
                                         </g>
                                      </svg>
                                 </div>
