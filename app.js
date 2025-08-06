@@ -49,10 +49,6 @@ const contentModalContent = document.getElementById('content-modal-content');
 const contentModalCloseBtn = document.getElementById('content-modal-close-btn');
 const contentModalOverlay = document.getElementById('content-modal-overlay');
 
-// Elementos do Corpo Interativo
-const meridianGridContainer = document.getElementById('meridian-grid-container');
-
-
 // --- LÓGICA DE NAVEGAÇÃO RESPONSIVA E PESQUISA ---
 function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
 function closeMobileMenu() { document.body.classList.remove('mobile-menu-open'); }
@@ -141,7 +137,7 @@ function createSearchIndex() {
     const options = {
         includeScore: true,
         keys: ['title', 'content'],
-        threshold: 0.4 // Adjust threshold for more/less fuzzy matching
+        threshold: 0.4 
     };
     fuse = new Fuse(rawIndex, options);
 }
@@ -528,11 +524,11 @@ function initializeFiveElements() {
     let currentElement = 'madeira';
 
     const positions = {
-        madeira: { x: 70, y: 150 },
+        madeira: { x: 86, y: 143 },
         fogo: { x: 200, y: 60 },
-        terra: { x: 330, y: 150 },
-        metal: { x: 250, y: 270 },
-        agua: { x: 110, y: 270 },
+        terra: { x: 314, y: 143 },
+        metal: { x: 270, y: 277 },
+        agua: { x: 130, y: 277 },
     };
 
     const cycleInfo = {
@@ -544,7 +540,6 @@ function initializeFiveElements() {
         currentElement = elementId;
         const elData = fiveElementsData[elementId];
         
-        // Update text details
         elementDetailsContainer.innerHTML = `<div class="text-left p-6 rounded-lg border-2" style="border-color: var(--el-${elData.color}); background-color: #fafcff;">
             <h3 class="text-2xl font-playfair font-bold mb-4" style="color: var(--el-${elData.color});">${elData.name}</h3>
             <div class="card-prose">
@@ -554,19 +549,17 @@ function initializeFiveElements() {
             </div>
         </div>`;
         
-        // Update active element style
         svg.querySelectorAll('.element-node-svg').forEach(node => {
             node.classList.toggle('active', node.dataset.id === elementId);
         });
 
-        // Update and animate the relationship line
         const targetElementId = elData.target[currentCycle];
         const startPos = positions[elementId];
         const endPos = positions[targetElementId];
         
         relationshipLine.setAttribute('d', `M ${startPos.x} ${startPos.y} L ${endPos.x} ${endPos.y}`);
         relationshipLine.classList.remove('geracao', 'controlo', 'active');
-        relationshipLine.getBoundingClientRect(); // Trigger reflow
+        relationshipLine.getBoundingClientRect();
         relationshipLine.classList.add(currentCycle, 'active');
     }
 
@@ -589,19 +582,40 @@ function initializeFiveElements() {
         node.addEventListener('click', () => updateDetails(node.dataset.id));
     });
 
-    // Initial setup
     switchCycle('geracao');
     updateDetails('madeira');
 }
 
 
-function setupGlossary() { const glossaryContainer = document.getElementById('glossary-container'); if (!glossaryContainer) return; const categories = Object.values(glossaryData).reduce((acc, item) => { (acc[item.category] = acc[item.category] || []).push(item); return acc; }, {}); const sortedCategories = Object.keys(categories).sort(); glossaryContainer.innerHTML = sortedCategories.map(category => `<div class="floating-card mb-8"><div class="card-header"><h3 class="text-gray-700">${category}</h3></div><div class="card-content grid md:grid-cols-2 gap-x-8 gap-y-6">${categories[category].sort((a, b) => a.term.localeCompare(b.term)).map(item => `<div><h4 class="font-bold text-lg">${item.term}</h4><p class="text-gray-600">${item.definition}</p></div>`).join('')}</div></div>`).join(''); }
+function setupGlossary() { const glossaryContainer = document.getElementById('glossary-container'); if (!glossaryContainer) return; const categories = Object.values(glossaryData).reduce((acc, item) => { (acc[item.category] = acc[item.category] || []).push(item); return acc; }, {}); const sortedCategories = Object.keys(categories).sort(); glossaryContainer.innerHTML = sortedCategories.map(category => `<div class="floating-card mb-8"><div class="card-header"><h3 class="text-gray-700 font-bold">${category}</h3></div><div class="card-content grid md:grid-cols-2 gap-x-8 gap-y-6">${categories[category].sort((a, b) => a.term.localeCompare(b.term)).map(item => `<div><h4 class="font-bold text-lg">${item.term}</h4><p class="text-gray-600">${item.definition}</p></div>`).join('')}</div></div>`).join(''); }
 
 function setupDietetics() { const foodSearchInput = document.getElementById('food-search-input'); const foodResultsContainer = document.getElementById('food-results-container'); const foodAlphaNav = document.getElementById('food-alpha-nav'); function renderFoodList(foods) { const groupedFoods = foods.reduce((acc, food) => { const firstLetter = food.name.charAt(0).toUpperCase(); if (!acc[firstLetter]) acc[firstLetter] = []; acc[firstLetter].push(food); return acc; }, {}); const letters = Object.keys(groupedFoods).sort(); if (foodAlphaNav) foodAlphaNav.innerHTML = letters.map(letter => `<a href="#food-letter-${letter}">${letter}</a>`).join(''); if (foodResultsContainer) { foodResultsContainer.innerHTML = letters.map(letter => `<h3 id="food-letter-${letter}" class="food-group-header" tabindex="-1">${letter}</h3><div class="food-group-items">${groupedFoods[letter].map(food => `<div class="food-item floating-card p-4 mb-3"><h4 class="font-bold text-lg text-green-800">${food.name}</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mt-2"><div><strong>Temp:</strong> <span class="font-semibold">${food.temp}</span></div><div><strong>Sabor:</strong> <span class="font-semibold">${food.flavor}</span></div><div class="col-span-2"><strong>Órgãos:</strong> <span class="font-semibold">${food.organs}</span></div></div><p class="text-sm mt-2"><strong>Ações:</strong> ${food.actions}</p></div>`).join('')}</div>`).join(''); } } if (foodSearchInput) { renderFoodList(foodData); foodSearchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase().trim(); const headers = foodResultsContainer.querySelectorAll('.food-group-header'); headers.forEach(header => { const groupWrapper = header.nextElementSibling; if (!groupWrapper) return; const items = groupWrapper.querySelectorAll('.food-item'); let groupHasVisibleItems = false; items.forEach(item => { const foodName = item.querySelector('h4').textContent.toLowerCase(); const isVisible = foodName.includes(searchTerm); item.classList.toggle('hidden', !isVisible); if (isVisible) groupHasVisibleItems = true; }); header.style.display = groupHasVisibleItems ? 'block' : 'none'; groupWrapper.style.display = groupHasVisibleItems ? 'block' : 'none'; }); }); } }
 
-function renderMeridianGrid(data) {
-    if (!meridianGridContainer) return;
-    meridianGridContainer.innerHTML = data.map(item => renderMeridianCard(item)).join('');
+function setupMastersTimeline() {
+    const container = document.getElementById('masters-timeline-container');
+    if (!container) return;
+
+    container.innerHTML = greatMastersData.map(master => `
+        <div class="master-timeline-item">
+            ${renderMasterFlipCard(master)}
+        </div>
+    `).join('');
+
+    container.addEventListener('click', (e) => {
+        const card = e.target.closest('.flip-card');
+        if (!card) return;
+        
+        if (e.target.closest('.details-btn')) {
+            const masterId = e.target.closest('.details-btn').dataset.id;
+            const masterInfo = greatMastersData.find(m => m.id === masterId);
+            if (masterInfo) {
+                openContentModal(renderMasterModalContent(masterInfo));
+            }
+            return;
+        }
+        
+        card.classList.toggle('flipped');
+    });
 }
 
 
@@ -629,7 +643,7 @@ function generateNavLinks() {
 
     const generateHtml = (item) => {
         if (item.links) {
-            return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span>${link.title}</span></a>`).join('')}</div></div>`;
+            return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${link.icon}"></use></svg><span>${link.title}</span></a>`).join('')}</div></div>`;
         } else {
             return `<a href="#${item.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span>${item.title}</span></a>`;
         }
@@ -656,9 +670,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupZoomGrid('anatomy-grid-container', anatomyData, renderAnatomyCard, renderAnatomyModalContent);
     setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent);
 
-
-    // Setup da grelha com flip para os Mestres
-    setupFlipGrid('masters-grid-container', greatMastersData, renderMasterFlipCard);
+    // Setup da timeline dos Mestres
+    setupMastersTimeline();
     
     // Setup do diagnóstico
     setupDiagnosisAccordion();
