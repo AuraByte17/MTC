@@ -49,10 +49,6 @@ const contentModalContent = document.getElementById('content-modal-content');
 const contentModalCloseBtn = document.getElementById('content-modal-close-btn');
 const contentModalOverlay = document.getElementById('content-modal-overlay');
 
-// Elementos do Corpo Interativo
-const meridianGridContainer = document.getElementById('meridian-grid-container');
-
-
 // --- LÓGICA DE NAVEGAÇÃO RESPONSIVA E PESQUISA ---
 function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
 function closeMobileMenu() { document.body.classList.remove('mobile-menu-open'); }
@@ -292,6 +288,32 @@ function setupZoomGrid(containerId, data, cardRenderer, modalContentRenderer) {
     });
 }
 
+function setupFlipGrid(containerId, data, cardRenderer, modalContentRenderer) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = data.map(item => cardRenderer(item)).join('');
+
+    container.addEventListener('click', (e) => {
+        const card = e.target.closest('.flip-card');
+        const detailsButton = e.target.closest('.details-btn');
+
+        if (detailsButton) {
+            const masterId = detailsButton.dataset.id;
+            const masterInfo = data.find(m => m.id === masterId);
+            if (masterInfo) {
+                openContentModal(modalContentRenderer(masterInfo));
+            }
+            return; 
+        }
+        
+        if (card) {
+            card.classList.toggle('flipped');
+        }
+    });
+}
+
+
 // --- RENDERERS PARA O SISTEMA DE GRELHAS ---
 
 const renderMeridianCard = (item) => `
@@ -308,21 +330,21 @@ const renderMeridianModalContent = (item) => `
         <span class="w-4 h-4 rounded-full mr-3 shrink-0" style="background-color: var(--el-${item.color});"></span>
         <h3>${item.name}</h3>
     </div>
-    <div class="card-content card-prose text-sm">
+    <div class="card-content card-prose structured-content text-sm">
         <div class="grid md:grid-cols-2 gap-x-8">
-            <div><h4 class="font-bold !text-base !mb-2 !mt-0">Funções Principais</h4><p class="text-gray-600">${item.functions}</p></div>
-            <div><h4 class="font-bold !text-base !mb-2 !mt-0">Sinais de Desequilíbrio</h4><p class="text-gray-600">${item.imbalances}</p></div>
+            <div><h4>Funções Principais</h4><p>${item.functions}</p></div>
+            <div><h4>Sinais de Desequilíbrio</h4><p>${item.imbalances}</p></div>
         </div>
-        <h4 class="font-bold !text-base !mb-2">Pontos Especiais</h4>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 text-xs p-3 bg-gray-50 rounded-md">
+        <h4>Pontos Especiais</h4>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 text-xs p-3 bg-gray-50 rounded-md border">
             <div><strong>Fonte (Yuan):</strong> ${item.yuan_source}</div>
             <div><strong>Conexão (Luo):</strong> ${item.luo_connecting}</div>
             <div><strong>Fenda (Xi):</strong> ${item.xi_cleft}</div>
         </div>
-        <h4 class="font-bold !text-base !mb-2">Pontos Shu Antigos</h4>
+        <h4>Pontos Shu Antigos</h4>
         <div class="overflow-x-auto"><table class="w-full text-left !text-xs"><thead class="bg-gray-100"><tr><th class="p-2 font-semibold">Tipo</th><th class="p-2 font-semibold">Elemento</th><th class="p-2 font-semibold">Ponto</th><th class="p-2 font-semibold">Funções</th></tr></thead><tbody>${item.five_shu.map(p => `<tr class="border-b"><td class="p-2">${p.type}</td><td class="p-2">${p.element}</td><td class="p-2 font-bold">${p.point}</td><td class="p-2">${p.functions}</td></tr>`).join('')}</tbody></table></div>
-        <h4 class="font-bold !text-base !mb-2">Lista Completa de Pontos</h4>
-        <div class="space-y-3 max-h-80 overflow-y-auto pr-2">${item.points.map(p => `<div class="p-2 border-l-2 border-gray-200 hover:bg-gray-50"><strong class="text-primary-dark">${p.id} - ${p.name} (${p.character}) - ${p.pt_name}</strong><p class="text-gray-600 !mb-0">${p.functions}</p></div>`).join('')}</div>
+        <h4>Lista Completa de Pontos</h4>
+        <div class="space-y-3 max-h-80 overflow-y-auto pr-2">${item.points.map(p => `<div class="p-2 border-l-2 border-gray-200 hover:bg-gray-50"><strong class="text-primary-dark">${p.id} - ${p.name} (${p.character}) - ${p.pt_name}</strong><p class="!mb-0">${p.functions}</p></div>`).join('')}</div>
     </div>`;
 
 const renderTherapyCard = (item) => {
@@ -346,7 +368,7 @@ const renderTherapyCard = (item) => {
 
 const renderTherapyModalContent = (item) => `
     <div class="card-header"><h3>${item.title}</h3></div>
-    <div class="card-content card-prose">${item.content}</div>`;
+    <div class="card-content card-prose structured-content">${item.content}</div>`;
 
 const renderZangFuCard = (item) => `
     <div class="meridian-card" data-id="${item.id}">
@@ -386,7 +408,7 @@ const renderAnatomyCard = (item) => `
 
 const renderAnatomyModalContent = (item) => `
     <div class="card-header"><h3>${item.title}</h3></div>
-    <div class="card-content card-prose">${item.content}</div>`;
+    <div class="card-content card-prose structured-content">${item.content}</div>`;
 
 const renderQiFlipCard = (item) => `
     <div class="flip-card">
@@ -396,6 +418,22 @@ const renderQiFlipCard = (item) => `
             </div>
             <div class="flip-card-back">
                 <p class="text-sm">${item.content}</p>
+            </div>
+        </div>
+    </div>`;
+
+const renderMasterFlipCard = (item) => `
+    <div class="flip-card">
+        <div class="flip-card-inner">
+            <div class="flip-card-front" style="background-image: url('${item.image_placeholder}')">
+                <div class="master-card-overlay">
+                    <h4 class="font-playfair font-bold text-lg text-white">${item.name}</h4>
+                    <p class="text-xs text-gray-200">${item.dynasty}</p>
+                </div>
+            </div>
+            <div class="flip-card-back">
+                <p class="text-sm">${item.content.replace(/<[^>]*>/g, ' ').substring(0, 250)}...</p>
+                <button class="details-btn" data-id="${item.id}">Ver Detalhes</button>
             </div>
         </div>
     </div>`;
@@ -496,18 +534,9 @@ function initializeFiveElements() {
     const cycleInfoBox = document.getElementById('cycle-info-box');
     const btnGeracao = document.getElementById('btn-geracao');
     const btnControlo = document.getElementById('btn-controlo');
-    const relationshipLine = document.getElementById('relationship-line');
     
     let currentCycle = 'geracao';
     let currentElement = 'madeira';
-
-    const positions = {
-        madeira: { x: 70, y: 150 },
-        fogo: { x: 200, y: 60 },
-        terra: { x: 330, y: 150 },
-        metal: { x: 250, y: 270 },
-        agua: { x: 110, y: 270 },
-    };
 
     const cycleInfo = {
         geracao: { title: 'Ciclo de Geração (Sheng)', description: 'Este ciclo representa a nutrição e o apoio. Cada elemento é a "mãe" do seguinte.', color: 'bg-green-100', textColor: 'text-green-800' },
@@ -533,15 +562,14 @@ function initializeFiveElements() {
             node.classList.toggle('active', node.dataset.id === elementId);
         });
 
-        // Update and animate the relationship line
+        // Update active path segment
+        svg.querySelectorAll('.cycle-path').forEach(path => path.classList.remove('active'));
         const targetElementId = elData.target[currentCycle];
-        const startPos = positions[elementId];
-        const endPos = positions[targetElementId];
-        
-        relationshipLine.setAttribute('d', `M ${startPos.x} ${startPos.y} L ${endPos.x} ${endPos.y}`);
-        relationshipLine.classList.remove('geracao', 'controlo', 'active');
-        relationshipLine.getBoundingClientRect(); // Trigger reflow
-        relationshipLine.classList.add(currentCycle, 'active');
+        const activePathId = `path-${currentCycle}-${elementId}-${targetElementId}`;
+        const activePath = document.getElementById(activePathId);
+        if (activePath) {
+            activePath.classList.add('active');
+        }
     }
 
     function switchCycle(newCycle) {
@@ -591,73 +619,55 @@ function setupGlossary() {
 
 function setupDietetics() { const foodSearchInput = document.getElementById('food-search-input'); const foodResultsContainer = document.getElementById('food-results-container'); const foodAlphaNav = document.getElementById('food-alpha-nav'); function renderFoodList(foods) { const groupedFoods = foods.reduce((acc, food) => { const firstLetter = food.name.charAt(0).toUpperCase(); if (!acc[firstLetter]) acc[firstLetter] = []; acc[firstLetter].push(food); return acc; }, {}); const letters = Object.keys(groupedFoods).sort(); if (foodAlphaNav) foodAlphaNav.innerHTML = letters.map(letter => `<a href="#food-letter-${letter}">${letter}</a>`).join(''); if (foodResultsContainer) { foodResultsContainer.innerHTML = letters.map(letter => `<h3 id="food-letter-${letter}" class="food-group-header" tabindex="-1">${letter}</h3><div class="food-group-items">${groupedFoods[letter].map(food => `<div class="food-item floating-card p-4 mb-3"><h4 class="font-bold text-lg text-green-800">${food.name}</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mt-2"><div><strong>Temp:</strong> <span class="font-semibold">${food.temp}</span></div><div><strong>Sabor:</strong> <span class="font-semibold">${food.flavor}</span></div><div class="col-span-2"><strong>Órgãos:</strong> <span class="font-semibold">${food.organs}</span></div></div><p class="text-sm mt-2"><strong>Ações:</strong> ${food.actions}</p></div>`).join('')}</div>`).join(''); } } if (foodSearchInput) { renderFoodList(foodData); foodSearchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase().trim(); const headers = foodResultsContainer.querySelectorAll('.food-group-header'); headers.forEach(header => { const groupWrapper = header.nextElementSibling; if (!groupWrapper) return; const items = groupWrapper.querySelectorAll('.food-item'); let groupHasVisibleItems = false; items.forEach(item => { const foodName = item.querySelector('h4').textContent.toLowerCase(); const isVisible = foodName.includes(searchTerm); item.classList.toggle('hidden', !isVisible); if (isVisible) groupHasVisibleItems = true; }); header.style.display = groupHasVisibleItems ? 'block' : 'none'; groupWrapper.style.display = groupHasVisibleItems ? 'block' : 'none'; }); }); } }
 
-function renderMeridianGrid(data) {
-    if (!meridianGridContainer) return;
-    meridianGridContainer.innerHTML = data.map(item => renderMeridianCard(item)).join('');
-}
+function setupTabs() {
+    const tabContainer = document.querySelector('#diagnostico .floating-card');
+    if (!tabContainer) return;
 
-// --- SECÇÃO GRANDES MESTRES (NOVO LAYOUT) ---
-function renderMasterTimelineItem(item, index) {
-    return `
-    <div class="master-timeline-item">
-        <div class="master-timeline-content">
-            <h3 class="font-playfair font-bold text-xl text-primary">${item.name}</h3>
-            <p class="text-sm text-gray-500 mb-4">${item.dynasty}</p>
-            <div class="card-prose text-sm">
-                ${item.content.replace(/<[^>]*>/g, ' ').substring(0, 250)}...
-            </div>
-            <button class="details-btn mt-4" data-id="${item.id}">Ver Detalhes</button>
-        </div>
-    </div>
-    `;
-}
+    const tabButtons = tabContainer.querySelectorAll('.tab-button');
+    const tabPanels = tabContainer.querySelectorAll('.tab-content-panel');
 
-function setupMastersTimeline(containerId, data) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
 
-    container.innerHTML = `<div class="master-timeline">${data.map((item, index) => renderMasterTimelineItem(item, index)).join('')}</div>`;
-
-    container.addEventListener('click', (e) => {
-        const detailsButton = e.target.closest('.details-btn');
-        if (detailsButton) {
-            const masterId = detailsButton.dataset.id;
-            const masterInfo = greatMastersData.find(m => m.id === masterId);
-            if (masterInfo) {
-                openContentModal(renderMasterModalContent(masterInfo));
-            }
-        }
+            const targetTab = button.dataset.tab;
+            
+            tabPanels.forEach(panel => {
+                panel.classList.toggle('active', panel.id === `tab-content-${targetTab}`);
+            });
+        });
     });
 }
 
-
 function generateNavLinks() {
     const navStructure = [
-        { id: 'inicio', title: 'Início', icon: 'icon-home' },
+        { id: 'inicio', title: 'Início' },
         {
-            title: 'Fundamentos', icon: 'icon-book-open',
+            title: 'Fundamentos',
             links: [
-                { id: 'yin-yang', title: 'Teoria Yin-Yang', icon: 'icon-yin-yang' },
-                { id: 'substancias-fundamentais', title: 'Substâncias Fundamentais', icon: 'icon-atom' },
-                { id: 'tipos-de-qi', title: 'Tipos de Qi', icon: 'icon-wind' },
-                { id: 'cinco-elementos', title: 'Os 5 Elementos', icon: 'icon-star' },
-                { id: 'ciclos-de-vida', title: 'Ciclos de Vida', icon: 'icon-refresh-cw' },
-                { id: 'meridianos', title: 'Meridianos e Pontos', icon: 'icon-git-branch' },
-                { id: 'anatomia-energetica', title: 'Anatomia Energética', icon: 'icon-body' },
-                { id: 'padroes-zang-fu', title: 'Padrões Zang-Fu', icon: 'icon-clipboard-heart' },
+                { id: 'yin-yang', title: 'Teoria Yin-Yang' },
+                { id: 'substancias-fundamentais', title: 'Substâncias Fundamentais' },
+                { id: 'tipos-de-qi', title: 'Tipos de Qi' },
+                { id: 'cinco-elementos', title: 'Os 5 Elementos' },
+                { id: 'ciclos-de-vida', title: 'Ciclos de Vida' },
+                { id: 'meridianos', title: 'Meridianos e Pontos' },
+                { id: 'anatomia-energetica', title: 'Anatomia Energética' },
+                { id: 'padroes-zang-fu', title: 'Padrões Zang-Fu' },
             ]
         },
-        { title: 'Diagnóstico', icon: 'icon-stethoscope', links: [ { id: 'diagnostico', title: 'Métodos de Diagnóstico', icon: 'icon-stethoscope' } ] },
-        { title: 'Terapêuticas', icon: 'icon-lotus', links: [ { id: 'terapias', title: 'Visão Geral', icon: 'icon-lotus' }, { id: 'dietetica', title: 'Dietética', icon: 'icon-soup' } ] },
-        { title: 'Sabedoria', icon: 'icon-users', links: [ { id: 'grandes-mestres', title: 'Grandes Mestres', icon: 'icon-scroll' } ] },
-        { id: 'glossario', title: 'Glossário', icon: 'icon-book-open' },
+        { title: 'Diagnóstico', links: [ { id: 'diagnostico', title: 'Métodos de Diagnóstico' } ] },
+        { title: 'Terapêuticas', links: [ { id: 'terapias', title: 'Visão Geral' }, { id: 'dietetica', title: 'Dietética' } ] },
+        { title: 'Sabedoria', links: [ { id: 'grandes-mestres', title: 'Grandes Mestres' } ] },
+        { id: 'glossario', title: 'Glossário', isBold: true },
     ];
 
     const generateHtml = (item) => {
         if (item.links) {
-            return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span>${link.title}</span></a>`).join('')}</div></div>`;
+            return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><span>${link.title}</span></a>`).join('')}</div></div>`;
         } else {
-            return `<a href="#${item.id}" class="sidebar-link flex items-center p-2 rounded-lg"><svg class="w-5 h-5 mr-3 text-gray-500"><use href="#${item.icon}"></use></svg><span>${item.title}</span></a>`;
+            const fontWeightClass = item.isBold ? 'font-bold' : '';
+            return `<a href="#${item.id}" class="sidebar-link flex items-center p-2 rounded-lg"><span class="${fontWeightClass}">${item.title}</span></a>`;
         }
     };
     const navHtml = navStructure.map(generateHtml).join('');
@@ -682,11 +692,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupZoomGrid('anatomy-grid-container', anatomyData, renderAnatomyCard, renderAnatomyModalContent);
     setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent);
 
-
-    // Setup da timeline para os Mestres
-    setupMastersTimeline('masters-timeline-container', greatMastersData);
+    // Setup da grelha com flip para os Mestres
+    setupFlipGrid('masters-grid-container', greatMastersData, renderMasterFlipCard, renderMasterModalContent);
     
     // Setup do diagnóstico
+    setupTabs();
     setupDiagnosisAccordion();
     setupDiagnosisDiagrams();
     
