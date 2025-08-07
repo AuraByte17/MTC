@@ -132,6 +132,7 @@ aside {
     box-shadow: 0 4px 14px 0 rgba(45, 90, 103, 0.3); 
 }
 .sidebar-link.active span, a.sidebar-link[aria-current="page"] span { color: white; }
+.sidebar-link.active svg, a.sidebar-link[aria-current="page"] svg { color: white; }
 .sidebar-link span, .nav-group-header span { font-size: 0.9rem; }
 
 
@@ -570,7 +571,7 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
 .search-result-item h4 { font-weight: 600; color: var(--color-primary); margin-bottom: 0.25rem; }
 .search-result-item p { font-size: 0.8rem; color: var(--color-text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .result-type-badge { display: inline-block; padding: 0.1rem 0.5rem; font-size: 0.7rem; font-weight: 700; border-radius: 9999px; color: white; margin-top: 0.5rem; }
-.result-type-badge.ponto-badge { color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.3); background-color: var(--color-primary-dark) !important; }
+.result-type-badge.ponto-badge { background-color: var(--color-primary-dark) !important; color: white; }
 
 /* --- NOVO: Estilos para Abas (Tabs) --- */
 .tab-nav {
@@ -620,18 +621,40 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
 
 /* --- NOVO: Estilos para Favoritos --- */
 .favorite-item {
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-    border-bottom: 1px solid var(--color-subtle-gray);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid var(--color-subtle-gray);
 }
 .favorite-item:last-child { border-bottom: none; }
-.favorite-item:hover { background-color: var(--color-accent-light); }
+.favorite-item-info {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease-in-out;
+}
+.favorite-item-info:hover {
+    background-color: var(--color-accent-light);
+}
 .favorite-item h4 { font-weight: 600; color: var(--color-primary); }
+.remove-favorite-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: 0.5rem;
+    color: var(--color-text-muted);
+    transition: color 0.2s, background-color 0.2s;
+    border-radius: 50%;
+}
+.remove-favorite-btn:hover {
+    color: #ef4444; /* red-500 */
+    background-color: #fee2e2; /* red-100 */
+}
 
 .favorite-toggle-btn {
     background: none;

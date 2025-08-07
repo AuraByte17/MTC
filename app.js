@@ -871,9 +871,14 @@ function renderFavoritesSection() {
     }
 
     container.innerHTML = favorites.map(item => `
-        <div class="favorite-item" data-id="${item.id}" data-section-id="${item.sectionId}" data-parent-id="${item.parentId || ''}" data-type="${item.type}">
-            <h4>${item.title}</h4>
-            <span class="result-type-badge ${item.type === 'Ponto' ? 'ponto-badge' : ''}" style="background-color: var(--el-${item.color}, var(--color-primary))">${item.type}</span>
+        <div class="favorite-item">
+            <div class="favorite-item-info" data-id="${item.id}" data-section-id="${item.sectionId}" data-parent-id="${item.parentId || ''}" data-type="${item.type}">
+                <h4>${item.title}</h4>
+                <span class="result-type-badge ${item.type === 'Ponto' ? 'ponto-badge' : ''}" style="background-color: var(--el-${item.color}, var(--color-primary))">${item.type}</span>
+            </div>
+            <button class="remove-favorite-btn" data-id="${item.id}" title="Remover dos Favoritos">
+                <svg class="w-5 h-5"><use href="#icon-trash"></use></svg>
+            </button>
         </div>
     `).join('');
 }
@@ -948,48 +953,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const favoritesContainer = document.getElementById('favorites-container');
     if(favoritesContainer) {
         favoritesContainer.addEventListener('click', (e) => {
-            const favItemElement = e.target.closest('.favorite-item');
-            if (!favItemElement) return;
+            const favInfoElement = e.target.closest('.favorite-item-info');
+            const removeButton = e.target.closest('.remove-favorite-btn');
 
-            const favItemData = favorites.find(fav => fav.id === favItemElement.dataset.id);
-            if (!favItemData) return;
-
-            const { id, sectionId, parentId, type } = favItemData;
-            
-            showSection(sectionId, document.querySelector(`a[href="#${sectionId}"] span`).textContent);
-            updateActiveLink(sectionId);
-            closeMobileMenu();
-
-            if (type === 'Alimento') {
-                setTimeout(() => {
-                    const foodElement = document.getElementById(id);
-                    if (foodElement) {
-                        foodElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        foodElement.classList.add('highlight');
-                        setTimeout(() => foodElement.classList.remove('highlight'), 2000);
-                    }
-                }, 100);
-            } else if (type === 'Ponto') {
-                const parentMeridian = meridianData.find(m => m.id === parentId);
-                if (parentMeridian) {
-                    const contentHTML = renderMeridianModalContent(parentMeridian);
-                    const parentItemDataForFavorite = {
-                        id: `Meridiano-${parentMeridian.id}`,
-                        title: parentMeridian.name,
-                        type: 'Meridiano',
-                        color: parentMeridian.color,
-                        sectionId: 'meridianos'
-                    };
-                    openContentModal(contentHTML, parentItemDataForFavorite);
+            if (removeButton) {
+                const itemId = removeButton.dataset.id;
+                const index = favorites.findIndex(fav => fav.id === itemId);
+                if (index > -1) {
+                    favorites.splice(index, 1);
+                    saveFavorites();
+                    renderFavoritesSection();
                 }
-            } else {
-                const mapping = itemTypeMap[type];
-                if (mapping) {
-                    const realId = id.split('-').slice(1).join('-');
-                    const itemInfo = mapping.data.find(d => d.id === realId);
-                    if (itemInfo) {
-                        const contentHTML = mapping.renderer(itemInfo);
-                        openContentModal(contentHTML, favItemData);
+                return;
+            }
+
+            if (favInfoElement) {
+                const favItemData = favorites.find(fav => fav.id === favInfoElement.dataset.id);
+                if (!favItemData) return;
+
+                const { id, sectionId, parentId, type } = favItemData;
+                
+                showSection(sectionId, document.querySelector(`a[href="#${sectionId}"] span`).textContent);
+                updateActiveLink(sectionId);
+                closeMobileMenu();
+
+                if (type === 'Alimento') {
+                    setTimeout(() => {
+                        const foodElement = document.getElementById(id);
+                        if (foodElement) {
+                            foodElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            foodElement.classList.add('highlight');
+                            setTimeout(() => foodElement.classList.remove('highlight'), 2000);
+                        }
+                    }, 100);
+                } else if (type === 'Ponto') {
+                    const parentMeridian = meridianData.find(m => m.id === parentId);
+                    if (parentMeridian) {
+                        const contentHTML = renderMeridianModalContent(parentMeridian);
+                        const parentItemDataForFavorite = {
+                            id: `Meridiano-${parentMeridian.id}`,
+                            title: parentMeridian.name,
+                            type: 'Meridiano',
+                            color: parentMeridian.color,
+                            sectionId: 'meridianos'
+                        };
+                        openContentModal(contentHTML, parentItemDataForFavorite);
+                    }
+                } else {
+                    const mapping = itemTypeMap[type];
+                    if (mapping) {
+                        const realId = id.split('-').slice(1).join('-');
+                        const itemInfo = mapping.data.find(d => d.id === realId);
+                        if (itemInfo) {
+                            const contentHTML = mapping.renderer(itemInfo);
+                            openContentModal(contentHTML, favItemData);
+                        }
                     }
                 }
             }
