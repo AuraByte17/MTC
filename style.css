@@ -558,9 +558,21 @@ body.content-modal-open #content-modal-container {
 
 /* --- ESTILOS PARA NAVEGAÇÃO MÓVEL --- */
 #mobile-menu-container { visibility: hidden; pointer-events: none; }
-body.mobile-menu-open #mobile-menu-container { visibility: visible; }
-#mobile-menu-overlay { pointer-events: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+body.mobile-menu-open #mobile-menu-container { visibility: visible; pointer-events: auto; }
+
+#mobile-menu-overlay {
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 45; /* Explicitly set a lower z-index */
+}
 body.mobile-menu-open #mobile-menu-overlay { opacity: 1; pointer-events: auto; }
+
+#sidebar {
+    position: relative; /* This is required for z-index to take effect. */
+    z-index: 50;      /* Set a higher z-index to ensure it's on top */
+}
+
 body.mobile-menu-open #sidebar { transform: translateX(0); }
 
 /* --- ESTILOS PARA PESQUISA GLOBAL --- */
@@ -685,13 +697,64 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
 
 /* --- MELHORIAS PARA ECRÃS PEQUENOS --- */
 @media (max-width: 767px) {
-    #main-content-area { padding: 1rem; }
+    #main-content-area { 
+        padding: 1rem;
+        padding-bottom: 80px; /* Adiciona preenchimento para evitar que o conteúdo seja escondido pela barra de navegação inferior */
+    }
     .card-content { padding: 1rem; }
     .card-header h3 { font-size: 1.1rem; }
     #cinco-elementos .grid { grid-template-columns: 1fr; }
     .tab-button { font-size: 0.875rem; padding: 0.75rem 0.5rem; }
     .diagnosis-grid { grid-template-columns: 1fr; }
 }
+
+/* --- MOBILE REDESIGN: Estilos da Barra de Navegação Inferior --- */
+#bottom-nav-hub {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 35;
+    display: flex;
+    justify-content: space-around;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--color-subtle-gray);
+    box-shadow: 0 -2px 20px rgba(45, 90, 103, 0.1);
+    padding: 0.5rem 0;
+}
+
+.bottom-nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    color: var(--color-text-muted);
+    padding: 0.25rem 0;
+    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    text-decoration: none;
+}
+
+.bottom-nav-link:hover {
+    color: var(--color-primary);
+}
+
+.bottom-nav-link.active {
+    color: var(--color-accent);
+    transform: translateY(-2px);
+}
+
+.bottom-nav-label {
+    font-size: 0.7rem;
+    margin-top: 2px;
+}
+
+
 
 /* --- Reduced Motion Preference --- */
 @media (prefers-reduced-motion: reduce) {
