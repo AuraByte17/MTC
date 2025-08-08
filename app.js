@@ -30,7 +30,10 @@ const contentArea = document.getElementById('main-content-area');
 const mainContent = document.getElementById('main-content');
 let contentSections = [];
 
-const allNavHubs = [mobileNavHub, desktopNavHub];
+// --- MOBILE REDESIGN: Select bottom nav elements ---
+const bottomNavHub = document.getElementById('bottom-nav-hub');
+const allNavHubs = [mobileNavHub, desktopNavHub, bottomNavHub];
+
 
 // Elementos da Pesquisa Global
 const openSearchMobileBtn = document.getElementById('open-search-btn-mobile');
@@ -111,11 +114,15 @@ function updateFavoriteIcon(buttonElement, isFav) {
 // --- LÓGICA DE NAVEGAÇÃO RESPONSIVA E PESQUISA ---
 function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
 function closeMobileMenu() { document.body.classList.remove('mobile-menu-open'); }
-openMenuBtn.addEventListener('click', openMobileMenu);
+
+// MOBILE REDESIGN: The "Explore" button on the bottom nav now opens the menu
+const exploreBtn = document.getElementById('bottom-nav-explore');
+if (exploreBtn) {
+    exploreBtn.addEventListener('click', openMobileMenu);
+}
+
 closeMenuBtn.addEventListener('click', closeMobileMenu);
 mobileMenuOverlay.addEventListener('click', (e) => {
-    // This check ensures the menu only closes if the overlay itself is clicked,
-    // not an element within the menu.
     if (e.target === mobileMenuOverlay) {
         closeMobileMenu();
     }
@@ -177,7 +184,8 @@ function showSection(targetId, linkText) {
     if (currentSectionTitle && linkText) currentSectionTitle.textContent = linkText;
 }
 function updateActiveLink(targetId) {
-    allNavHubs.forEach(hub => {
+    // Update desktop and slide-out menu links
+    [desktopNavHub, mobileNavHub].forEach(hub => {
         hub.querySelectorAll('.sidebar-link').forEach(link => {
             const href = link.getAttribute('href');
             const isActive = href === `#${targetId}`;
@@ -185,13 +193,21 @@ function updateActiveLink(targetId) {
             link.setAttribute('aria-current', isActive ? 'page' : 'false');
         });
     });
+
+    // MOBILE REDESIGN: Update bottom nav links
+    if (bottomNavHub) {
+        bottomNavHub.querySelectorAll('.bottom-nav-link').forEach(link => {
+            const href = link.getAttribute('href');
+            const isActive = href === `#${targetId}`;
+            link.classList.toggle('active', isActive);
+        });
+    }
 }
 
-// This robust function attaches individual listeners to each interactive menu item.
-// This avoids complex event bubbling issues that can occur on mobile browsers.
+
 function setupNavEventListeners() {
-    allNavHubs.forEach(hub => {
-        // Add listeners to category headers (buttons)
+    // Listeners for Desktop Sidebar and Mobile Slide-out Menu
+    [desktopNavHub, mobileNavHub].forEach(hub => {
         const groupHeaders = hub.querySelectorAll('.nav-group-header');
         groupHeaders.forEach(header => {
             header.addEventListener('click', (e) => {
@@ -201,7 +217,6 @@ function setupNavEventListeners() {
             });
         });
 
-        // Add listeners to navigation links (anchors)
         const links = hub.querySelectorAll('a.sidebar-link');
         links.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -210,10 +225,29 @@ function setupNavEventListeners() {
                 const linkText = link.querySelector('span').textContent;
                 showSection(targetId, linkText);
                 updateActiveLink(targetId);
-                closeMobileMenu(); // This is key for mobile behavior
+                closeMobileMenu();
             });
         });
     });
+
+    // MOBILE REDESIGN: Listeners for Bottom Nav Bar
+    if (bottomNavHub) {
+        const bottomLinks = bottomNavHub.querySelectorAll('a.bottom-nav-link');
+        bottomLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const linkText = link.querySelector('.bottom-nav-label').textContent;
+                showSection(targetId, linkText);
+                updateActiveLink(targetId);
+            });
+        });
+        
+        const searchButton = bottomNavHub.querySelector('#bottom-nav-search');
+        if(searchButton) {
+            searchButton.addEventListener('click', openSearchModal);
+        }
+    }
 }
 
 
@@ -877,7 +911,9 @@ function generateNavLinks() {
         }
     };
     const navHtml = navStructure.map(generateHtml).join('');
-    allNavHubs.forEach(hub => hub.innerHTML = navHtml);
+    // MOBILE REDESIGN: Populate both the desktop and the slide-out mobile menu
+    desktopNavHub.innerHTML = navHtml;
+    mobileNavHub.innerHTML = navHtml;
 }
 
 function renderFavoritesSection() {
