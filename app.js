@@ -30,10 +30,7 @@ const contentArea = document.getElementById('main-content-area');
 const mainContent = document.getElementById('main-content');
 let contentSections = [];
 
-// --- MOBILE REDESIGN: Select bottom nav elements ---
-const bottomNavHub = document.getElementById('bottom-nav-hub');
-const allNavHubs = [mobileNavHub, desktopNavHub, bottomNavHub];
-
+const allNavHubs = [mobileNavHub, desktopNavHub];
 
 // Elementos da Pesquisa Global
 const openSearchMobileBtn = document.getElementById('open-search-btn-mobile');
@@ -114,20 +111,9 @@ function updateFavoriteIcon(buttonElement, isFav) {
 // --- LÓGICA DE NAVEGAÇÃO RESPONSIVA E PESQUISA ---
 function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
 function closeMobileMenu() { document.body.classList.remove('mobile-menu-open'); }
-
-// MOBILE REDESIGN: The "Explore" button on the bottom nav now opens the menu
-const exploreBtn = document.getElementById('bottom-nav-explore');
-if (exploreBtn) {
-    exploreBtn.addEventListener('click', openMobileMenu);
-}
-
+openMenuBtn.addEventListener('click', openMobileMenu);
 closeMenuBtn.addEventListener('click', closeMobileMenu);
-mobileMenuOverlay.addEventListener('click', (e) => {
-    if (e.target === mobileMenuOverlay) {
-        closeMobileMenu();
-    }
-});
-
+mobileMenuOverlay.addEventListener('click', closeMobileMenu);
 
 function openSearchModal() {
     document.body.classList.add('search-modal-open');
@@ -184,8 +170,7 @@ function showSection(targetId, linkText) {
     if (currentSectionTitle && linkText) currentSectionTitle.textContent = linkText;
 }
 function updateActiveLink(targetId) {
-    // Update desktop and slide-out menu links
-    [desktopNavHub, mobileNavHub].forEach(hub => {
+    allNavHubs.forEach(hub => {
         hub.querySelectorAll('.sidebar-link').forEach(link => {
             const href = link.getAttribute('href');
             const isActive = href === `#${targetId}`;
@@ -193,63 +178,25 @@ function updateActiveLink(targetId) {
             link.setAttribute('aria-current', isActive ? 'page' : 'false');
         });
     });
-
-    // MOBILE REDESIGN: Update bottom nav links
-    if (bottomNavHub) {
-        bottomNavHub.querySelectorAll('.bottom-nav-link').forEach(link => {
-            const href = link.getAttribute('href');
-            const isActive = href === `#${targetId}`;
-            link.classList.toggle('active', isActive);
-        });
-    }
 }
-
-
-function setupNavEventListeners() {
-    // Listeners for Desktop Sidebar and Mobile Slide-out Menu
-    [desktopNavHub, mobileNavHub].forEach(hub => {
-        const groupHeaders = hub.querySelectorAll('.nav-group-header');
-        groupHeaders.forEach(header => {
-            header.addEventListener('click', (e) => {
-                e.preventDefault();
-                header.classList.toggle('open');
-                header.setAttribute('aria-expanded', header.classList.contains('open'));
-            });
-        });
-
-        const links = hub.querySelectorAll('a.sidebar-link');
-        links.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const linkText = link.querySelector('span').textContent;
-                showSection(targetId, linkText);
-                updateActiveLink(targetId);
-                closeMobileMenu();
-            });
-        });
-    });
-
-    // MOBILE REDESIGN: Listeners for Bottom Nav Bar
-    if (bottomNavHub) {
-        const bottomLinks = bottomNavHub.querySelectorAll('a.bottom-nav-link');
-        bottomLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const linkText = link.querySelector('.bottom-nav-label').textContent;
-                showSection(targetId, linkText);
-                updateActiveLink(targetId);
-            });
-        });
-        
-        const searchButton = bottomNavHub.querySelector('#bottom-nav-search');
-        if(searchButton) {
-            searchButton.addEventListener('click', openSearchModal);
+allNavHubs.forEach(hub => {
+    hub.addEventListener('click', (e) => {
+        const link = e.target.closest('a.sidebar-link');
+        const groupHeader = e.target.closest('.nav-group-header');
+        if (link) {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            const linkText = link.querySelector('span').textContent;
+            showSection(targetId, linkText);
+            updateActiveLink(targetId);
+            closeMobileMenu();
         }
-    }
-}
-
+        if (groupHeader) {
+            groupHeader.classList.toggle('open');
+            groupHeader.setAttribute('aria-expanded', groupHeader.classList.contains('open'));
+        }
+    });
+});
 
 // --- LÓGICA DE PESQUISA (COM FUSE.JS) ---
 function createSearchIndex() {
@@ -911,9 +858,7 @@ function generateNavLinks() {
         }
     };
     const navHtml = navStructure.map(generateHtml).join('');
-    // MOBILE REDESIGN: Populate both the desktop and the slide-out mobile menu
-    desktopNavHub.innerHTML = navHtml;
-    mobileNavHub.innerHTML = navHtml;
+    allNavHubs.forEach(hub => hub.innerHTML = navHtml);
 }
 
 function renderFavoritesSection() {
@@ -951,7 +896,6 @@ const itemTypeMap = {
 document.addEventListener('DOMContentLoaded', () => {
     loadFavorites();
     generateNavLinks(); 
-    setupNavEventListeners(); // Call the new function to set up listeners
     
     // Setup das secções
     setupYinYangSection();
