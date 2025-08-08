@@ -35,670 +35,982 @@ const allNavHubs = [mobileNavHub, desktopNavHub];
 // Elementos da Pesquisa Global
 const openSearchMobileBtn = document.getElementById('open-search-btn-mobile');
 const desktopSearchInput = document.getElementById('desktop-search-input');
-const mobileSearchOverlay = document.getElementById('mobile-search-overlay');
+const searchModalContainer = document.getElementById('search-modal-container');
+const searchOverlay = document.getElementById('search-overlay');
 const closeSearchBtn = document.getElementById('close-search-btn');
+const globalSearchInput = document.getElementById('global-search-input');
 const searchResultsContainer = document.getElementById('search-results-container');
-const mobileSearchInput = document.getElementById('mobile-search-input');
+let searchIndex = [];
+let fuse; // Fuse.js instance
 
 // Elementos do Modal de Conteúdo
 const contentModal = document.getElementById('content-modal');
-const contentModalCloseBtn = document.getElementById('content-modal-close-btn');
 const contentModalContent = document.getElementById('content-modal-content');
+const contentModalCloseBtn = document.getElementById('content-modal-close-btn');
+const contentModalOverlay = document.getElementById('content-modal-overlay');
+const contentModalFavoriteBtn = document.getElementById('content-modal-favorite-btn');
 
-// Elementos dos Favoritos
-const favBtn = document.getElementById('fav-btn');
-const favCountSpan = document.getElementById('fav-count');
-const favDropdown = document.getElementById('fav-dropdown');
-const favList = document.getElementById('fav-list');
+// --- LÓGICA DE FAVORITOS ---
+let favorites = [];
 
-// Variáveis globais para os dados e pesquisa
-let fuse;
-let favorites = JSON.parse(localStorage.getItem('favorites')) || {};
+function saveFavorites() {
+    localStorage.setItem('mtcAppFavorites', JSON.stringify(favorites));
+}
 
-// --- Funções Auxiliares ---
+function loadFavorites() {
+    const favs = localStorage.getItem('mtcAppFavorites');
+    favorites = favs ? JSON.parse(favs) : [];
+}
 
-// Função para renderizar conteúdo Markdown
-const markdownToHtml = (markdown) => {
-    // Implementação básica para converter markdown simples
-    let html = markdown;
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    html = html.replace(/`(.*?)`/g, '<code>$1</code>');
-    html = html.replace(/<br>\n/g, '<br>'); // Remove newlines after <br>
-    return html;
-};
+function isFavorite(itemId) {
+    return favorites.some(fav => fav.id === itemId);
+}
 
-// Gerar cores aleatórias para os elementos
-const generateRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-};
+function toggleFavorite(itemData) {
+    if (!itemData || !itemData.id) return;
+    const index = favorites.findIndex(fav => fav.id === itemData.id);
 
-// --- Funções de Renderização de Conteúdo ---
-
-// Renderer para Qi
-const renderQiContent = (item) => {
-    return `
-        <div class="p-6">
-            <h3 class="text-2xl font-bold mb-4">${item.title}</h3>
-            <p class="text-lg">${item.description}</p>
-        </div>
-    `;
-};
-
-// Renderer para Cinco Elementos
-const renderFiveElementsContent = (item) => {
-    const elements = ['wood', 'fire', 'earth', 'metal', 'water'];
-    const elementColors = {
-        wood: 'var(--el-wood)',
-        fire: 'var(--el-fire)',
-        earth: 'var(--el-earth)',
-        metal: 'var(--el-metal)',
-        water: 'var(--el-water)',
-    };
-
-    return `
-        <div class="p-6">
-            <h3 class="text-2xl font-bold mb-4 text-center" style="color: ${elementColors[item.name.toLowerCase()]};">${item.name}</h3>
-            <p class="text-lg">${item.description}</p>
-            <div class="mt-6 space-y-4">
-                <div class="p-4 bg-gray-100 rounded-lg">
-                    <h4 class="font-bold">Ciclo Sheng (Nutrição):</h4>
-                    <p class="text-sm">${item.shengCycle}</p>
-                </div>
-                <div class="p-4 bg-gray-100 rounded-lg">
-                    <h4 class="font-bold">Ciclo Ke (Controlo):</h4>
-                    <p class="text-sm">${item.keCycle}</p>
-                </div>
-                <h4 class="font-bold mt-4">Associações:</h4>
-                <ul class="list-disc list-inside text-sm space-y-1">
-                    ${item.associations.map(assoc => `<li><strong>${assoc.aspect}:</strong> ${assoc.value}</li>`).join('')}
-                </ul>
-            </div>
-        </div>
-    `;
-};
-
-
-// Renderer para Meridianos
-const renderMeridianContent = (meridian) => {
-    return `
-        <div class="p-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-8 h-8 rounded-full" style="background-color: ${meridian.color};"></div>
-                <h3 class="text-2xl font-bold">${meridian.name}</h3>
-            </div>
-            <p class="text-lg mb-4">${meridian.description}</p>
-            <div class="space-y-4">
-                <div>
-                    <h4 class="font-bold">Função:</h4>
-                    <p class="text-sm">${meridian.function}</p>
-                </div>
-                <div>
-                    <h4 class="font-bold">Problemas Associados:</h4>
-                    <p class="text-sm">${meridian.associatedProblems}</p>
-                </div>
-                <div>
-                    <h4 class="font-bold">Pontos de Acupuntura:</h4>
-                    <ul class="list-disc list-inside text-sm space-y-2 mt-2">
-                        ${meridian.points.map(point => `
-                            <li class="point-item" data-id="Ponto-${point.id}" data-parent-id="${meridian.id}" data-type="Ponto">
-                                <span><strong>${point.id} (${point.name}):</strong> ${point.function}</span>
-                                <button class="favorite-toggle-btn" data-id="Ponto-${point.id}" data-parent-id="${meridian.id}" data-title="${point.id} - ${point.name}" data-type="Ponto" data-color="${meridian.color}" data-section-id="meridianos">
-                                    <svg class="w-5 h-5"><use href="#icon-star-outline"></use></svg>
-                                </button>
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    `;
-};
-
-// Renderer para Zang Fu Patterns
-const renderZangFuContent = (item) => {
-    const formatSintomas = (sintomas) => {
-        if (Array.isArray(sintomas)) {
-            return `<ul>${sintomas.map(s => `<li>${s}</li>`).join('')}</ul>`;
-        }
-        return `<ul><li>${sintomas}</li></ul>`;
-    };
-
-    return `
-        <div class="p-6">
-            <h3 class="text-2xl font-bold mb-4">${item.title}</h3>
-            <p class="text-lg">${item.description}</p>
-            <div class="mt-4">
-                <h4 class="font-bold">Sintomas Chave:</h4>
-                <div class="text-sm">${formatSintomas(item.sintomas)}</div>
-            </div>
-        </div>
-    `;
-};
-
-// Renderer para Food Therapy
-const renderFoodContent = (item) => {
-    return `
-        <div class="p-6">
-            <h3 class="text-2xl font-bold mb-4">${item.name}</h3>
-            <div class="mb-4">
-                <span class="inline-block px-3 py-1 rounded-full text-white text-xs font-semibold" style="background-color: var(--el-${item.element.toLowerCase()});">Elemento: ${item.element}</span>
-                <span class="inline-block px-3 py-1 rounded-full text-white text-xs font-semibold" style="background-color: var(--el-${item.element.toLowerCase()});">Natureza: ${item.nature}</span>
-                <span class="inline-block px-3 py-1 rounded-full text-white text-xs font-semibold" style="background-color: var(--el-${item.element.toLowerCase()});">Sabor: ${item.taste}</span>
-            </div>
-            <p class="text-lg">${item.description}</p>
-        </div>
-    `;
-};
-
-// Renderer para a maioria dos itens (com base em Markdown)
-const renderDefaultContent = (item) => {
-    let contentHtml = item.description || '';
-    if (item.content) {
-        contentHtml = markdownToHtml(item.content);
-    }
-    return `<div class="p-6">${contentHtml}</div>`;
-};
-
-// Renderer para Anatomia
-const renderAnatomyContent = (item) => {
-    return `
-        <div class="p-6">
-            <h3 class="text-2xl font-bold mb-4">${item.title}</h3>
-            <p class="text-lg">${item.description}</p>
-            <div class="mt-4">
-                <h4 class="font-bold">Detalhes:</h4>
-                <p class="text-sm">${item.details}</p>
-            </div>
-        </div>
-    `;
-};
-
-// Renderer para a Língua
-const renderLinguaContent = (item) => {
-    return `
-        <div class="p-6">
-            <h3 class="text-2xl font-bold mb-4">${item.title}</h3>
-            <p class="text-lg">${item.info}</p>
-        </div>
-    `;
-};
-
-// Renderer para Pulso
-const renderPulseContent = (item) => {
-    return `
-        <div class="p-6">
-            <h3 class="text-2xl font-bold mb-4">${item.title}</h3>
-            <p class="text-lg">${item.description}</p>
-        </div>
-    `;
-};
-
-// --- Estrutura de Dados e Renderers ---
-const sectionMap = {
-    'yin-yang': { title: 'Yin Yang', data: [yinYangData], renderer: renderDefaultContent },
-    'qi': { title: 'Tipos de Qi', data: qiData, renderer: renderQiContent },
-    'cinco-elementos': { title: 'Cinco Elementos', data: fiveElementsData, renderer: renderFiveElementsContent },
-    'meridianos': { title: 'Os 12 Meridianos', data: meridianData, renderer: renderMeridianContent },
-    'anatomia': { title: 'Anatomia e Fisiologia', data: anatomyData, renderer: renderAnatomyContent },
-    'zang-fu': { title: 'Padrões Zang-Fu', data: zangFuPatternsData, renderer: renderZangFuContent },
-    'ciclos-vida-feminino': { title: 'Ciclos da Vida Feminino', data: lifeCyclesFemaleData, renderer: renderDefaultContent },
-    'ciclos-vida-masculino': { title: 'Ciclos da Vida Masculino', data: lifeCyclesMaleData, renderer: renderDefaultContent },
-    'diagnostico': { title: 'Diagnóstico', data: dezPerguntasData, renderer: renderDefaultContent },
-    'lingua': { title: 'Diagnóstico da Língua', data: Object.values(linguaData), renderer: renderLinguaContent },
-    'pulso-posicao': { title: 'Diagnóstico do Pulso (Posição)', data: pulsePositionData, renderer: renderPulseContent },
-    'pulso-tipo': { title: 'Diagnóstico do Pulso (Tipos)', data: pulseTypeData, renderer: renderPulseContent },
-    'terapias': { title: 'Outras Terapias', data: therapiesData, renderer: renderDefaultContent },
-    'dietetica': { title: 'Dietética Chinesa', data: foodData, renderer: renderFoodContent },
-    'moxabustao': { title: 'Moxabustão', data: therapiesData.filter(t => t.id === 'moxa'), renderer: renderDefaultContent },
-    'fitoterapia': { title: 'Fitoterapia', data: therapiesData.filter(t => t.id === 'fitoterapia'), renderer: renderDefaultContent },
-    'grandes-mestres': { title: 'Grandes Mestres', data: greatMastersData, renderer: renderDefaultContent },
-    'glossario': { title: 'Glossário', data: glossaryData, renderer: renderDefaultContent },
-};
-
-// Mapeamento de tipos para pesquisa e renderização de modal
-const itemTypeMap = {
-    'Meridiano': {
-        data: meridianData,
-        renderer: renderMeridianContent,
-        title: 'Meridianos',
-        sectionId: 'meridianos'
-    },
-    'Ponto': {
-        data: meridianData.flatMap(m => m.points.map(p => ({ ...p, parentId: m.id, parentName: m.name, parentColor: m.color }))),
-        renderer: (item) => `
-            <div class="p-6">
-                <div class="flex items-center space-x-4 mb-4">
-                    <div class="w-8 h-8 rounded-full" style="background-color: ${item.parentColor};"></div>
-                    <h3 class="text-2xl font-bold">${item.id} - ${item.name}</h3>
-                </div>
-                <p class="text-sm text-gray-500 mb-4">Ponto no Meridiano do(a) ${item.parentName}</p>
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="font-bold">Função:</h4>
-                        <p class="text-sm">${item.function}</p>
-                    </div>
-                </div>
-            </div>
-        `,
-        title: 'Pontos de Acupuntura'
-    },
-    'Glossário': {
-        data: glossaryData,
-        renderer: renderDefaultContent,
-        title: 'Glossário'
-    },
-    'Alimento': {
-        data: foodData,
-        renderer: renderFoodContent,
-        title: 'Alimentos'
-    },
-    'Mestre': {
-        data: greatMastersData,
-        renderer: renderDefaultContent,
-        title: 'Grandes Mestres'
-    },
-    'Padrão Zang-Fu': {
-        data: zangFuPatternsData,
-        renderer: renderZangFuContent,
-        title: 'Padrões Zang-Fu'
-    }
-};
-
-// Inicialização de Fuse.js
-const setupFuse = () => {
-    // Mescla todos os dados relevantes em um único array
-    const searchData = [
-        ...meridianData.map(m => ({ id: `Meridiano-${m.id}`, title: m.name, type: 'Meridiano', content: m.description, color: m.color, sectionId: 'meridianos' })),
-        ...meridianData.flatMap(m => m.points.map(p => ({ id: `Ponto-${p.id}`, title: `${p.id} - ${p.name}`, type: 'Ponto', content: p.function, color: m.color, sectionId: 'meridianos', parentId: m.id }))),
-        ...glossaryData.map(g => ({ id: `Glossario-${g.title}`, title: g.title, type: 'Glossário', content: g.description, sectionId: 'glossario' })),
-        ...foodData.map(f => ({ id: `Alimento-${f.id}`, title: f.name, type: 'Alimento', content: f.description, sectionId: 'dietetica' })),
-        ...zangFuPatternsData.map(z => ({ id: `ZangFu-${z.id}`, title: z.title, type: 'Padrão Zang-Fu', content: z.sintomas, sectionId: 'zang-fu' })),
-    ];
-
-    const fuseOptions = {
-        keys: ['title', 'content'],
-        threshold: 0.3,
-        minMatchCharLength: 2,
-        includeScore: true,
-    };
-    fuse = new Fuse(searchData, fuseOptions);
-};
-
-// --- Funções de Estado e UI ---
-
-// Carregar tela de carregamento e inicializar app
-const showLoadingScreen = () => {
-    loadingScreen.style.display = 'flex';
-};
-
-const hideLoadingScreen = () => {
-    loadingScreen.style.display = 'none';
-};
-
-const initializeApp = () => {
-    setupFuse();
-    hideLoadingScreen();
-    // Inicia na seção inicial
-    handleSectionChange('meridianos');
-    updateFavCount();
-    updateFavoriteButtons();
-};
-
-// Menu Mobile
-const openMenu = () => {
-    mobileMenuOverlay.classList.add('open');
-};
-
-const closeMenu = () => {
-    mobileMenuOverlay.classList.remove('open');
-};
-
-// Pesquisa
-const openSearch = () => {
-    mobileSearchOverlay.classList.add('open');
-    mobileSearchInput.focus();
-};
-
-const closeSearch = () => {
-    mobileSearchOverlay.classList.remove('open');
-    searchResultsContainer.innerHTML = `<p class="text-center text-gray-500">Comece a escrever para ver os resultados.</p>`;
-};
-
-// Favoritos
-const updateFavCount = () => {
-    const count = Object.keys(favorites).length;
-    favCountSpan.textContent = count;
-    favCountSpan.classList.toggle('hidden', count === 0);
-};
-
-const toggleFavorite = (itemData) => {
-    const { id, title, type, color, sectionId } = itemData;
-    if (favorites[id]) {
-        delete favorites[id];
+    if (index > -1) {
+        favorites.splice(index, 1); // Remove
     } else {
-        favorites[id] = { id, title, type, color, sectionId };
+        favorites.push(itemData); // Adiciona
     }
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    updateFavCount();
-    updateFavList();
-    updateFavoriteButtons();
-};
 
-const updateFavoriteButtons = () => {
-    document.querySelectorAll('.favorite-toggle-btn').forEach(button => {
-        const itemId = button.dataset.id;
-        if (favorites[itemId]) {
-            button.classList.add('active');
-            button.innerHTML = `<svg class="w-5 h-5"><use href="#icon-star-filled"></use></svg>`;
-        } else {
-            button.classList.remove('active');
-            button.innerHTML = `<svg class="w-5 h-5"><use href="#icon-star-outline"></use></svg>`;
+    saveFavorites();
+    renderFavoritesSection();
+
+    // Atualiza o botão no modal se estiver aberto e for o mesmo item
+    const currentModalItem = contentModalFavoriteBtn.dataset.item;
+    if (currentModalItem) {
+        if (JSON.parse(currentModalItem).id === itemData.id) {
+            updateFavoriteButton(itemData.id);
+        }
+    }
+    
+    // Atualiza os botões na vista principal (pontos e alimentos)
+    document.querySelectorAll(`.favorite-toggle-btn[data-id="${itemData.id}"]`).forEach(btn => {
+        updateFavoriteIcon(btn, isFavorite(itemData.id));
+    });
+}
+
+function updateFavoriteButton(itemId) {
+    updateFavoriteIcon(contentModalFavoriteBtn, isFavorite(itemId));
+    contentModalFavoriteBtn.title = isFavorite(itemId) ? "Remover dos Favoritos" : "Adicionar aos Favoritos";
+}
+
+function updateFavoriteIcon(buttonElement, isFav) {
+    if (!buttonElement) return;
+    const starIcon = buttonElement.querySelector('svg use');
+    if (starIcon) {
+        starIcon.setAttribute('href', isFav ? '#icon-star-filled' : '#icon-star-outline');
+    }
+    buttonElement.classList.toggle('active', isFav);
+}
+
+
+// --- LÓGICA DE NAVEGAÇÃO RESPONSIVA E PESQUISA ---
+function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
+function closeMobileMenu() { document.body.classList.remove('mobile-menu-open'); }
+openMenuBtn.addEventListener('click', openMobileMenu);
+closeMenuBtn.addEventListener('click', closeMobileMenu);
+mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+function openSearchModal() {
+    document.body.classList.add('search-modal-open');
+    searchModalContainer.classList.remove('hidden');
+    setTimeout(() => globalSearchInput.focus(), 50); 
+}
+function closeSearchModal() {
+    document.body.classList.remove('search-modal-open');
+    searchModalContainer.classList.add('hidden');
+    globalSearchInput.value = ''; 
+    searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Comece a escrever para ver os resultados.</p>';
+}
+openSearchMobileBtn.addEventListener('click', openSearchModal);
+desktopSearchInput.addEventListener('focus', openSearchModal);
+closeSearchBtn.addEventListener('click', closeSearchModal);
+searchOverlay.addEventListener('click', closeSearchModal);
+
+// --- LÓGICA DO MODAL DE CONTEÚDO ---
+function openContentModal(htmlContent, itemData) {
+    contentModalContent.innerHTML = htmlContent;
+    
+    if (itemData) {
+        contentModalFavoriteBtn.dataset.item = JSON.stringify(itemData);
+        updateFavoriteButton(itemData.id);
+        contentModalFavoriteBtn.style.display = 'block';
+    } else {
+        contentModalFavoriteBtn.style.display = 'none';
+    }
+
+    document.body.classList.add('content-modal-open');
+    
+    const modalAccordions = contentModalContent.querySelectorAll('.accordion-container');
+    modalAccordions.forEach(accordion => initializeAccordion(accordion));
+}
+function closeContentModal() {
+    document.body.classList.remove('content-modal-open');
+}
+contentModalCloseBtn.addEventListener('click', closeContentModal);
+contentModalOverlay.addEventListener('click', closeContentModal);
+contentModalFavoriteBtn.addEventListener('click', () => {
+    const itemDataString = contentModalFavoriteBtn.dataset.item;
+    if (itemDataString) {
+        toggleFavorite(JSON.parse(itemDataString));
+    }
+});
+
+
+// --- LÓGICA DE NAVEGAÇÃO PRINCIPAL ---
+function showSection(targetId, linkText) {
+    contentSections.forEach(section => {
+        section.classList.toggle('active', section.id === targetId);
+    });
+    if (contentArea) contentArea.scrollTop = 0;
+    if (currentSectionTitle && linkText) currentSectionTitle.textContent = linkText;
+}
+function updateActiveLink(targetId) {
+    allNavHubs.forEach(hub => {
+        hub.querySelectorAll('.sidebar-link').forEach(link => {
+            const href = link.getAttribute('href');
+            const isActive = href === `#${targetId}`;
+            link.classList.toggle('active', isActive);
+            link.setAttribute('aria-current', isActive ? 'page' : 'false');
+        });
+    });
+}
+allNavHubs.forEach(hub => {
+    hub.addEventListener('click', (e) => {
+        const link = e.target.closest('a.sidebar-link');
+        const groupHeader = e.target.closest('.nav-group-header');
+        if (link) {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            const linkText = link.querySelector('span').textContent;
+            showSection(targetId, linkText);
+            updateActiveLink(targetId);
+            closeMobileMenu();
+        }
+        if (groupHeader) {
+            groupHeader.classList.toggle('open');
+            groupHeader.setAttribute('aria-expanded', groupHeader.classList.contains('open'));
         }
     });
+});
+
+// --- LÓGICA DE PESQUISA (COM FUSE.JS) ---
+function createSearchIndex() {
+    const rawIndex = [];
+    meridianData.forEach(m => m.points.forEach(p => rawIndex.push({ title: `${p.id} - ${p.name}`, content: p.functions, type: 'Ponto', color: m.element, sectionId: 'meridianos' })));
+    Object.values(glossaryData).forEach(i => rawIndex.push({ title: i.term, content: i.definition, type: 'Glossário', color: 'primary', sectionId: 'glossario' }));
+    foodData.forEach(f => rawIndex.push({ title: f.name, content: `Ações: ${f.actions}`, type: 'Alimento', color: 'earth', sectionId: 'dietetica' }));
+    zangFuPatternsData.forEach(o => o.patterns.forEach(p => rawIndex.push({ title: p.name, content: p.symptoms, type: 'Padrão Zang-Fu', color: o.color, sectionId: 'padroes-zang-fu' })));
+    therapiesData.forEach(t => rawIndex.push({ title: t.title, content: t.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Terapia', color: 'secondary', sectionId: 'terapias' }));
+    greatMastersData.forEach(m => rawIndex.push({ title: m.name, content: m.content.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...', type: 'Mestre', color: 'water', sectionId: 'grandes-mestres' }));
+    
+    const options = {
+        includeScore: true,
+        keys: ['title', 'content'],
+        threshold: 0.4 // Adjust threshold for more/less fuzzy matching
+    };
+    fuse = new Fuse(rawIndex, options);
+}
+
+function performSearch(query) {
+    if (query.length < 2) {
+        searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Escreva pelo menos 2 letras para pesquisar.</p>';
+        return;
+    }
+    const results = fuse.search(query);
+    renderSearchResults(results);
+}
+
+function renderSearchResults(results) {
+    if (results.length === 0) {
+        searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Nenhum resultado encontrado.</p>';
+        return;
+    }
+    searchResultsContainer.innerHTML = results.map(result => {
+        const item = result.item;
+        const badgeClass = item.type === 'Ponto' ? 'ponto-badge' : '';
+        return `
+        <div class="search-result-item" data-section-id="${item.sectionId}">
+            <h4>${item.title}</h4>
+            <p>${item.content}</p>
+            <span class="result-type-badge ${badgeClass}" style="background-color: var(--el-${item.color}, var(--color-primary))">${item.type}</span>
+        </div>
+    `}).join('');
+}
+
+globalSearchInput.addEventListener('input', (e) => performSearch(e.target.value));
+searchResultsContainer.addEventListener('click', (e) => {
+    const resultItem = e.target.closest('.search-result-item');
+    if (resultItem) {
+        const sectionId = resultItem.dataset.sectionId;
+        const link = document.querySelector(`#desktop-navigation-hub a[href="#${sectionId}"]`);
+        if (link) {
+            const linkText = link.querySelector('span').textContent;
+            showSection(sectionId, linkText);
+            updateActiveLink(sectionId);
+            closeSearchModal();
+        }
+    }
+});
+
+
+// --- FUNÇÕES DE GERAÇÃO DE CONTEÚDO ---
+
+function initializeAccordion(container) {
+    if (!container) return;
+    container.addEventListener('click', (e) => {
+        const button = e.target.closest('.accordion-button');
+        if (!button) return;
+
+        const item = button.closest('.accordion-item');
+        if (!item || item.parentElement !== container) return;
+        
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+        const siblingItems = Array.from(container.children).filter(child => child.classList.contains('accordion-item'));
+        siblingItems.forEach(otherItem => {
+            if (otherItem !== item) {
+                const otherButton = otherItem.querySelector('.accordion-button');
+                if (otherButton) otherButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+        
+        button.setAttribute('aria-expanded', !isExpanded);
+    });
+}
+
+
+function createAccordionHTML(data, containerIdPrefix = '') {
+    return data.map((item, index) => {
+        const uniqueId = `${containerIdPrefix}-item-${index}`;
+        return `
+        <div class="accordion-item" data-id="${item.id || ''}">
+            <button class="accordion-button" aria-expanded="false" aria-controls="${uniqueId}-content" id="${uniqueId}-button">
+                <span class="accordion-title-content">
+                    ${item.color ? `<span class="w-3 h-3 rounded-full mr-3 shrink-0" style="background-color: var(--el-${item.color});"></span>` : ''}
+                    <span class="text-left">${item.title}</span>
+                </span>
+                <svg class="w-5 h-5 shrink-0 text-gray-400 chevron transition-transform duration-300"><use href="#icon-chevron-down"></use></svg>
+            </button>
+            <div class="accordion-content" id="${uniqueId}-content" role="region" aria-labelledby="${uniqueId}-button">
+                <div class="accordion-content-inner">${item.content || item.functions}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function setupYinYangSection() {
+    const container = document.getElementById('yin-yang-container');
+    if (!container) return;
+    // SVG animado do ecrã de carregamento
+    const animatedSvg = `
+        <svg viewBox="0 0 200 200" class="w-full max-w-xs mx-auto yin-yang-svg">
+             <defs>
+                <linearGradient id="yin-grad-main" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#4a5568" /><stop offset="100%" stop-color="#1a202c" /></linearGradient>
+                <linearGradient id="yang-grad-main" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ffffff" /><stop offset="100%" stop-color="#e2e8f0" /></linearGradient>
+            </defs>
+            <g>
+                <circle cx="100" cy="100" r="98" fill="url(#yang-grad-main)" stroke="#e2e8f0" stroke-width="2"/>
+                <path fill="url(#yin-grad-main)" d="M100,2 a98,98 0 0,0 0,196 a49,49 0 0,1 0,-98 a49,49 0 0,0 0,-98 Z"/>
+                <circle fill="url(#yin-grad-main)" cx="100" cy="149" r="18"/><circle fill="url(#yang-grad-main)" cx="100" cy="51" r="18"/>
+            </g>
+        </svg>
+    `;
+    container.innerHTML = `
+        <div class="card-header"><h3>${yinYangData.title}</h3></div>
+        <div class="card-content">
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="p-4">${animatedSvg}</div>
+                <div class="card-prose">${yinYangData.content}</div>
+            </div>
+            <div class="mt-8">${yinYangData.table}</div>
+        </div>`;
+}
+
+function createLifeCycleTimeline(containerId, data, colorClass) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = data.map(item => `
+        <div class="timeline-item">
+            <div class="timeline-marker"><div class="w-8 h-8 rounded-full ${colorClass} text-white flex items-center justify-center font-bold text-sm shadow-md">${item.age}</div></div>
+            <div class="pt-1"><p class="font-semibold text-gray-800">Idade ${item.age}</p><p class="text-sm text-gray-600">${item.content}</p></div>
+        </div>`).join('');
+}
+
+// --- SISTEMA DE GRELHAS GENÉRICO ---
+
+function setupZoomGrid(containerId, data, cardRenderer, modalContentRenderer, itemType) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = data.map(item => cardRenderer(item)).join('');
+
+    container.addEventListener('click', (e) => {
+        const card = e.target.closest('[data-id]');
+        if (!card) return;
+
+        const itemId = card.dataset.id;
+        const itemInfo = data.find(d => d.id === itemId);
+
+        if (itemInfo) {
+            const contentHTML = modalContentRenderer(itemInfo);
+            const itemDataForFavorite = {
+                id: `${itemType}-${itemInfo.id}`,
+                title: itemInfo.name || itemInfo.title,
+                type: itemType,
+                color: itemInfo.color || 'primary',
+                sectionId: container.closest('.content-section').id
+            };
+            openContentModal(contentHTML, itemDataForFavorite);
+        }
+    });
+}
+
+function setupFlipGrid(containerId, data, cardRenderer, modalContentRenderer, itemType) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = data.map(item => cardRenderer(item)).join('');
+
+    container.addEventListener('click', (e) => {
+        const card = e.target.closest('.flip-card');
+        const detailsButton = e.target.closest('.details-btn');
+
+        if (detailsButton) {
+            const masterId = detailsButton.dataset.id;
+            const masterInfo = data.find(m => m.id === masterId);
+            if (masterInfo) {
+                const itemDataForFavorite = {
+                    id: `${itemType}-${masterInfo.id}`,
+                    title: masterInfo.name,
+                    type: itemType,
+                    color: 'water',
+                    sectionId: container.closest('.content-section').id
+                };
+                openContentModal(modalContentRenderer(masterInfo), itemDataForFavorite);
+            }
+            return; 
+        }
+        
+        if (card) {
+            card.classList.toggle('flipped');
+        }
+    });
+}
+
+
+// --- RENDERERS PARA O SISTEMA DE GRELHAS ---
+
+const renderMeridianCard = (item) => `
+    <div class="meridian-card" data-id="${item.id}">
+        <span class="meridian-card-color-bar" style="background-color: var(--el-${item.color});"></span>
+        <div class="p-4">
+            <h4 class="font-playfair font-bold text-lg text-primary">${item.name}</h4>
+            <p class="text-xs text-gray-500">${item.element} / ${item.time}</p>
+        </div>
+    </div>`;
+
+const renderMeridianModalContent = (item) => {
+    const pointsHTML = item.points.map(p => {
+        const itemData = {
+            id: `point-${p.id}`,
+            title: `${p.id} - ${p.name} (${p.pt_name})`,
+            type: 'Ponto',
+            color: item.color,
+            parentId: item.id,
+            parentTitle: item.name,
+            sectionId: 'meridianos'
+        };
+        const isFav = isFavorite(itemData.id);
+        return `
+        <div class="point-item">
+            <div class="point-info">
+                <strong class="text-primary-dark">${p.id} - ${p.name} (${p.character}) - ${p.pt_name}</strong>
+                <p class="!mb-0">${p.functions}</p>
+            </div>
+            <button class="favorite-toggle-btn ${isFav ? 'active' : ''}" title="Adicionar Ponto aos Favoritos" data-item='${JSON.stringify(itemData)}' data-id="${itemData.id}">
+                <svg class="w-5 h-5"><use href="${isFav ? '#icon-star-filled' : '#icon-star-outline'}"></use></svg>
+            </button>
+        </div>`;
+    }).join('');
+
+    return `
+    <div class="card-header">
+        <span class="w-4 h-4 rounded-full mr-3 shrink-0" style="background-color: var(--el-${item.color});"></span>
+        <h3>${item.name}</h3>
+    </div>
+    <div class="card-content card-prose structured-content text-sm">
+        <div class="grid md:grid-cols-2 gap-x-8">
+            <div><h4>Funções Principais</h4><p>${item.functions}</p></div>
+            <div><h4>Sinais de Desequilíbrio</h4><p>${item.imbalances}</p></div>
+        </div>
+        <h4>Pontos Especiais</h4>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 text-xs p-3 bg-gray-50 rounded-md border">
+            <div><strong>Fonte (Yuan):</strong> ${item.yuan_source}</div>
+            <div><strong>Conexão (Luo):</strong> ${item.luo_connecting}</div>
+            <div><strong>Fenda (Xi):</strong> ${item.xi_cleft}</div>
+        </div>
+        <h4>Pontos Shu Antigos</h4>
+        <div class="overflow-x-auto"><table class="w-full text-left !text-xs"><thead class="bg-gray-100"><tr><th class="p-2 font-semibold">Tipo</th><th class="p-2 font-semibold">Elemento</th><th class="p-2 font-semibold">Ponto</th><th class="p-2 font-semibold">Funções</th></tr></thead><tbody>${item.five_shu.map(p => `<tr class="border-b"><td class="p-2">${p.type}</td><td class="p-2">${p.element}</td><td class="p-2 font-bold">${p.point}</td><td class="p-2">${p.functions}</td></tr>`).join('')}</tbody></table></div>
+        <h4>Lista Completa de Pontos</h4>
+        <div class="space-y-1 max-h-80 overflow-y-auto pr-2">${pointsHTML}</div>
+    </div>`;
 };
 
-const updateFavList = () => {
-    favList.innerHTML = '';
-    const favItems = Object.values(favorites);
-    if (favItems.length === 0) {
-        favList.innerHTML = `<p class="p-4 text-sm text-gray-500">Nenhum favorito adicionado.</p>`;
-    } else {
-        favItems.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'favorite-item flex items-center justify-between p-2 hover:bg-gray-50 cursor-pointer';
-            li.dataset.id = item.id;
-            li.dataset.type = item.type;
-            li.dataset.sectionId = item.sectionId;
-            if (item.parentId) { li.dataset.parentId = item.parentId; }
+const renderTherapyCard = (item) => {
+    const regex = /(.+?)\s\((.+?)(?:\s-\s(.+?))?\)/;
+    const match = item.title.match(regex);
+    let ptName = item.title, chName = '', pinyin = '';
 
-            const itemTitle = document.createElement('span');
-            itemTitle.className = 'text-sm font-medium flex-1 truncate';
-            itemTitle.textContent = item.title;
+    if (match) {
+        ptName = match[1];
+        chName = match[2];
+        pinyin = match[3] || '';
+    }
 
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'remove-favorite-btn p-1';
-            removeBtn.innerHTML = `<svg class="w-4 h-4"><use href="#icon-close"></use></svg>`;
-            removeBtn.onclick = (e) => {
-                e.stopPropagation();
-                toggleFavorite(item);
-            };
+    return `
+    <div class="meridian-card text-center p-4 flex flex-col justify-center items-center h-full" data-id="${item.id}">
+        <h4 class="text-xl font-playfair my-1 text-primary">${ptName}</h4>
+        ${chName ? `<p class="text-2xl font-chinese text-gray-600">${chName}</p>` : ''}
+        ${pinyin ? `<p class="text-sm text-gray-500 font-mono">(${pinyin})</p>` : ''}
+    </div>`;
+};
 
-            li.appendChild(itemTitle);
-            li.appendChild(removeBtn);
-            favList.appendChild(li);
+const renderTherapyModalContent = (item) => `
+    <div class="card-header"><h3>${item.title}</h3></div>
+    <div class="card-content card-prose structured-content">${item.content}</div>`;
+
+const renderZangFuCard = (item) => `
+    <div class="meridian-card" data-id="${item.id}">
+        <span class="meridian-card-color-bar" style="background-color: var(--el-${item.color});"></span>
+        <div class="p-4">
+            <h4 class="font-playfair font-bold text-lg" style="color: var(--el-${item.color});">Padrões de ${item.name}</h4>
+        </div>
+    </div>`;
+
+const renderZangFuModalContent = (item) => {
+    const patternsWithContent = item.patterns.map(p => ({
+        title: p.name,
+        content: `
+            <div class="space-y-3 text-sm">
+                <div><strong class="text-primary-dark">Sintomas Chave:</strong><p class="text-gray-600 !mb-0">${p.symptoms}</p></div>
+                <div><strong class="text-primary-dark">Língua:</strong><p class="text-gray-600 !mb-0">${p.tongue}</p></div>
+                <div><strong class="text-primary-dark">Pulso:</strong><p class="text-gray-600 !mb-0">${p.pulse}</p></div>
+                <div><strong class="text-primary-dark">Princípio de Tratamento:</strong><p class="text-gray-600 !mb-0">${p.treatmentPrinciple}</p></div>
+            </div>
+        `
+    }));
+
+    return `
+    <div class="card-header">
+        <span class="w-4 h-4 rounded-full mr-3 shrink-0" style="background-color: var(--el-${item.color});"></span>
+        <h3>Padrões de ${item.name}</h3>
+    </div>
+    <div class="card-content">
+        <div class="accordion-container">${createAccordionHTML(patternsWithContent, `modal-zangfu-${item.id}`)}</div>
+    </div>`;
+};
+
+const renderAnatomyCard = (item) => `
+    <div class="meridian-card p-4 flex items-center justify-center text-center h-full" data-id="${item.id}">
+        <h4 class="font-playfair font-bold text-lg text-primary">${item.title}</h4>
+    </div>`;
+
+const renderAnatomyModalContent = (item) => `
+    <div class="card-header"><h3>${item.title}</h3></div>
+    <div class="card-content card-prose structured-content">${item.content}</div>`;
+
+const renderQiFlipCard = (item) => `
+    <div class="flip-card">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <h4 class="font-playfair font-bold text-lg text-primary">${item.title}</h4>
+            </div>
+            <div class="flip-card-back">
+                <p class="text-sm">${item.content}</p>
+            </div>
+        </div>
+    </div>`;
+
+const renderMasterFlipCard = (item) => `
+    <div class="flip-card">
+        <div class="flip-card-inner">
+            <div class="flip-card-front" style="background-image: url('${item.image_placeholder}')">
+                <div class="master-card-overlay">
+                    <h4 class="font-playfair font-bold text-lg text-white">${item.name}</h4>
+                    <p class="text-xs text-gray-200">${item.dynasty}</p>
+                </div>
+            </div>
+            <div class="flip-card-back">
+                <p class="text-sm">${item.content.replace(/<[^>]*>/g, ' ').substring(0, 250)}...</p>
+                <button class="details-btn" data-id="${item.id}">Ver Detalhes</button>
+            </div>
+        </div>
+    </div>`;
+
+const renderMasterModalContent = (item) => `
+    <div class="card-header"><h3 class="text-2xl font-playfair font-bold">${item.name}</h3></div>
+    <div class="card-content card-prose">
+        <img src="${item.image_placeholder}" alt="Retrato de ${item.name}" class="w-full h-48 object-cover rounded-lg mb-4 shadow-md">
+        <p class="font-semibold text-gray-500 text-sm !-mt-2 !mb-4">${item.dynasty}</p>
+        ${item.content}
+    </div>`;
+
+
+// --- LÓGICA DE DIAGNÓSTICO (SVG MELHORADO) ---
+function setupDiagnosisDiagrams() {
+    const tongueSVG = document.getElementById('lingua-diagram-svg');
+    const tongueInfoBox = document.getElementById('lingua-info-box');
+    if (tongueSVG && tongueInfoBox) {
+        const areas = tongueSVG.querySelectorAll('.diagram-area-svg');
+        areas.forEach(area => {
+            area.addEventListener('click', () => {
+                areas.forEach(a => a.classList.remove('active'));
+                const currentAreaId = area.dataset.area;
+                tongueSVG.querySelectorAll(`[data-area="${currentAreaId}"]`).forEach(part => part.classList.add('active'));
+                
+                const info = linguaData[currentAreaId];
+                if (info) {
+                    tongueInfoBox.innerHTML = `
+                        <div class="text-left">
+                            <h4 class="font-playfair font-bold text-lg text-primary mb-2">${info.title}</h4>
+                            <p class="text-sm text-gray-600">${info.info}</p>
+                        </div>`;
+                }
+            });
         });
     }
-};
 
-const toggleFavDropdown = () => {
-    favDropdown.classList.toggle('hidden');
-    if (!favDropdown.classList.contains('hidden')) {
-        updateFavList();
-    }
-};
-
-// Modal de Conteúdo
-const openContentModal = (contentHTML, itemDataForFavorite) => {
-    contentModalContent.innerHTML = contentHTML;
-    contentModal.classList.add('open');
-
-    // Configurar botão de favoritos no modal
-    const favBtn = document.getElementById('content-modal-favorite-btn');
-    favBtn.dataset.id = itemDataForFavorite.id;
-    favBtn.dataset.title = itemDataForFavorite.title;
-    favBtn.dataset.type = itemDataForFavorite.type;
-    favBtn.dataset.color = itemDataForFavorite.color || generateRandomColor();
-    favBtn.dataset.sectionId = itemDataForFavorite.sectionId;
-
-    if (favorites[itemDataForFavorite.id]) {
-        favBtn.innerHTML = `<svg class="w-6 h-6 text-yellow-400"><use href="#icon-star-filled"></use></svg>`;
-    } else {
-        favBtn.innerHTML = `<svg class="w-6 h-6 text-gray-400"><use href="#icon-star-outline"></use></svg>`;
-    }
-};
-
-const closeContentModal = () => {
-    contentModal.classList.remove('open');
-};
-
-// Lida com a mudança de seção
-const handleSectionChange = (sectionId) => {
-    const section = sectionMap[sectionId];
-    if (section) {
-        currentSectionTitle.textContent = section.title;
-        contentArea.innerHTML = ''; // Limpa o conteúdo anterior
-        
-        if (section.data && section.data.length > 0) {
-            if (section.renderer === renderMeridianContent) {
-                 // Renderiza a lista de meridianos
-                contentArea.innerHTML = `
-                    <div class="px-4 py-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        ${section.data.map(item => `
-                            <div class="card bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-id="${item.id}" data-type="Meridiano">
-                                <div class="flex items-center space-x-4">
-                                    <div class="w-10 h-10 rounded-full flex-shrink-0" style="background-color: ${item.color};"></div>
-                                    <h4 class="text-xl font-semibold">${item.name}</h4>
-                                </div>
-                                <p class="text-sm text-gray-500 mt-2">${item.description.split('.')[0]}.</p>
+    const pulseSVG = document.getElementById('pulso-diagram-svg');
+    const pulseInfoBox = document.getElementById('pulso-info-box');
+    if (pulseSVG && pulseInfoBox) {
+        const positions = pulseSVG.querySelectorAll('.pulse-pos-circle');
+        positions.forEach(pos => {
+            pos.addEventListener('click', () => {
+                positions.forEach(p => p.classList.remove('active'));
+                pos.classList.add('active');
+                const positionId = pos.dataset.pos;
+                const info = pulsePositionData[positionId];
+                 if (info) {
+                    pulseInfoBox.innerHTML = `
+                        <div class="text-left w-full">
+                            <h4 class="font-playfair font-bold text-lg text-primary mb-3">${info.title}</h4>
+                            <div class="text-sm">
+                                <strong class="font-semibold text-gray-700">Órgãos:</strong>
+                                <p class="text-gray-600">${info.organs}</p>
                             </div>
-                        `).join('')}
-                    </div>
-                `;
-            } else {
-                // Renderiza o conteúdo como um cartão clicável
-                 contentArea.innerHTML = `
-                    <div class="px-4 py-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        ${section.data.map((item, index) => {
-                            const itemId = item.id || index;
-                            const title = item.title || item.name;
-                            const description = item.description || (Object.values(item)[1]);
-                            return `
-                                <div class="card bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-id="${itemId}" data-type="${section.title}">
-                                    <h4 class="text-xl font-semibold">${title}</h4>
-                                    <p class="text-sm text-gray-500 mt-2">${description.split('.')[0]}.</p>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                 `;
-            }
-        } else {
-            contentArea.innerHTML = `<div class="p-6 text-center text-gray-500">Conteúdo não encontrado para esta seção.</div>`;
-        }
-        
-        // Remove a classe 'active' de todos os botões e adiciona ao botão clicado
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        const activeItem = document.querySelector(`[data-section="${sectionId}"]`);
-        if (activeItem) {
-            activeItem.classList.add('active');
-        }
-    }
-};
-
-// --- Funções de Eventos ---
-
-// Lida com o clique de navegação
-function handleNavigationClick(event) {
-    // Check if this is a touchend event, and prevent default behavior to avoid "ghost clicks"
-    if (event.type === 'touchend') {
-      event.preventDefault();
-    }
-    const navItem = event.target.closest('a.nav-item');
-    if (navItem) {
-        const sectionId = navItem.dataset.section;
-        handleSectionChange(sectionId);
-        // Fecha o menu móvel se estiver aberto
-        if (mobileMenuOverlay.classList.contains('open')) {
-            closeMenu();
-        }
+                        </div>`;
+                }
+            });
+        });
     }
 }
 
-// Lida com a busca de conteúdo
-const handleSearch = (event) => {
-    const query = event.target.value;
-    searchResultsContainer.innerHTML = '';
+function setupDiagnosisAccordion() {
+    const container = document.getElementById('diagnosis-accordion-container');
+    if(!container) return;
+    
+    const perguntasContent = `<div id="perguntas-accordion-inner" class="accordion-container"></div>`;
+    const pulseTypesContent = `<div id="pulse-list-container-inner" class="accordion-container"></div>`;
+    
+    const diagnosisData = [ 
+        { title: 'As 10+1 Perguntas', content: perguntasContent }, 
+        { title: 'Tipos de Pulso Comuns', content: pulseTypesContent } 
+    ];
+    
+    container.innerHTML = createAccordionHTML(diagnosisData, 'diagnosis-sub');
+    initializeAccordion(container);
 
-    if (query.length > 1) {
-        const results = fuse.search(query).slice(0, 10);
-        if (results.length > 0) {
-            const resultsHTML = results.map(result => {
-                const item = result.item;
-                return `
-                    <div class="search-result-item bg-gray-100 p-3 mb-2 rounded-lg cursor-pointer hover:bg-gray-200" data-id="${item.id}" data-type="${item.type}">
-                         <div class="flex items-center space-x-2">
-                             ${item.color ? `<div class="w-4 h-4 rounded-full flex-shrink-0" style="background-color: ${item.color};"></div>` : ''}
-                             <div class="flex-1">
-                                 <h4 class="text-sm font-semibold">${item.title}</h4>
-                                 <p class="text-xs text-gray-500">${item.type}</p>
-                             </div>
-                         </div>
-                    </div>
-                `;
-            }).join('');
-            searchResultsContainer.innerHTML = resultsHTML;
-        } else {
-            searchResultsContainer.innerHTML = `<p class="text-center text-gray-500">Nenhum resultado encontrado para "${query}".</p>`;
-        }
-    } else {
-        searchResultsContainer.innerHTML = `<p class="text-center text-gray-500">Comece a escrever para ver os resultados.</p>`;
+    const perguntasContainer = document.getElementById('perguntas-accordion-inner');
+    if(perguntasContainer) {
+        perguntasContainer.innerHTML = createAccordionHTML(dezPerguntasData, 'perguntas');
+        initializeAccordion(perguntasContainer);
     }
+    
+    const pulsoContainer = document.getElementById('pulse-list-container-inner');
+    if(pulsoContainer) {
+        const pulseTypes = pulseTypeData;
+        pulsoContainer.innerHTML = createAccordionHTML(pulseTypes, 'pulse-list');
+        initializeAccordion(pulsoContainer);
+    }
+}
+
+// --- LÓGICA DOS 5 ELEMENTOS (SVG Interativo Profissional) ---
+function initializeFiveElements() {
+    const svg = document.getElementById('five-elements-svg');
+    if (!svg) return;
+
+    const elementDetailsContainer = document.getElementById('element-details-container');
+    const cycleInfoBox = document.getElementById('cycle-info-box');
+    const btnGeracao = document.getElementById('btn-geracao');
+    const btnControlo = document.getElementById('btn-controlo');
+    
+    let currentCycle = 'geracao';
+    let currentElement = 'madeira';
+
+    const cycleInfo = {
+        geracao: { title: 'Ciclo de Geração (Sheng)', description: 'Este ciclo representa a nutrição e o apoio. Cada elemento é a "mãe" do seguinte.', color: 'bg-green-100', textColor: 'text-green-800' },
+        controlo: { title: 'Ciclo de Controlo (Ke)', description: 'Este ciclo representa o controlo e a restrição, mantendo o equilíbrio do sistema.', color: 'bg-red-100', textColor: 'text-red-800' }
+    };
+    
+    function updateDetails(elementId) {
+        currentElement = elementId;
+        const elData = fiveElementsData[elementId];
+        
+        // Update text details
+        elementDetailsContainer.innerHTML = `<div class="text-left p-6 rounded-lg border-2" style="border-color: var(--el-${elData.color}); background-color: #fafcff;">
+            <h3 class="text-2xl font-playfair font-bold mb-4" style="color: var(--el-${elData.color});">${elData.name}</h3>
+            <div class="card-prose">
+                <p class="font-semibold text-gray-600 mb-2">Relações no Ciclo de ${currentCycle.charAt(0).toUpperCase() + currentCycle.slice(1)}:</p>
+                <p class="text-sm">${elData.relations[currentCycle]}</p>
+                <table class="w-full text-sm mt-4"><tbody>${elData.table}</tbody></table>
+            </div>
+        </div>`;
+        
+        // Update active element style
+        svg.querySelectorAll('.element-node-svg').forEach(node => {
+            node.classList.toggle('active', node.dataset.id === elementId);
+        });
+
+        // Update active path segment
+        svg.querySelectorAll('.cycle-path').forEach(path => path.classList.remove('active'));
+        const targetElementId = elData.target[currentCycle];
+        const activePathId = `path-${currentCycle}-${elementId}-${targetElementId}`;
+        const activePath = document.getElementById(activePathId);
+        if (activePath) {
+            activePath.classList.add('active');
+        }
+    }
+
+    function switchCycle(newCycle) {
+        currentCycle = newCycle;
+        btnGeracao.classList.toggle('active', newCycle === 'geracao');
+        btnControlo.classList.toggle('active', newCycle === 'controlo');
+        
+        const info = cycleInfo[newCycle];
+        cycleInfoBox.className = `mb-6 p-4 rounded-lg text-center transition-colors duration-500 ${info.color} ${info.textColor}`;
+        cycleInfoBox.innerHTML = `<h4 class="font-bold">${info.title}</h4><p class="text-sm">${info.description}</p>`;
+        
+        updateDetails(currentElement);
+    }
+
+    btnGeracao.addEventListener('click', () => switchCycle('geracao'));
+    btnControlo.addEventListener('click', () => switchCycle('controlo'));
+
+    svg.querySelectorAll('.element-node-svg').forEach(node => {
+        node.addEventListener('click', () => updateDetails(node.dataset.id));
+    });
+
+    // Initial setup
+    switchCycle('geracao');
+    updateDetails('madeira');
+}
+
+
+function setupGlossary() { 
+    const glossaryContainer = document.getElementById('glossary-container'); 
+    if (!glossaryContainer) return; 
+    const categories = Object.values(glossaryData).reduce((acc, item) => { 
+        (acc[item.category] = acc[item.category] || []).push(item); 
+        return acc; 
+    }, {}); 
+    const sortedCategories = Object.keys(categories).sort(); 
+    glossaryContainer.innerHTML = sortedCategories.map(category => 
+        `<div class="floating-card mb-8">
+            <div class="card-header"><h3 class="text-gray-700">${category}</h3></div>
+            <div class="card-content grid md:grid-cols-2 gap-x-8 gap-y-6">
+                ${categories[category].sort((a, b) => a.term.localeCompare(b.term)).map(item => 
+                    `<div><h4 class="font-bold text-lg text-primary-dark">${item.term}</h4><p class="text-gray-600">${item.definition}</p></div>`
+                ).join('')}
+            </div>
+        </div>`
+    ).join(''); 
+}
+
+function setupDietetics() {
+    const foodResultsContainer = document.getElementById('food-results-container');
+    const foodAlphaNav = document.getElementById('food-alpha-nav');
+    const foodSearchInput = document.getElementById('food-search-input');
+
+    function renderFoodList(foods) {
+        const groupedFoods = foods.reduce((acc, food) => {
+            const firstLetter = food.name.charAt(0).toUpperCase();
+            if (!acc[firstLetter]) acc[firstLetter] = [];
+            acc[firstLetter].push(food);
+            return acc;
+        }, {});
+        const letters = Object.keys(groupedFoods).sort();
+
+        if (foodAlphaNav) {
+            foodAlphaNav.innerHTML = letters.map(letter => `<a href="#food-letter-${letter}">${letter}</a>`).join('');
+        }
+
+        if (foodResultsContainer) {
+            foodResultsContainer.innerHTML = letters.map(letter => `
+                <h3 id="food-letter-${letter}" class="food-group-header" tabindex="-1">${letter}</h3>
+                <div class="food-group-items">
+                    ${groupedFoods[letter].map(food => {
+                        const itemData = {
+                            id: `food-${food.name.replace(/\s+/g, '-')}`,
+                            title: food.name,
+                            type: 'Alimento',
+                            sectionId: 'dietetica'
+                        };
+                        const isFav = isFavorite(itemData.id);
+                        return `
+                        <div class="food-item" id="${itemData.id}">
+                            <div class="food-item-content">
+                                <h4 class="font-bold text-lg text-green-800">${food.name}</h4>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mt-2">
+                                    <div><strong>Temp:</strong> <span class="font-semibold">${food.temp}</span></div>
+                                    <div><strong>Sabor:</strong> <span class="font-semibold">${food.flavor}</span></div>
+                                    <div class="col-span-2"><strong>Órgãos:</strong> <span class="font-semibold">${food.organs}</span></div>
+                                </div>
+                                <p class="text-sm mt-2"><strong>Ações:</strong> ${food.actions}</p>
+                            </div>
+                            <button class="favorite-toggle-btn ${isFav ? 'active' : ''}" title="Adicionar Alimento aos Favoritos" data-item='${JSON.stringify(itemData)}' data-id="${itemData.id}">
+                                <svg class="w-5 h-5"><use href="${isFav ? '#icon-star-filled' : '#icon-star-outline'}"></use></svg>
+                            </button>
+                        </div>`;
+                    }).join('')}
+                </div>
+            `).join('');
+        }
+    }
+
+    if (foodSearchInput) {
+        renderFoodList(foodData);
+        foodSearchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const headers = foodResultsContainer.querySelectorAll('.food-group-header');
+            headers.forEach(header => {
+                const groupWrapper = header.nextElementSibling;
+                if (!groupWrapper) return;
+                const items = groupWrapper.querySelectorAll('.food-item');
+                let groupHasVisibleItems = false;
+                items.forEach(item => {
+                    const foodName = item.querySelector('h4').textContent.toLowerCase();
+                    const isVisible = foodName.includes(searchTerm);
+                    item.classList.toggle('hidden', !isVisible);
+                    if (isVisible) groupHasVisibleItems = true;
+                });
+                header.style.display = groupHasVisibleItems ? 'block' : 'none';
+                groupWrapper.style.display = groupHasVisibleItems ? 'block' : 'none';
+            });
+        });
+    }
+}
+
+function setupTabs() {
+    const tabContainer = document.querySelector('#diagnostico .floating-card');
+    if (!tabContainer) return;
+
+    const tabButtons = tabContainer.querySelectorAll('.tab-button');
+    const tabPanels = tabContainer.querySelectorAll('.tab-content-panel');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            const targetTab = button.dataset.tab;
+            
+            tabPanels.forEach(panel => {
+                panel.classList.toggle('active', panel.id === `tab-content-${targetTab}`);
+            });
+        });
+    });
+}
+
+function generateNavLinks() {
+    const navStructure = [
+        { id: 'inicio', title: 'Início' },
+        { id: 'favoritos', title: 'Favoritos', isBold: true },
+        {
+            title: 'Fundamentos',
+            links: [
+                { id: 'yin-yang', title: 'Teoria Yin-Yang' },
+                { id: 'substancias-fundamentais', title: 'Substâncias Fundamentais' },
+                { id: 'tipos-de-qi', title: 'Tipos de Qi' },
+                { id: 'cinco-elementos', title: 'Os 5 Elementos' },
+                { id: 'ciclos-de-vida', title: 'Ciclos de Vida' },
+                { id: 'meridianos', title: 'Meridianos e Pontos' },
+                { id: 'anatomia-energetica', title: 'Anatomia Energética' },
+                { id: 'padroes-zang-fu', title: 'Padrões Zang-Fu' },
+            ]
+        },
+        { title: 'Diagnóstico', links: [ { id: 'diagnostico', title: 'Métodos de Diagnóstico' } ] },
+        { title: 'Terapêuticas', links: [ { id: 'terapias', title: 'Visão Geral' }, { id: 'dietetica', title: 'Dietética' } ] },
+        { title: 'Sabedoria', links: [ { id: 'grandes-mestres', title: 'Grandes Mestres' } ] },
+        { id: 'glossario', title: 'Glossário', isBold: true },
+    ];
+
+    const generateHtml = (item) => {
+        if (item.links) {
+            return `<div class="nav-group"><button class="nav-group-header flex items-center justify-between w-full" aria-expanded="false"><span class="flex items-center"><span class="font-semibold">${item.title}</span></span><svg class="w-5 h-5 shrink-0 text-gray-400 chevron"><use href="#icon-chevron-down"></use></svg></button><div class="nav-group-content pl-4 pt-1 space-y-1">${item.links.map(link => `<a href="#${link.id}" class="sidebar-link flex items-center p-2 rounded-lg"><span>${link.title}</span></a>`).join('')}</div></div>`;
+        } else {
+            const fontWeightClass = item.isBold ? 'font-bold' : '';
+            return `<a href="#${item.id}" class="sidebar-link flex items-center p-2 rounded-lg"><span class="${fontWeightClass}">${item.title}</span></a>`;
+        }
+    };
+    const navHtml = navStructure.map(generateHtml).join('');
+    allNavHubs.forEach(hub => hub.innerHTML = navHtml);
+}
+
+function renderFavoritesSection() {
+    const container = document.getElementById('favorites-container');
+    if (!container) return;
+
+    if (favorites.length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-500">Ainda não adicionou itens aos favoritos. Clique na estrela nos detalhes de um item para o guardar aqui.</p>';
+        return;
+    }
+
+    container.innerHTML = favorites.map(item => `
+        <div class="favorite-item">
+            <div class="favorite-item-info" data-id="${item.id}" data-section-id="${item.sectionId}" data-parent-id="${item.parentId || ''}" data-type="${item.type}">
+                <h4>${item.title}</h4>
+                <span class="result-type-badge ${item.type === 'Ponto' ? 'ponto-badge' : ''}" style="background-color: var(--el-${item.color}, var(--color-primary))">${item.type}</span>
+            </div>
+            <button class="remove-favorite-btn" data-id="${item.id}" title="Remover dos Favoritos">
+                <svg class="w-5 h-5"><use href="#icon-trash"></use></svg>
+            </button>
+        </div>
+    `).join('');
+}
+
+const itemTypeMap = {
+    'Meridiano': { data: meridianData, renderer: renderMeridianModalContent },
+    'Terapia': { data: therapiesData, renderer: renderTherapyModalContent },
+    'Anatomia': { data: anatomyData, renderer: renderAnatomyModalContent },
+    'Mestre': { data: greatMastersData, renderer: renderMasterModalContent },
+    'Padrão Zang-Fu': { data: zangFuPatternsData, renderer: renderZangFuModalContent }
 };
 
-// --- Inicialização e Event Listeners ---
-document.addEventListener('DOMContentLoaded', () => {
-    showLoadingScreen();
 
-    // Adiciona o event listener para touchend no menu móvel
-    mobileNavHub.addEventListener('touchend', handleNavigationClick);
+// --- PONTO DE ENTRADA DA APLICAÇÃO ---
+document.addEventListener('DOMContentLoaded', () => {
+    loadFavorites();
+    generateNavLinks(); 
     
-    // Adiciona o event listener para click nos hubs de navegação
-    allNavHubs.forEach(navHub => {
-        navHub.addEventListener('click', handleNavigationClick);
+    // Setup das secções
+    setupYinYangSection();
+    setupFlipGrid('qi-cards-container', qiData, renderQiFlipCard);
+    createLifeCycleTimeline('female-cycles-timeline', lifeCyclesFemaleData, 'bg-pink-500');
+    createLifeCycleTimeline('male-cycles-timeline', lifeCyclesMaleData, 'bg-blue-500');
+    setupGlossary();
+    setupDietetics();
+    renderFavoritesSection();
+    
+    // Setup das grelhas com zoom
+    setupZoomGrid('therapies-grid-container', therapiesData, renderTherapyCard, renderTherapyModalContent, 'Terapia');
+    setupZoomGrid('zangfu-grid-container', zangFuPatternsData, renderZangFuCard, renderZangFuModalContent, 'Padrão Zang-Fu');
+    setupZoomGrid('anatomy-grid-container', anatomyData, renderAnatomyCard, renderAnatomyModalContent, 'Anatomia');
+    setupZoomGrid('meridian-grid-container', meridianData, renderMeridianCard, renderMeridianModalContent, 'Meridiano');
+
+    // Setup da grelha com flip para os Mestres
+    setupFlipGrid('masters-grid-container', greatMastersData, renderMasterFlipCard, renderMasterModalContent, 'Mestre');
+    
+    // Setup do diagnóstico
+    setupTabs();
+    setupDiagnosisAccordion();
+    setupDiagnosisDiagrams();
+    
+    // Setup dos 5 Elementos
+    if (document.getElementById('cinco-elementos')) {
+        initializeFiveElements();
+    }
+
+    // Animações e inicialização
+    document.querySelectorAll('aside .sidebar-link, aside .nav-group').forEach((el, index) => {
+        el.style.animationDelay = `${index * 0.07}s`;
     });
 
-    openMenuBtn.addEventListener('click', openMenu);
-    closeMenuBtn.addEventListener('click', closeMenu);
-    mobileMenuOverlay.addEventListener('click', (event) => {
-        // Fechar o menu apenas se o clique for no overlay e não no menu em si
-        if (event.target === mobileMenuOverlay) {
-            closeMenu();
+    createSearchIndex();
+    contentSections = mainContent.querySelectorAll('.content-section');
+    showSection('inicio', 'Início');
+    updateActiveLink('inicio');
+    
+    if(loadingScreen) {
+        setTimeout(() => {
+            loadingScreen.classList.add('hidden');
+        }, 1500);
+    }
+
+    // --- EVENT LISTENERS GLOBAIS PARA FAVORITOS ---
+    document.body.addEventListener('click', (e) => {
+        const favButton = e.target.closest('.favorite-toggle-btn');
+        if (favButton) {
+            const itemData = JSON.parse(favButton.dataset.item);
+            toggleFavorite(itemData);
         }
     });
-    
-    // Event listeners para pesquisa
-    openSearchMobileBtn.addEventListener('click', openSearch);
-    closeSearchBtn.addEventListener('click', closeSearch);
-    mobileSearchInput.addEventListener('input', handleSearch);
-    desktopSearchInput.addEventListener('input', handleSearch);
 
-    // Event listeners para o modal de conteúdo
-    contentModalCloseBtn.addEventListener('click', closeContentModal);
-    document.getElementById('content-modal-overlay').addEventListener('click', closeContentModal);
-    
-    // Event listener para o botão de favoritar no modal
-    document.getElementById('content-modal-favorite-btn').addEventListener('click', (e) => {
-        const btn = e.currentTarget;
-        const itemData = {
-            id: btn.dataset.id,
-            title: btn.dataset.title,
-            type: btn.dataset.type,
-            color: btn.dataset.color,
-            sectionId: btn.dataset.sectionId
-        };
-        toggleFavorite(itemData);
-    });
-    
-    // Event listeners para favoritos
-    favBtn.addEventListener('click', toggleFavDropdown);
-    favDropdown.addEventListener('click', (e) => {
-        const item = e.target.closest('.favorite-item');
-        if (item) {
-            const { id, type, sectionId, parentId } = item.dataset;
-            closeMenu();
-            closeFavDropdown();
-            // Lógica para abrir o item favorito
-            if (type === 'Meridiano') {
-                const itemInfo = meridianData.find(d => d.id === id);
-                if (itemInfo) {
-                    const contentHTML = renderMeridianContent(itemInfo);
-                    openContentModal(contentHTML, favorites[id]);
+    const favoritesContainer = document.getElementById('favorites-container');
+    if(favoritesContainer) {
+        favoritesContainer.addEventListener('click', (e) => {
+            const favInfoElement = e.target.closest('.favorite-item-info');
+            const removeButton = e.target.closest('.remove-favorite-btn');
+
+            if (removeButton) {
+                const itemId = removeButton.dataset.id;
+                const index = favorites.findIndex(fav => fav.id === itemId);
+                if (index > -1) {
+                    favorites.splice(index, 1);
+                    saveFavorites();
+                    renderFavoritesSection();
                 }
-            } else if (type === 'Ponto') {
-                const parentMeridian = meridianData.find(m => m.id === parentId);
-                if (parentMeridian) {
-                    const contentHTML = renderMeridianContent(parentMeridian);
-                    const parentItemDataForFavorite = {
-                        id: `Meridiano-${parentMeridian.id}`,
-                        title: parentMeridian.name,
-                        type: 'Meridiano',
-                        color: parentMeridian.color,
-                        sectionId: 'meridianos'
-                    };
-                    openContentModal(contentHTML, parentItemDataForFavorite);
-                }
-            } else {
-                const mapping = itemTypeMap[type];
-                if (mapping) {
-                    const realId = id.split('-').slice(1).join('-');
-                    const itemInfo = mapping.data.find(d => d.id === realId);
-                    if (itemInfo) {
-                        const contentHTML = mapping.renderer(itemInfo);
-                        openContentModal(contentHTML, favorites[id]);
+                return;
+            }
+
+            if (favInfoElement) {
+                const favItemData = favorites.find(fav => fav.id === favInfoElement.dataset.id);
+                if (!favItemData) return;
+
+                const { id, sectionId, parentId, type } = favItemData;
+                
+                showSection(sectionId, document.querySelector(`a[href="#${sectionId}"] span`).textContent);
+                updateActiveLink(sectionId);
+                closeMobileMenu();
+
+                if (type === 'Alimento') {
+                    setTimeout(() => {
+                        const foodElement = document.getElementById(id);
+                        if (foodElement) {
+                            foodElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            foodElement.classList.add('highlight');
+                            setTimeout(() => foodElement.classList.remove('highlight'), 2000);
+                        }
+                    }, 100);
+                } else if (type === 'Ponto') {
+                    const parentMeridian = meridianData.find(m => m.id === parentId);
+                    if (parentMeridian) {
+                        const contentHTML = renderMeridianModalContent(parentMeridian);
+                        const parentItemDataForFavorite = {
+                            id: `Meridiano-${parentMeridian.id}`,
+                            title: parentMeridian.name,
+                            type: 'Meridiano',
+                            color: parentMeridian.color,
+                            sectionId: 'meridianos'
+                        };
+                        openContentModal(contentHTML, parentItemDataForFavorite);
+                    }
+                } else {
+                    const mapping = itemTypeMap[type];
+                    if (mapping) {
+                        const realId = id.split('-').slice(1).join('-');
+                        const itemInfo = mapping.data.find(d => d.id === realId);
+                        if (itemInfo) {
+                            const contentHTML = mapping.renderer(itemInfo);
+                            openContentModal(contentHTML, favItemData);
+                        }
                     }
                 }
             }
-        }
-    });
-
-    // Event listener para os cards de conteúdo
-    contentArea.addEventListener('click', (e) => {
-        const card = e.target.closest('.card');
-        if (card) {
-            const { id, type } = card.dataset;
-            const mapping = itemTypeMap[type];
-            if (mapping) {
-                // Acha o item na lista de dados
-                const itemInfo = mapping.data.find(d => d.id === id);
-                if (itemInfo) {
-                    const contentHTML = mapping.renderer(itemInfo);
-                    const favItemData = {
-                        id: `Meridiano-${itemInfo.id}`,
-                        title: itemInfo.name,
-                        type: 'Meridiano',
-                        color: itemInfo.color,
-                        sectionId: 'meridianos'
-                    };
-                    openContentModal(contentHTML, favItemData);
-                }
-            }
-        }
-    });
-
-    // Lidar com o clique nos pontos de acupuntura dentro do modal
-    contentModalContent.addEventListener('click', (e) => {
-        const pointItem = e.target.closest('.point-item');
-        if (pointItem) {
-             const { id, parentId, type } = pointItem.dataset;
-             const favItemData = {
-                 id: id,
-                 title: pointItem.querySelector('span').textContent.split(':')[0],
-                 type: type,
-                 color: meridianData.find(m => m.id === parentId)?.color,
-                 sectionId: 'meridianos'
-             };
-             const parentMeridian = meridianData.find(m => m.id === parentId);
-             const pointInfo = parentMeridian.points.find(p => `Ponto-${p.id}` === id);
-             const contentHTML = itemTypeMap['Ponto'].renderer({ ...pointInfo, parentId: parentMeridian.id, parentName: parentMeridian.name, parentColor: parentMeridian.color });
-             openContentModal(contentHTML, favItemData);
-        }
-    });
-
-    initializeApp();
+        });
+    }
 });
