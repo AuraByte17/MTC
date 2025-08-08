@@ -558,24 +558,20 @@ body.content-modal-open #content-modal-container {
 
 /* --- ESTILOS PARA NAVEGAÇÃO MÓVEL --- */
 #mobile-menu-container { visibility: hidden; pointer-events: none; }
-body.mobile-menu-open #mobile-menu-container { visibility: visible; }
+body.mobile-menu-open #mobile-menu-container { visibility: visible; pointer-events: auto; }
 
-/* *** THE FIX *** */
-/* This ensures the overlay is visually and functionally behind the sidebar. */
-#mobile-menu-overlay { 
-    pointer-events: none; 
-    opacity: 0; 
-    transition: opacity 0.3s ease-in-out; 
-    z-index: 45; /* Set z-index lower than the sidebar */
+#mobile-menu-overlay {
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 45; /* Explicitly set a lower z-index */
 }
 body.mobile-menu-open #mobile-menu-overlay { opacity: 1; pointer-events: auto; }
 
-/* The sidebar needs a position property for z-index to work correctly. */
 #sidebar {
-    position: relative; /* Add position */
-    z-index: 50; /* Set z-index higher than the overlay */
+    position: relative; /* This is required for z-index to take effect. */
+    z-index: 50;      /* Set a higher z-index to ensure it's on top */
 }
-/* *** END OF FIX *** */
 
 body.mobile-menu-open #sidebar { transform: translateX(0); }
 

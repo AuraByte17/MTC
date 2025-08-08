@@ -114,6 +114,8 @@ function closeMobileMenu() { document.body.classList.remove('mobile-menu-open');
 openMenuBtn.addEventListener('click', openMobileMenu);
 closeMenuBtn.addEventListener('click', closeMobileMenu);
 mobileMenuOverlay.addEventListener('click', (e) => {
+    // This check ensures the menu only closes if the overlay itself is clicked,
+    // not an element within the menu.
     if (e.target === mobileMenuOverlay) {
         closeMobileMenu();
     }
@@ -185,10 +187,8 @@ function updateActiveLink(targetId) {
     });
 }
 
-// *** FIX 4: Complete rewrite of the navigation event handling. ***
-// Instead of a single delegated event listener, this function now attaches
-// specific, individual listeners to each link and category header.
-// This is a more robust method that avoids event bubbling conflicts on mobile devices.
+// This robust function attaches individual listeners to each interactive menu item.
+// This avoids complex event bubbling issues that can occur on mobile browsers.
 function setupNavEventListeners() {
     allNavHubs.forEach(hub => {
         // Add listeners to category headers (buttons)
