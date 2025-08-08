@@ -559,8 +559,24 @@ body.content-modal-open #content-modal-container {
 /* --- ESTILOS PARA NAVEGAÇÃO MÓVEL --- */
 #mobile-menu-container { visibility: hidden; pointer-events: none; }
 body.mobile-menu-open #mobile-menu-container { visibility: visible; }
-#mobile-menu-overlay { pointer-events: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+
+/* *** THE FIX *** */
+/* This ensures the overlay is visually and functionally behind the sidebar. */
+#mobile-menu-overlay { 
+    pointer-events: none; 
+    opacity: 0; 
+    transition: opacity 0.3s ease-in-out; 
+    z-index: 45; /* Set z-index lower than the sidebar */
+}
 body.mobile-menu-open #mobile-menu-overlay { opacity: 1; pointer-events: auto; }
+
+/* The sidebar needs a position property for z-index to work correctly. */
+#sidebar {
+    position: relative; /* Add position */
+    z-index: 50; /* Set z-index higher than the overlay */
+}
+/* *** END OF FIX *** */
+
 body.mobile-menu-open #sidebar { transform: translateX(0); }
 
 /* --- ESTILOS PARA PESQUISA GLOBAL --- */
