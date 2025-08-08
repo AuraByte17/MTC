@@ -113,11 +113,6 @@ function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
 function closeMobileMenu() { document.body.classList.remove('mobile-menu-open'); }
 openMenuBtn.addEventListener('click', openMobileMenu);
 closeMenuBtn.addEventListener('click', closeMobileMenu);
-
-// *** FIX 3: Replaced the simple event listener with a more robust one. ***
-// This new listener checks if the click was directly on the overlay itself (e.target).
-// This prevents accidental clicks or taps on mobile that "pass through" the menu
-// from closing the menu when the user intended to interact with a menu item.
 mobileMenuOverlay.addEventListener('click', (e) => {
     if (e.target === mobileMenuOverlay) {
         closeMobileMenu();
@@ -189,27 +184,38 @@ function updateActiveLink(targetId) {
         });
     });
 }
-allNavHubs.forEach(hub => {
-    hub.addEventListener('click', (e) => {
-        const link = e.target.closest('a.sidebar-link');
-        const groupHeader = e.target.closest('.nav-group-header');
 
-        if (link) {
-            e.preventDefault();
-            e.stopPropagation(); 
-            const targetId = link.getAttribute('href').substring(1);
-            const linkText = link.querySelector('span').textContent;
-            showSection(targetId, linkText);
-            updateActiveLink(targetId);
-            closeMobileMenu();
-        } else if (groupHeader) {
-            e.preventDefault();
-            e.stopPropagation();
-            groupHeader.classList.toggle('open');
-            groupHeader.setAttribute('aria-expanded', groupHeader.classList.contains('open'));
-        }
+// *** FIX 4: Complete rewrite of the navigation event handling. ***
+// Instead of a single delegated event listener, this function now attaches
+// specific, individual listeners to each link and category header.
+// This is a more robust method that avoids event bubbling conflicts on mobile devices.
+function setupNavEventListeners() {
+    allNavHubs.forEach(hub => {
+        // Add listeners to category headers (buttons)
+        const groupHeaders = hub.querySelectorAll('.nav-group-header');
+        groupHeaders.forEach(header => {
+            header.addEventListener('click', (e) => {
+                e.preventDefault();
+                header.classList.toggle('open');
+                header.setAttribute('aria-expanded', header.classList.contains('open'));
+            });
+        });
+
+        // Add listeners to navigation links (anchors)
+        const links = hub.querySelectorAll('a.sidebar-link');
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const linkText = link.querySelector('span').textContent;
+                showSection(targetId, linkText);
+                updateActiveLink(targetId);
+                closeMobileMenu(); // This is key for mobile behavior
+            });
+        });
     });
-});
+}
+
 
 // --- LÓGICA DE PESQUISA (COM FUSE.JS) ---
 function createSearchIndex() {
@@ -909,6 +915,7 @@ const itemTypeMap = {
 document.addEventListener('DOMContentLoaded', () => {
     loadFavorites();
     generateNavLinks(); 
+    setupNavEventListeners(); // Call the new function to set up listeners
     
     // Setup das secções
     setupYinYangSection();
