@@ -113,7 +113,17 @@ function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
 function closeMobileMenu() { document.body.classList.remove('mobile-menu-open'); }
 openMenuBtn.addEventListener('click', openMobileMenu);
 closeMenuBtn.addEventListener('click', closeMobileMenu);
-mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+// *** FIX 3: Replaced the simple event listener with a more robust one. ***
+// This new listener checks if the click was directly on the overlay itself (e.target).
+// This prevents accidental clicks or taps on mobile that "pass through" the menu
+// from closing the menu when the user intended to interact with a menu item.
+mobileMenuOverlay.addEventListener('click', (e) => {
+    if (e.target === mobileMenuOverlay) {
+        closeMobileMenu();
+    }
+});
+
 
 function openSearchModal() {
     document.body.classList.add('search-modal-open');
@@ -184,20 +194,17 @@ allNavHubs.forEach(hub => {
         const link = e.target.closest('a.sidebar-link');
         const groupHeader = e.target.closest('.nav-group-header');
 
-        // *** FIX 2: Added stopPropagation() to prevent event bubbling issues on mobile. ***
-        // This ensures that when a category header is clicked, the event is fully handled
-        // and doesn't bubble up to trigger other listeners that might close the menu.
         if (link) {
             e.preventDefault();
-            e.stopPropagation(); // Explicitly stop the event here.
+            e.stopPropagation(); 
             const targetId = link.getAttribute('href').substring(1);
             const linkText = link.querySelector('span').textContent;
             showSection(targetId, linkText);
             updateActiveLink(targetId);
             closeMobileMenu();
         } else if (groupHeader) {
-            e.preventDefault(); // Good practice for buttons.
-            e.stopPropagation(); // Explicitly stop the event here.
+            e.preventDefault();
+            e.stopPropagation();
             groupHeader.classList.toggle('open');
             groupHeader.setAttribute('aria-expanded', groupHeader.classList.contains('open'));
         }
