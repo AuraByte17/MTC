@@ -698,14 +698,18 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
 /* --- MELHORIAS PARA ECRÃS PEQUENOS --- */
 @media (max-width: 767px) {
     #main-content-area { 
-        padding: 1rem;
-        padding-bottom: 80px; /* Adiciona preenchimento para evitar que o conteúdo seja escondido pela barra de navegação inferior */
+        padding: 1.5rem; /* Aumentado de 1rem */
+        padding-bottom: 90px; /* Aumentado para mais espaço */
     }
-    .card-content { padding: 1rem; }
+    .card-content { padding: 1.25rem; } /* Aumentado de 1rem */
+    .card-header { padding: 1rem 1.25rem; } /* Aumentado de 1rem */
     .card-header h3 { font-size: 1.1rem; }
     #cinco-elementos .grid { grid-template-columns: 1fr; }
     .tab-button { font-size: 0.875rem; padding: 0.75rem 0.5rem; }
     .diagnosis-grid { grid-template-columns: 1fr; }
+    .zoom-grid, .flip-grid {
+        grid-template-columns: 1fr; /* Força uma única coluna em telemóveis */
+    }
 }
 
 /* --- MOBILE REDESIGN: Estilos da Barra de Navegação Inferior --- */
@@ -723,6 +727,14 @@ body.mobile-menu-open #sidebar { transform: translateX(0); }
     box-shadow: 0 -2px 20px rgba(45, 90, 103, 0.1);
     padding: 0.5rem 0;
 }
+
+/* Esconde a barra de navegação inferior em ecrãs de tablet e maiores */
+@media (min-width: 768px) {
+    #bottom-nav-hub {
+        display: none;
+    }
+}
+
 
 .bottom-nav-link {
     display: flex;
