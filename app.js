@@ -183,6 +183,11 @@ allNavHubs.forEach(hub => {
     hub.addEventListener('click', (e) => {
         const link = e.target.closest('a.sidebar-link');
         const groupHeader = e.target.closest('.nav-group-header');
+
+        // *** FIX: Changed to an if/else if structure. ***
+        // This makes the click handling for links and category headers mutually exclusive.
+        // It prevents an issue on some mobile devices where clicking a category header
+        // was also being treated as a link click, causing the menu to close incorrectly.
         if (link) {
             e.preventDefault();
             const targetId = link.getAttribute('href').substring(1);
@@ -190,8 +195,7 @@ allNavHubs.forEach(hub => {
             showSection(targetId, linkText);
             updateActiveLink(targetId);
             closeMobileMenu();
-        }
-        if (groupHeader) {
+        } else if (groupHeader) {
             groupHeader.classList.toggle('open');
             groupHeader.setAttribute('aria-expanded', groupHeader.classList.contains('open'));
         }
