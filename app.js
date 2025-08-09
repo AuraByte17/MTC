@@ -20,7 +20,6 @@ import {
 
 // --- Seleção de Elementos DOM ---
 const loadingScreen = document.getElementById('loading-screen');
-// O botão antigo 'open-menu-btn' foi removido do HTML, por isso a variável foi removida daqui para evitar erros.
 const closeMenuBtn = document.getElementById('close-menu-btn');
 const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
 const mobileNavHub = document.getElementById('navigation-hub');
@@ -30,10 +29,7 @@ const contentArea = document.getElementById('main-content-area');
 const mainContent = document.getElementById('main-content');
 let contentSections = [];
 
-// --- MOBILE REDESIGN: Seleciona os elementos da barra de navegação inferior ---
-const bottomNavHub = document.getElementById('bottom-nav-hub');
-const allNavHubs = [mobileNavHub, desktopNavHub, bottomNavHub];
-
+const allNavHubs = [mobileNavHub, desktopNavHub];
 
 // Elementos da Pesquisa Global
 const desktopSearchInput = document.getElementById('desktop-search-input');
@@ -43,7 +39,7 @@ const closeSearchBtn = document.getElementById('close-search-btn');
 const globalSearchInput = document.getElementById('global-search-input');
 const searchResultsContainer = document.getElementById('search-results-container');
 let searchIndex = [];
-let fuse; // Instância do Fuse.js
+let fuse; // Fuse.js instance
 
 // Elementos do Modal de Conteúdo
 const contentModal = document.getElementById('content-modal');
@@ -113,20 +109,8 @@ function updateFavoriteIcon(buttonElement, isFav) {
 // --- LÓGICA DE NAVEGAÇÃO RESPONSIVA E PESQUISA ---
 function openMobileMenu() { document.body.classList.add('mobile-menu-open'); }
 function closeMobileMenu() { document.body.classList.remove('mobile-menu-open'); }
-
-// MOBILE REDESIGN: O botão "Explorar" na barra de navegação inferior agora abre o menu
-const exploreBtn = document.getElementById('bottom-nav-explore');
-if (exploreBtn) {
-    exploreBtn.addEventListener('click', openMobileMenu);
-}
-
 closeMenuBtn.addEventListener('click', closeMobileMenu);
-mobileMenuOverlay.addEventListener('click', (e) => {
-    if (e.target === mobileMenuOverlay) {
-        closeMobileMenu();
-    }
-});
-
+mobileMenuOverlay.addEventListener('click', closeMobileMenu);
 
 function openSearchModal() {
     document.body.classList.add('search-modal-open');
@@ -139,7 +123,6 @@ function closeSearchModal() {
     globalSearchInput.value = ''; 
     searchResultsContainer.innerHTML = '<p class="text-center text-gray-500">Comece a escrever para ver os resultados.</p>';
 }
-
 desktopSearchInput.addEventListener('focus', openSearchModal);
 closeSearchBtn.addEventListener('click', closeSearchModal);
 searchOverlay.addEventListener('click', closeSearchModal);
@@ -182,9 +165,10 @@ function showSection(targetId, linkText) {
     if (contentArea) contentArea.scrollTop = 0;
     if (currentSectionTitle && linkText) currentSectionTitle.textContent = linkText;
 }
+
 function updateActiveLink(targetId) {
-    // Atualiza os links do menu lateral (desktop e slide-out)
-    [desktopNavHub, mobileNavHub].forEach(hub => {
+    // Atualiza a barra lateral (desktop e móvel)
+    allNavHubs.forEach(hub => {
         hub.querySelectorAll('.sidebar-link').forEach(link => {
             const href = link.getAttribute('href');
             const isActive = href === `#${targetId}`;
@@ -193,65 +177,35 @@ function updateActiveLink(targetId) {
         });
     });
 
-    // MOBILE REDESIGN: Atualiza os links da barra de navegação inferior
-    if (bottomNavHub) {
-        bottomNavHub.querySelectorAll('.bottom-nav-link').forEach(link => {
-            const href = link.getAttribute('href');
-            // O botão Explorar não tem href, por isso verificamos primeiro
-            if (href) { 
-                const isActive = href === `#${targetId}`;
-                link.classList.toggle('active', isActive);
-            }
+    // Atualiza a barra de navegação inferior
+    const bottomNav = document.getElementById('mobile-bottom-nav');
+    if (bottomNav) {
+        bottomNav.querySelectorAll('a.bottom-nav-item').forEach(item => {
+            const href = item.getAttribute('href');
+            const isActive = href === `#${targetId}`;
+            item.classList.toggle('active', isActive);
         });
     }
 }
 
-
-function setupNavEventListeners() {
-    // Listeners para a Sidebar do Desktop e o Menu Slide-out do telemóvel
-    [desktopNavHub, mobileNavHub].forEach(hub => {
-        const groupHeaders = hub.querySelectorAll('.nav-group-header');
-        groupHeaders.forEach(header => {
-            header.addEventListener('click', (e) => {
-                e.preventDefault();
-                header.classList.toggle('open');
-                header.setAttribute('aria-expanded', header.classList.contains('open'));
-            });
-        });
-
-        const links = hub.querySelectorAll('a.sidebar-link');
-        links.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const linkText = link.querySelector('span').textContent;
-                showSection(targetId, linkText);
-                updateActiveLink(targetId);
-                closeMobileMenu();
-            });
-        });
-    });
-
-    // MOBILE REDESIGN: Listeners para a Barra de Navegação Inferior
-    if (bottomNavHub) {
-        const bottomLinks = bottomNavHub.querySelectorAll('a.bottom-nav-link');
-        bottomLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const linkText = link.querySelector('.bottom-nav-label').textContent;
-                showSection(targetId, linkText);
-                updateActiveLink(targetId);
-            });
-        });
-        
-        const searchButton = bottomNavHub.querySelector('#bottom-nav-search');
-        if(searchButton) {
-            searchButton.addEventListener('click', openSearchModal);
+allNavHubs.forEach(hub => {
+    hub.addEventListener('click', (e) => {
+        const link = e.target.closest('a.sidebar-link');
+        const groupHeader = e.target.closest('.nav-group-header');
+        if (link) {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            const linkText = link.querySelector('span').textContent;
+            showSection(targetId, linkText);
+            updateActiveLink(targetId);
+            closeMobileMenu();
         }
-    }
-}
-
+        if (groupHeader) {
+            groupHeader.classList.toggle('open');
+            groupHeader.setAttribute('aria-expanded', groupHeader.classList.contains('open'));
+        }
+    });
+});
 
 // --- LÓGICA DE PESQUISA (COM FUSE.JS) ---
 function createSearchIndex() {
@@ -266,7 +220,7 @@ function createSearchIndex() {
     const options = {
         includeScore: true,
         keys: ['title', 'content'],
-        threshold: 0.4 // Ajustar limiar para correspondência mais/menos exata
+        threshold: 0.4 // Adjust threshold for more/less fuzzy matching
     };
     fuse = new Fuse(rawIndex, options);
 }
@@ -913,9 +867,7 @@ function generateNavLinks() {
         }
     };
     const navHtml = navStructure.map(generateHtml).join('');
-    // MOBILE REDESIGN: Popula tanto o menu do desktop como o menu slide-out do telemóvel
-    desktopNavHub.innerHTML = navHtml;
-    mobileNavHub.innerHTML = navHtml;
+    allNavHubs.forEach(hub => hub.innerHTML = navHtml);
 }
 
 function renderFavoritesSection() {
@@ -953,7 +905,6 @@ const itemTypeMap = {
 document.addEventListener('DOMContentLoaded', () => {
     loadFavorites();
     generateNavLinks(); 
-    setupNavEventListeners(); // Chama a nova função para configurar os listeners
     
     // Setup das secções
     setupYinYangSection();
@@ -997,6 +948,33 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             loadingScreen.classList.add('hidden');
         }, 1500);
+    }
+
+    // --- LÓGICA DA BARRA DE NAVEGAÇÃO INFERIOR ---
+    const mobileBottomNav = document.getElementById('mobile-bottom-nav');
+    if (mobileBottomNav) {
+        // Handle clicks on nav links
+        mobileBottomNav.addEventListener('click', e => {
+            const link = e.target.closest('a.bottom-nav-item');
+            if (link) {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const desktopLink = document.querySelector(`#desktop-navigation-hub a[href="#${targetId}"]`);
+                const linkText = desktopLink ? desktopLink.querySelector('span').textContent : 'Guia de MTC';
+                showSection(targetId, linkText);
+                updateActiveLink(targetId);
+            }
+        });
+
+        const bottomNavSearchBtn = document.getElementById('bottom-nav-search-btn');
+        if (bottomNavSearchBtn) {
+            bottomNavSearchBtn.addEventListener('click', openSearchModal);
+        }
+
+        const bottomNavMenuBtn = document.getElementById('bottom-nav-menu-btn');
+        if (bottomNavMenuBtn) {
+            bottomNavMenuBtn.addEventListener('click', openMobileMenu);
+        }
     }
 
     // --- EVENT LISTENERS GLOBAIS PARA FAVORITOS ---
